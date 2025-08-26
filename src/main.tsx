@@ -77,7 +77,7 @@ createRoot(document.getElementById("root")!).render(
             },
           }}
         >
-          <ToastContainer hideProgressBar theme="dark" autoClose={3500} />
+          <ToastContainer hideProgressBar theme="dark" autoClose={4500} />
           <ChakraProvider theme={AppTheme}>
             <RouterProvider router={router} />
           </ChakraProvider>

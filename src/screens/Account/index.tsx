@@ -7,13 +7,11 @@ import {
   Image,
   VStack,
   Link,
-  FormControl,
-  Switch,
 } from "@chakra-ui/react";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { useSessionHandler } from "@hooks/useSessionHandler";
 import { Link as TansatackLink } from "@tanstack/react-router";
-import { ReactNode } from "react";
+
 import { PiExport } from "react-icons/pi";
 import { RiShutDownLine } from "react-icons/ri";
 import { TbEdit } from "react-icons/tb";
@@ -28,6 +26,8 @@ import { shortenPrincipalId } from "@utils/string";
 
 import { USERNAME_SWITCH_INFO } from "@const/info";
 import { useUsernamePopup } from "@hooks/useUsernamePopup";
+import { NotificationSettings } from "@components/NotificationSettings";
+import { Setting } from "@components/SettingsContainer";
 
 const ExportKeySettings: React.FC = () => {
   const { exportWallet } = usePrivyWallet();
@@ -170,45 +170,10 @@ export const AccountPage: React.FC = () => {
         <VStack py={5} gap={6}>
           <ExportKeySettings />
           <UsernameSwitch />
-          <Notifications />
+          <NotificationSettings />
           <SessionHandler />
         </VStack>
       </Box>
     </Container>
-  );
-};
-
-const Setting: React.FC<{
-  title: string;
-  info?: string;
-  children?: ReactNode;
-}> = ({ children, title, info }) => {
-  return (
-    <Flex flexDirection={"row"} gap={2} w="100%">
-      <Flex direction={"column"} flex={"auto"}>
-        <Flex fontWeight={"bold"}>{title}</Flex>
-        {info && (
-          <Flex fontSize={13} opacity={0.5}>
-            {info}
-          </Flex>
-        )}
-      </Flex>
-      {children && <Flex alignItems={"center"}>{children}</Flex>}
-    </Flex>
-  );
-};
-
-const Notifications: React.FC = () => {
-  return (
-    <Flex w="100%" direction={"column"}>
-      <Setting
-        info="Never share your private key or seed phrase with anyone."
-        title="Notifications"
-      >
-        <FormControl display="flex" alignItems="center">
-          <Switch colorScheme="green" size={"lg"} id="email-alerts" />
-        </FormControl>
-      </Setting>
-    </Flex>
   );
 };
