@@ -14,7 +14,7 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
   const SolanaPayLogo = useSolanaPayLogo();
   const { id, context } = useMailBoxContext();
   const { mail } = useMailBody(id, context);
-  const { amount, token } = props;
+  const { amount, tokenaddress } = props;
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: !1 });
   const { wallet } = usePrivyWallet();
   const [{ isDone, isChecking: isStatusChecking }, setStatus] =
@@ -40,7 +40,7 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
     [setStatus]
   );
 
-  const { symbol } = useToken(token ?? "");
+  const { symbol } = useToken(tokenaddress ?? "");
   return (
     <>
       <Button
@@ -60,7 +60,7 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
         amount={props.amount}
         message={props.message}
         recipient={props.recipient}
-        token={props.token}
+        tokenaddress={props.tokenaddress ?? ""}
       />
     </>
   );

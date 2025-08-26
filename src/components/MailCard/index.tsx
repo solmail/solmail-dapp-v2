@@ -116,7 +116,7 @@ const SmartView: React.FC<{ id: string }> = ({ id }) => {
       {payments && payments.length > 0 && payments[0] && (
         <SolanaPayRequest
           amount={payments[0]?.amount}
-          token={payments[0]?.token}
+          token={payments[0]?.tokenaddress}
         />
       )}
 

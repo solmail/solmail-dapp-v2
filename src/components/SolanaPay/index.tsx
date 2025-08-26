@@ -44,10 +44,10 @@ export const SolanaPay: React.FC<
   amount,
   recipient,
   message,
-  token,
+  tokenaddress,
   ...props
 }) => {
-  const { symbol, address, decimals } = useToken(token ?? "");
+  const { symbol, address, decimals } = useToken(tokenaddress ?? "");
   const { formattedBalance, hasEnoughBalance } = useBalance(
     symbol !== "SOL" ? address : undefined,
     amount

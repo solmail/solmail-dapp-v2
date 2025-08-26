@@ -74,7 +74,7 @@ export type PaymentConfig = {
   recipient: string;
   amount: string;
   message: string;
-  token: string;
+  tokenaddress: string;
 };
 
 export enum MailBoxLabels {
