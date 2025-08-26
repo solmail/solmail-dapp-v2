@@ -9,7 +9,7 @@ const primary = definePartsStyle({
     backdropFilter: "blur(2px)",
   },
   dialog: {
-    borderRadius: "15px",
+    borderRadius: "5px",
     bg: "surface.900",
   },
 });
@@ -19,7 +19,7 @@ const secondary = definePartsStyle({
     backdropFilter: "blur(2px)",
   },
   dialog: {
-    borderRadius: "15px",
+    borderRadius: "5px",
     bg: "light.100",
     color: "dark.100",
   },

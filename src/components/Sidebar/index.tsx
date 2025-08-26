@@ -27,7 +27,7 @@ import JupiterLogo from "@assets/jupiter.svg";
 import { LINKS } from "@const/links";
 import { ClipboardText } from "@components/ClipboardText";
 import { getSolscanAddress } from "@utils/string/getSolscanUrl";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { MenuHeader } from "@components/MenuHeader";
 import noop from "lodash/noop";
 
@@ -96,18 +96,10 @@ export const AppSwitch: React.FC = () => {
 export const Sidebar: React.FC = () => {
   const { onOpen } = useUsernamePopup();
   const { pathname } = useLocation();
-  const [selected, setSelected] = useState("");
-
   const selectedmenu = useMemo(() => {
-    if (selected) {
-      const m = MENU.find((menu) => menu.id == selected);
-      if (m && m.submenu && m.submenu.length > 0) {
-        return m;
-      }
-    }
     const menu = MENU.find((menu) => pathname.indexOf(menu.id) > -1);
     return menu || MENU[0];
-  }, [pathname, selected]);
+  }, [pathname]);
   const { wallet } = usePrivyWallet();
   const { username, isLoading, hasUserNames, isFetched } =
     useGetLinkedUsernameById(wallet?.address);
@@ -127,8 +119,6 @@ export const Sidebar: React.FC = () => {
       direction={"row"}
       data-group
       bg="surface.100"
-      position={"relative"}
-      zIndex={2}
     >
       <Flex
         w={{
@@ -156,8 +146,6 @@ export const Sidebar: React.FC = () => {
                     as={Link}
                     py={2}
                     to={menu.link}
-                    onMouseEnter={() => setSelected(() => menu.id)}
-                    onMouseLeave={() => setSelected(() => "")}
                   >
                     <Icon fontSize={19} as={menu.icon} />
                   </ChakraLink>
@@ -173,26 +161,8 @@ export const Sidebar: React.FC = () => {
         p={5}
         pb={3}
         display={{
-          base: "flex",
+          base: "none",
           md: "flex",
-        }}
-        position={{
-          base: "absolute",
-          md: "static",
-        }}
-        top={0}
-        left={{
-          base: "-500%",
-          md: "initial",
-        }}
-        bottom={0}
-        zIndex={-1}
-        bg="surface.100"
-        transition={"all ease .2s"}
-        _groupHover={{
-          left: {
-            base: "100%",
-          },
         }}
       >
         <MenuHeader {...selectedmenu} />

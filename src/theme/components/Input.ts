@@ -7,7 +7,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 const primary = definePartsStyle({
   field: {
     p: 8,
-    bg: "surface.300",
+    bg: "surface.500",
     borderRadius: 10,
   },
 });

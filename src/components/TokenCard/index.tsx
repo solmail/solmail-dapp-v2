@@ -73,7 +73,7 @@ export const TokenCard: React.FC<FormattedTokens> = ({
               </chakra.span>
             )}
 
-            {import.meta.env.MODE === "development" &&
+            {import.meta.env.VITE_SOLMAIL_CLUSTER === "devnet" &&
               mint !== BASE_TOKEN.mint && (
                 <Tooltip
                   placement="right"

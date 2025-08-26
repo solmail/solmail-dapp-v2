@@ -1,5 +1,5 @@
 {
-  "address": "MAiLwYjBrBVbCZ4EEUrieKyVCBccbE3mVJJRiNzV1dg",
+  "address": "5VNBFr2dJTUy3eDwMdSoTb37jzmcpoAL4WH27fcAh98t",
   "metadata": {
     "name": "solmail",
     "version": "0.1.0",
@@ -682,6 +682,39 @@
           }
         },
         {
+          "name": "marketplace_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "username_account",
           "writable": true,
           "pda": {
@@ -754,37 +787,9 @@
       "args": []
     },
     {
-      "name": "cleanup_expired_mail_bid_account",
-      "docs": [
-        "NEW: Cleanup expired MAIL token bid accounts to prevent storage bloat"
-      ],
-      "discriminator": [
-        72,
-        150,
-        74,
-        57,
-        236,
-        15,
-        241,
-        51
-      ],
-      "accounts": [
-        {
-          "name": "bid_account",
-          "writable": true
-        },
-        {
-          "name": "cleanup_authority",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "cleanup_expired_sol_bid_account",
       "docs": [
-        "NEW: Cleanup expired SOL bid accounts to prevent storage bloat"
+        "Cleanup expired SOL bid accounts to prevent storage bloat"
       ],
       "discriminator": [
         147,
@@ -908,6 +913,7 @@
         },
         {
           "name": "collection_mint",
+          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -937,6 +943,7 @@
         },
         {
           "name": "metadata_account",
+          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -1240,6 +1247,44 @@
           }
         },
         {
+          "name": "username_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  110,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "username"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  46,
+                  109,
+                  97,
+                  105,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "marketplace_settings",
           "pda": {
             "seeds": [
@@ -1270,9 +1315,6 @@
               }
             ]
           }
-        },
-        {
-          "name": "username_account_check"
         },
         {
           "name": "bidder_token_account",
@@ -1572,6 +1614,44 @@
           }
         },
         {
+          "name": "username_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  110,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "username"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  46,
+                  109,
+                  97,
+                  105,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "marketplace_settings",
           "pda": {
             "seeds": [
@@ -1635,9 +1715,6 @@
               }
             ]
           }
-        },
-        {
-          "name": "username_account_check"
         },
         {
           "name": "bidder",
@@ -5195,7 +5272,6 @@
     {
       "name": "BidAccount",
       "docs": [
-        "ENHANCED Bid Account - Holds active bid information for a specific username with bid type tracking",
         "Fixed-size fields first for efficient querying"
       ],
       "type": {
@@ -5203,6 +5279,10 @@
         "fields": [
           {
             "name": "current_highest_bidder",
+            "type": "pubkey"
+          },
+          {
+            "name": "original_creator",
             "type": "pubkey"
           },
           {
@@ -6090,9 +6170,6 @@
     },
     {
       "name": "MarketplaceSettings",
-      "docs": [
-        "ENHANCED Marketplace Settings - Global configuration for bidding system with fixed fee structure"
-      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -6304,9 +6381,6 @@
     },
     {
       "name": "PlatformFeeCollectedEvent",
-      "docs": [
-        "New events for enhanced fee collection and marketplace configuration"
-      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -6923,10 +6997,6 @@
     },
     {
       "name": "UsernameAccount",
-      "docs": [
-        "OPTIMIZED Username Account structure PDA",
-        "Fixed-size fields first for efficient memcmp filtering with predictable offsets"
-      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -7329,10 +7399,6 @@
     },
     {
       "name": "UsernameWrapper",
-      "docs": [
-        "OPTIMIZED Username Wrapper - PDA that holds username authority during tokenization",
-        "Fixed-size fields first for efficient querying"
-      ],
       "type": {
         "kind": "struct",
         "fields": [
