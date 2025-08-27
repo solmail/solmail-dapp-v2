@@ -10,17 +10,12 @@ queryclient.getMutationCache().subscribe((event: MutationCacheNotifyEvent) => {
     const error = event?.mutation?.state?.error;
     if (error) {
       const user = store.get(AuthState).user;
-
-      Sentry.withScope((scope) => {
-        scope.setLevel("error");
-        scope.setUser({
-          id: user,
-        });
-        scope.setExtra("description", "this is my description");
+      Sentry.setUser({
+        id: user,
       });
       Sentry.captureException(error, {
         tags: { type: "mutation" },
-        extra: { payload: event?.mutation?.state?.variables, error },
+        extra: { payload: event?.mutation?.state?.variables },
       });
     }
   }
