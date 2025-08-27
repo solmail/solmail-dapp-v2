@@ -83,8 +83,8 @@ export const useWalletSignerApi = () => {
         return !0;
       }
     },
-    onError: () => {
-      showToast("Failed to create mailbox", {
+    onError: (e: any) => {
+      showToast(e && e.error ? e.error : "Failed to create mailbox", {
         type: "error",
       });
     },

@@ -7,7 +7,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { AppTheme } from "@theme/index";
 const router = createRouter({ routeTree });
 import { PrivyProvider, type WalletListEntry } from "@privy-io/react-auth";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { client } from "@integrations/idl/graphql";
 import { ApolloProvider } from "@apollo/client";
 import { ToastContainer } from "react-toastify";
@@ -17,8 +17,7 @@ import * as Sentry from "@sentry/react";
 import { DevTools } from "jotai-devtools";
 import "jotai-devtools/styles.css";
 import { PRIVACY_POLICY_LINK, TERMS_AND_CONDITIONS_LINK } from "@const/config";
-
-const queryclient = new QueryClient();
+import { queryclient } from "@integrations/tanstack";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SOLMAIL_SENTRY_DSN,

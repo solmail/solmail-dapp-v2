@@ -20,6 +20,8 @@ import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { ClaimUserName } from "@components/ClaimUsername";
 import { LinkUserName } from "@components/LinkUsername";
 import { useUsernamePopup } from "@hooks/useUsernamePopup";
+import { useAtom } from "jotai";
+import { AuthState } from "@state/auth";
 
 export const UserLayout: React.FC = () => {
   const { address } = usePrivyWallet();
@@ -36,6 +38,7 @@ export const UserLayout: React.FC = () => {
   const { isModalOpen, authenticated } = usePrivy();
   const { requestProfileCreation, refetch: refetchProfile } = useProfile();
   const { provider } = useGetMailProgramInstance();
+  const [, set] = useAtom(AuthState);
   useEmbeddedWallet();
   const { hasAccount, isLoading, refetch, isRefetching, isFetched } =
     useMailAccount();
@@ -109,6 +112,14 @@ export const UserLayout: React.FC = () => {
       isOpen: !1,
     });
   };
+
+  useEffect(() => {
+    console.log(address);
+    set((prev) => ({
+      ...prev,
+      user: address,
+    }));
+  }, [address, set]);
   useEffect(() => {
     if (autoRequestExecuted.current || isOpen || requestUsernameLink) {
       return;
