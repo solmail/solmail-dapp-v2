@@ -68,6 +68,18 @@ export const AddWeb2Email: React.FC<Omit<ModalProps, "children">> = ({
     <Modal isCentered size={"md"} {...props} onClose={onClose}>
       <ModalOverlay />
       <ModalContent position={"relative"}>
+        {isPending && (
+          <Flex
+            position={"absolute"}
+            zIndex={1}
+            inset={0}
+            alignItems={"center"}
+            justifyContent={"center"}
+            bg="rgba(0,0,0,.5)"
+          >
+            <Spinner />
+          </Flex>
+        )}
         <ModalHeader>
           {`${isEditMode ? "Update" : "Add"} email`}
           <ModalCloseButton />
@@ -78,19 +90,7 @@ export const AddWeb2Email: React.FC<Omit<ModalProps, "children">> = ({
               as="form"
               id={id}
               onSubmit={methods.handleSubmit(onSubmitHandler)}
-              position={"relative"}
             >
-              {isPending && (
-                <Flex
-                  position={"absolute"}
-                  zIndex={1}
-                  inset={0}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                >
-                  <Spinner />
-                </Flex>
-              )}
               <VStack gap={2} w="100%">
                 <FieldWrapper
                   label="Email"

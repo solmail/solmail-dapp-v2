@@ -4,11 +4,15 @@ import { useGetUserWeb2Email } from "@hooks/useGetUserWeb2Email";
 import { AddWeb2Email } from "./AddEmail";
 import { AiOutlineEdit } from "react-icons/ai";
 export const Web2Notifications: React.FC = () => {
-  const { data } = useGetUserWeb2Email();
+  const { data, refetch } = useGetUserWeb2Email();
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: !1 });
+  const onCloseHandler = () => {
+    refetch();
+    onClose();
+  };
   return (
     <Flex w="100%" direction={"column"}>
-      <AddWeb2Email isOpen={isOpen} onClose={onClose} />
+      <AddWeb2Email isOpen={isOpen} onClose={onCloseHandler} />
       <Setting
         title="Web2 Notification"
         info="Stay updated even outside the app. With Web2 notifications enabled, you'll receive alerts directly in your regular email inbox whenever there's a new message or important activity on Solana Mail."
