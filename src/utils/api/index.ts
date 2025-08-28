@@ -5,7 +5,8 @@ import type {
   AxiosRequestConfig,
   AxiosResponse,
 } from "axios";
-
+import * as Sentry from "@sentry/react";
+import { getConnectedUser } from "@utils/jotai/getUser";
 /**
  * Axios api config to use to call api calls
  * @param url path
@@ -72,6 +73,19 @@ export const apiConfig = async <T>(
       localStorage.clear();
       window.location.reload();
 
+      const config = error.config;
+
+      const payload = config?.data;
+
+      const headers = config?.headers;
+
+      Sentry.setUser({
+        id: getConnectedUser(),
+      });
+      Sentry.captureException(error, {
+        tags: { type: "backend-api" },
+        extra: { payload, headers },
+      });
       return Promise.reject(errorMessage);
     }
   );

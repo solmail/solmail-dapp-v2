@@ -43,6 +43,7 @@ export const useEmailer = () => {
   const queryClient = useQueryClient();
 
   const IS_FORWARDING = action === MailShareTypes.forward;
+
   return useMutation({
     mutationKey: [QueryKeys.MUTATION_FCM],
     mutationFn: async (values: ComposerFormInputs) => {
@@ -208,7 +209,6 @@ export const useEmailer = () => {
       });
     },
     onError: (e) => {
-      console.log(e);
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
       refetch();
       expandComposer();

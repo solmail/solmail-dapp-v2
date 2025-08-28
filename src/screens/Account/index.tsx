@@ -28,7 +28,6 @@ import { USERNAME_SWITCH_INFO } from "@const/info";
 import { useUsernamePopup } from "@hooks/useUsernamePopup";
 import { NotificationSettings } from "@components/NotificationSettings";
 import { Setting } from "@components/SettingsContainer";
-import { Web2Notifications } from "@components/Web2Notifications";
 
 const ExportKeySettings: React.FC = () => {
   const { exportWallet } = usePrivyWallet();
@@ -172,7 +171,7 @@ export const AccountPage: React.FC = () => {
           <ExportKeySettings />
           <UsernameSwitch />
           <NotificationSettings />
-          <Web2Notifications />
+
           <SessionHandler />
         </VStack>
       </Box>

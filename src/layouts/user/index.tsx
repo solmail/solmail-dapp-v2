@@ -114,7 +114,6 @@ export const UserLayout: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(address);
     set((prev) => ({
       ...prev,
       user: address,

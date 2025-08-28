@@ -5,6 +5,8 @@ import axios, {
   type AxiosResponse,
 } from "axios";
 import { useCallback } from "react";
+import * as Sentry from "@sentry/react";
+import { getConnectedUser } from "@utils/jotai/getUser";
 
 export const useHttp = () => {
   const { getAccessToken } = usePrivy();
@@ -53,6 +55,19 @@ export const useHttp = () => {
           return res;
         },
         (error) => {
+          const config = error.config;
+
+          const payload = config?.data;
+
+          const headers = config?.headers;
+
+          Sentry.setUser({
+            id: getConnectedUser(),
+          });
+          Sentry.captureException(error, {
+            tags: { type: "rewards-api" },
+            extra: { payload, headers },
+          });
           return Promise.reject(error.response?.data ?? {});
         }
       );
