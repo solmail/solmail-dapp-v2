@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
     ],
     server: {
       port: 3030,
+      host: true,
     },
     define: {
       global: "window",

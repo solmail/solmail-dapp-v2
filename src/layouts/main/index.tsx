@@ -1,4 +1,4 @@
-import { Flex, Image, Link, Tooltip } from "@chakra-ui/react";
+import { chakra, Flex, Image, Link, Tooltip } from "@chakra-ui/react";
 import { usePrivy } from "@privy-io/react-auth";
 import {
   Link as TanstackLink,
@@ -79,7 +79,9 @@ export const AppMainLayout: React.FC = () => {
               </Link>
             </Flex>
             <Flex gap={3} fontWeight={"medium"} alignItems={"center"}>
-              Get the app
+              <chakra.span display={{ base: "none", md: "inline-flex" }}>
+                Get the app
+              </chakra.span>
               <Tooltip label="Coming soon">
                 <Flex
                   display={"inline-flex"}

@@ -1,4 +1,5 @@
 import { Box, Fade, Flex, Icon } from "@chakra-ui/react";
+import { MailActions } from "@components/MailActions";
 import { MailMeta } from "@components/MailMeta";
 import { MailPreviewAttachments } from "@components/MailPreviewAttchments";
 import { MailPreviewHeader } from "@components/MailPreviewHeader";
@@ -80,6 +81,9 @@ export const MailPreview: React.FC = () => {
                         <MailPreviewAttachments />
                       )}
                       <MailMeta />
+                      <Flex gap={2} display={{ base: "flex", md: "none" }}>
+                        <MailActions />
+                      </Flex>
                     </Box>
                   </Box>
                 </Fade>
