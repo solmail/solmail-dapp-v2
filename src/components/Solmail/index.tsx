@@ -1,4 +1,4 @@
-import { Flex, IconButton, Spinner, SlideFade } from "@chakra-ui/react";
+import { Flex, IconButton, Spinner, SlideFade, Icon } from "@chakra-ui/react";
 import { Inbox, type InboxRef } from "@components/Inbox";
 import { MailPreview } from "@components/MailPreview";
 import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
@@ -6,6 +6,7 @@ import { useComposer } from "@hooks/useComposer";
 
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { useEffect, useRef, useState } from "react";
+import { HiOutlinePlus } from "react-icons/hi";
 import { TbReload } from "react-icons/tb";
 export const Solmail: React.FC = () => {
   const { update } = useComposer();
@@ -25,6 +26,8 @@ export const Solmail: React.FC = () => {
       context,
     }));
   }, [context, update]);
+
+  const { onOpen, isOpen } = useComposer();
   return (
     <Flex w="100%" direction={"row"}>
       <Flex
@@ -116,6 +119,23 @@ export const Solmail: React.FC = () => {
         }}
       >
         <MailPreview />
+      </Flex>
+
+      <Flex
+        bg="solana"
+        boxSize={"50px"}
+        position={"absolute"}
+        right={"30px"}
+        bottom={"30px"}
+        borderRadius={"50%"}
+        alignItems={"center"}
+        color={"light.100"}
+        justifyContent={"center"}
+        onClick={() => onOpen()}
+        transform={`scale(${isOpen ? "0" : "1"})`}
+        display={{ base: "flex", md: "none" }}
+      >
+        <Icon fontSize={22} as={HiOutlinePlus} />
       </Flex>
     </Flex>
   );

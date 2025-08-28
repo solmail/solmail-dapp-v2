@@ -17,6 +17,7 @@ import { useSolanaConnection } from "./useConnection";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { useSendTransaction } from "@privy-io/react-auth/solana";
 import { useBalance } from "./useBalance";
+import { getErrorMessage } from "@utils/error/getErrorMessage";
 export const useEmailer = () => {
   const { showToast } = useToast();
   const { address: from, wallet } = usePrivyWallet();
@@ -45,7 +46,7 @@ export const useEmailer = () => {
   const IS_FORWARDING = action === MailShareTypes.forward;
 
   return useMutation({
-    mutationKey: [QueryKeys.MUTATION_FCM],
+    mutationKey: [QueryKeys.MUATATION_SEND_EMAIL],
     mutationFn: async (values: ComposerFormInputs) => {
       updateStatus("Preparing your mail");
       collpaseComposer();
@@ -210,11 +211,11 @@ export const useEmailer = () => {
     },
     onError: (e) => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
-      refetch();
-      expandComposer();
-      showToast(e && e instanceof Error ? e.message : "Failed to send mail", {
+      showToast(getErrorMessage(e, "Failed to send mail"), {
         type: "error",
       });
+      refetch();
+      expandComposer();
     },
   });
 };

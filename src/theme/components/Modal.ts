@@ -8,9 +8,11 @@ const primary = definePartsStyle({
   overlay: {
     backdropFilter: "blur(2px)",
   },
+
   dialog: {
     borderRadius: "5px",
     bg: "surface.900",
+    w: "90%",
   },
 });
 
@@ -22,6 +24,7 @@ const secondary = definePartsStyle({
     borderRadius: "5px",
     bg: "light.100",
     color: "dark.100",
+    w: "90%",
   },
 });
 

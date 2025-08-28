@@ -8,6 +8,7 @@ import { usePrivyWallet } from "./usePrivyWallet";
 import { useGetLinkedUsernameById, useUsernameUpdater } from "./useUsernames";
 import { useAtom } from "jotai";
 import { appState } from "@state/index";
+import { getErrorMessage } from "@utils/error/getErrorMessage";
 
 const getUsernamePDA = (username: string, programId: PublicKey) =>
   PublicKey.findProgramAddressSync(
@@ -45,10 +46,6 @@ export const useClaimUserName = () => {
   const { showToast } = useToast();
   const { refetch } = useUsernameUpdater();
 
-  const onFail = () => {
-    showToast("Failed to create username", { type: "error" });
-    refetch();
-  };
   return useMutation({
     mutationKey: [QueryKeys.CLAIM_USERNAME],
     mutationFn: async ({ username }: { username: string }) => {
@@ -60,73 +57,65 @@ export const useClaimUserName = () => {
         await program.account.usernameAccount.fetch(usernameAccountPDA);
         return false;
       } catch {
-        try {
-          const [rateLimitPDA] = PublicKey.findProgramAddressSync(
-            [Buffer.from("rate_limit"), provider.publicKey.toBuffer()],
-            program.programId
-          );
-          const [marketplaceSettingsPDA] = PublicKey.findProgramAddressSync(
-            [Buffer.from("marketplace_settings")],
-            program.programId
-          );
+        //
+      }
 
-          await program.methods
-            .createUsernameTemprorary(username)
-            .accounts({
-              usernameAccount: usernameAccountPDA,
-              rateLimit: rateLimitPDA,
-              marketplaceSettings: marketplaceSettingsPDA,
-              authority: provider.publicKey,
-              systemProgram: SystemProgram.programId,
-            } as any)
-            .rpc();
-          // .createUsername(username)
-          // .accounts({
-          //   usernameAccount: usernameAccountPDA,
-          //   rateLimit: rateLimitPDA,
-          //   marketplaceSettings: marketplaceSettingsPDA,
-          //   authority: provider.publicKey,
-          //   systemProgram: SystemProgram.programId,
-          // } as any)
+      const [rateLimitPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("rate_limit"), provider.publicKey.toBuffer()],
+        program.programId
+      );
+      const [marketplaceSettingsPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("marketplace_settings")],
+        program.programId
+      );
 
-          // .rpc();
+      await program.methods
+        .createUsernameTemprorary(username)
+        .accounts({
+          usernameAccount: usernameAccountPDA,
+          rateLimit: rateLimitPDA,
+          marketplaceSettings: marketplaceSettingsPDA,
+          authority: provider.publicKey,
+          systemProgram: SystemProgram.programId,
+        } as any)
+        .rpc();
 
-          if (!account || !account.account) {
-            const [mailAccountPDA] = PublicKey.findProgramAddressSync(
-              [Buffer.from("mail-accountv2"), provider.publicKey.toBuffer()],
-              program.programId
-            );
+      if (!account || !account.account) {
+        const [mailAccountPDA] = PublicKey.findProgramAddressSync(
+          [Buffer.from("mail-accountv2"), provider.publicKey.toBuffer()],
+          program.programId
+        );
 
-            const mailAccount =
-              await program.account.solMailAccountV2.fetch(mailAccountPDA);
-            const mailboxToLink = mailAccount.mailbox;
+        const mailAccount =
+          await program.account.solMailAccountV2.fetch(mailAccountPDA);
+        const mailboxToLink = mailAccount.mailbox;
 
-            await program.methods
-              .linkMailboxToUsername(mailboxToLink)
-              .accounts({
-                usernameAccount: usernameAccountPDA,
-                mailAccountV2: mailAccountPDA,
-                authority: provider.publicKey,
-              })
-              .rpc();
-          }
-
-          return true;
-        } catch {
-          return !1;
+        const res = await program.methods
+          .linkMailboxToUsername(mailboxToLink)
+          .accounts({
+            usernameAccount: usernameAccountPDA,
+            mailAccountV2: mailAccountPDA,
+            authority: provider.publicKey,
+          })
+          .rpc();
+        if (res) {
+          return res;
+        } else {
+          throw "";
         }
       }
+
+      return true;
     },
-    onError: () => {
-      onFail();
-    },
-    onSuccess: (res) => {
+    onError: (e) => {
+      showToast(getErrorMessage(e, "Failed to create username"), {
+        type: "error",
+      });
       refetch();
-      if (res) {
-        showToast("Username created", { type: "success" });
-      } else {
-        onFail();
-      }
+    },
+    onSuccess: () => {
+      refetch();
+      showToast("Username created", { type: "success" });
     },
   });
 };

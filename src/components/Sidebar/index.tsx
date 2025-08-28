@@ -12,10 +12,13 @@ import {
   chakra,
   Link as ChakraLink,
   Tooltip,
+  useDisclosure,
+  useOutsideClick,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { config } from "@const/config";
 import { MENU } from "@const/menu";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import { BsPlusCircleFill } from "react-icons/bs";
 
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -27,7 +30,7 @@ import JupiterLogo from "@assets/jupiter.svg";
 import { LINKS } from "@const/links";
 import { ClipboardText } from "@components/ClipboardText";
 import { getSolscanAddress } from "@utils/string/getSolscanUrl";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MenuHeader } from "@components/MenuHeader";
 import noop from "lodash/noop";
 
@@ -95,6 +98,7 @@ export const AppSwitch: React.FC = () => {
 
 export const Sidebar: React.FC = () => {
   const { onOpen } = useUsernamePopup();
+  const router = useRouter();
   const { pathname } = useLocation();
   const selectedmenu = useMemo(() => {
     const menu = MENU.find((menu) => pathname.indexOf(menu.id) > -1);
@@ -106,8 +110,46 @@ export const Sidebar: React.FC = () => {
   const hasChildMenu =
     selectedmenu && selectedmenu.submenu && selectedmenu.submenu.length > 0;
 
+  const { onOpen: onOpenMenu, onClose: onCloseMenu, isOpen } = useDisclosure();
+  const ref = useRef<HTMLDivElement>(null);
+  useOutsideClick({
+    ref: ref,
+    handler: onCloseMenu,
+  });
+
+  const isSmallDevice = useBreakpointValue({ base: !0, md: !1 });
+
+  const onClickHandler = (shouldRedirect: boolean) => {
+    if (!isSmallDevice) {
+      return;
+    }
+
+    if (!shouldRedirect) {
+      onOpenMenu();
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = router.subscribe(
+      "onBeforeNavigate",
+      ({ fromLocation, toLocation }: any) => {
+        const fromUrl =
+          fromLocation.pathname + fromLocation.search + fromLocation.hash;
+        const toUrl = toLocation.pathname + toLocation.search + toLocation.hash;
+
+        if (fromUrl !== toUrl) {
+          onCloseMenu();
+        }
+      }
+    );
+    return () => {
+      unsubscribe();
+    };
+  }, [onCloseMenu, router]);
+
   return (
     <Flex
+      ref={ref}
       w={{
         base: "50px",
         ...(hasChildMenu ? { md: "300px" } : {}),
@@ -119,6 +161,7 @@ export const Sidebar: React.FC = () => {
       direction={"row"}
       data-group
       bg="surface.100"
+      position={"relative"}
     >
       <Flex
         w={{
@@ -146,6 +189,7 @@ export const Sidebar: React.FC = () => {
                     as={Link}
                     py={2}
                     to={menu.link}
+                    onClick={() => onClickHandler(!active)}
                   >
                     <Icon fontSize={19} as={menu.icon} />
                   </ChakraLink>
@@ -161,8 +205,24 @@ export const Sidebar: React.FC = () => {
         p={5}
         pb={3}
         display={{
-          base: "none",
+          base: isOpen ? "flex" : "none",
           md: "flex",
+        }}
+        position={{
+          md: "static",
+          base: "absolute",
+        }}
+        left={{
+          base: "50px",
+          md: "initial",
+        }}
+        bottom={0}
+        top={0}
+        zIndex={1}
+        bg="surface.100"
+        w={{
+          base: "250px",
+          md: "initial",
         }}
       >
         <MenuHeader {...selectedmenu} />

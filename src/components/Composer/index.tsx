@@ -25,7 +25,10 @@ export const Composer: React.FC = () => {
           <Flex
             position={"fixed"}
             zIndex={500}
-            right={100}
+            right={{
+              base: 0,
+              md: 100,
+            }}
             bottom={0}
             borderTopRadius={8}
             maxW={550}

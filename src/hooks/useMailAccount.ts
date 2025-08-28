@@ -5,6 +5,7 @@ import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import type { Solmail } from "@integrations/idl/solmail/solmail";
 import { QueryKeys } from "src/types";
 import { useToast } from "./useToast";
+import { getErrorMessage } from "@utils/error/getErrorMessage";
 
 const fetchAccount = async (program: Program<Solmail>, address: PublicKey) => {
   try {
@@ -62,8 +63,8 @@ export const useCreateMailbox = () => {
         throw "";
       }
     },
-    onError: () => {
-      showToast("Failed to create mailbox", {
+    onError: (e) => {
+      showToast(getErrorMessage(e, "Failed to create mailbox"), {
         type: "error",
       });
     },
