@@ -11,9 +11,15 @@ export const useFCMTokenHandler = () => {
   return useMutation({
     mutationKey: [QueryKeys.MUTATION_FCM],
     mutationFn: async (payload: Payload) => {
-      const response = await apiConfig("register-fcm-notification", "POST", {
-        ...payload,
-      });
+      const response = await apiConfig(
+        "register-fcm-notification",
+        "POST",
+        {
+          ...payload,
+        },
+        {},
+        true
+      );
       return response;
     },
   });

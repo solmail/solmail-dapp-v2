@@ -22,6 +22,7 @@ import { LinkUserName } from "@components/LinkUsername";
 import { useUsernamePopup } from "@hooks/useUsernamePopup";
 import { useAtom } from "jotai";
 import { AuthState } from "@state/auth";
+import { useNotification } from "@hooks/useNotification";
 
 export const UserLayout: React.FC = () => {
   const { address } = usePrivyWallet();
@@ -145,6 +146,11 @@ export const UserLayout: React.FC = () => {
     onUpdate,
     requestUsernameLink,
   ]);
+
+  // const { requestPermisson } = useNotification();
+  // useEffect(() => {
+  //   requestPermisson();
+  // }, [requestPermisson]);
 
   return (
     <Flex w="100%" direction={"row"}>

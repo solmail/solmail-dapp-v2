@@ -170,7 +170,9 @@ export const AccountPage: React.FC = () => {
         <VStack py={5} gap={6}>
           <ExportKeySettings />
           <UsernameSwitch />
-          <NotificationSettings />
+          {import.meta.env.VITE_SOLMAIL_ENABLE_FCM === "true" && (
+            <NotificationSettings />
+          )}
 
           <SessionHandler />
         </VStack>

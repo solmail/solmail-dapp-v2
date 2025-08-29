@@ -1,27 +1,54 @@
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"
-);
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"
-);
+importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyCwxBwXIgJq3ELDAfywvPktd1uvCL12HyA",
-  authDomain: "solmail-v2.firebaseapp.com",
-  projectId: "solmail-v2",
-  storageBucket: "solmail-v2.firebasestorage.app",
-  messagingSenderId: "196607540208",
-  appId: "1:196607540208:web:b769e52612f6076a3f7b35",
+  apiKey: "AIzaSyDKpWKWmhGgekdxIm5fEPYw8R3SDht2Ook",
+  authDomain: "mail-88238.firebaseapp.com",
+  projectId: "mail-88238",
+  storageBucket: "mail-88238.firebasestorage.app",
+  messagingSenderId: "938559469938",
+  appId: "1:938559469938:web:d273fbdf4e7d58296f05eb",
+  measurementId: "G-NBMH17W3DC",
 });
 
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  const notificationTitle = payload.notification?.title || "📬 SolMail";
+  const notification = payload.data;
+  if (!notification) {
+    return;
+  }
+
   const notificationOptions = {
-    body: payload.notification?.body || "You’ve got a new message.",
-    icon: "https://solmail.so/_next/static/media/logo-only.be4816dc.png",
+    ...notification,
+    icon: "https://www.solmail.so/_next/static/media/logo-only.be4816dc.png",
+    data: { url: "http://localhost:3030/" },
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  if (notification && notification.title) {
+    self.registration.showNotification(notification.title, notificationOptions);
+  }
+});
+
+self.addEventListener("notificationclick", (event) => {
+  console.log("here");
+  event.notification.close();
+
+  const url = event.notification.data.url;
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url === url && "focus" in client) {
+            return client.focus();
+          }
+        }
+
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
+  );
 });

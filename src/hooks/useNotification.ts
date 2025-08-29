@@ -16,6 +16,7 @@ export const useNotification = (options: Config = {}) => {
   const [enabled, setEnabled] = useState(false);
   const { address } = usePrivyWallet();
   const { mutateAsync } = useFCMTokenHandler();
+
   const getTokenFromStorage = () => {
     return localStorage.getItem("fcmtoken") ?? !1;
   };
@@ -35,10 +36,16 @@ export const useNotification = (options: Config = {}) => {
   const generateToken = useCallback(async () => {
     if (!getTokenFromStorage()) {
       try {
+        navigator.serviceWorker
+          .register(`/firebase-messaging-sw.js`)
+          .then((reg) => {
+            console.log(reg, "registration");
+          });
         const token = await getToken(messaging, {
           vapidKey: import.meta.env.VITE_SOLMAIL_VAPID,
         });
-        mutateAsync({
+
+        await mutateAsync({
           action: "register",
           fcmId: token,
           userPubKey: address,
