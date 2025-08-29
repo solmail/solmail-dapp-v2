@@ -23,7 +23,7 @@ export const AppTheme = extendTheme({
         color: mode("rgb(78 88 99)", "#b6b6b6")(props),
       },
       ".Toastify__toast-theme--dark": {
-        "backdrop-filter": "blur(10px)",
+        backdropFilter: "blur(10px)",
         borderRadius: "20px",
       },
       "[data-theme=dark] .Toastify__toast-theme--dark": {

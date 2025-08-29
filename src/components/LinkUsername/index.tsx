@@ -161,6 +161,7 @@ export const UsernameLinkBox: React.FC<{ onUpdate?: () => void }> = ({
         usernames.map(({ account, publicKey }) => {
           return (
             <LinkableMail
+              key={publicKey?.toString()}
               username={account.username}
               domain={account.domain}
               mailbox={account.mailbox}
