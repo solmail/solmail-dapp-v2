@@ -38,6 +38,8 @@ export const useNotification = (options: Config = {}) => {
         const token = await getToken(messaging, {
           vapidKey: import.meta.env.VITE_SOLMAIL_VAPID,
         });
+        console.log(token);
+        return;
         mutateAsync({
           action: "register",
           fcmId: token,

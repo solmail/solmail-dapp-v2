@@ -1,12 +1,13 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging } from "firebase/messaging";
 const firebaseConfig = {
-  apiKey: "AIzaSyCwxBwXIgJq3ELDAfywvPktd1uvCL12HyA",
-  authDomain: "solmail-v2.firebaseapp.com",
-  projectId: "solmail-v2",
-  storageBucket: "solmail-v2.firebasestorage.app",
-  messagingSenderId: "196607540208",
-  appId: "1:196607540208:web:b769e52612f6076a3f7b35",
+  apiKey: "AIzaSyDKpWKWmhGgekdxIm5fEPYw8R3SDht2Ook",
+  authDomain: "mail-88238.firebaseapp.com",
+  projectId: "mail-88238",
+  storageBucket: "mail-88238.firebasestorage.app",
+  messagingSenderId: "938559469938",
+  appId: "1:938559469938:web:d273fbdf4e7d58296f05eb",
+  measurementId: "G-NBMH17W3DC",
 };
 
 export const app = initializeApp(firebaseConfig);
