@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ComposerFormInputs, QueryKeys, StorageVersion } from "src/types";
 import { useComposer } from "./useComposer";
 import { useToast } from "./useToast";
-import { useEmailResolver } from "./useEmailResolver";
+
 import { usePrivyWallet } from "./usePrivyWallet";
 import { useGenerateEncryptionKey } from "./useEncryptionKey";
 import { usePinataUploader } from "./usePinataUploader";
@@ -18,10 +18,13 @@ import { PublicKey, Transaction } from "@solana/web3.js";
 import { useSendTransaction } from "@privy-io/react-auth/solana";
 import { useBalance } from "./useBalance";
 import { getErrorMessage } from "@utils/error/getErrorMessage";
+
+type FormPayload = Omit<ComposerFormInputs, "to"> & {
+  to: string;
+};
 export const useEmailer = () => {
   const { showToast } = useToast();
   const { address: from, wallet } = usePrivyWallet();
-  const { mutateAsync: resolveRecepient } = useEmailResolver();
   const { mutateAsync } = useGenerateEncryptionKey();
   const { mutateAsync: uploadToPinata } = usePinataUploader();
   const { sendTransaction } = useSendTransaction();
@@ -30,11 +33,9 @@ export const useEmailer = () => {
     thread,
     action,
     ref,
-
     updateStatus,
     collpaseComposer,
     expandComposer,
-    onClose,
   } = useComposer();
   const { context } = useComposer();
   const { attachmentRef } = useMailBody(ref, context);
@@ -47,16 +48,11 @@ export const useEmailer = () => {
 
   return useMutation({
     mutationKey: [QueryKeys.MUATATION_SEND_EMAIL],
-    mutationFn: async (values: ComposerFormInputs) => {
+    mutationFn: async (values: FormPayload) => {
       updateStatus("Preparing your mail");
       collpaseComposer();
-      const data = await resolveRecepient({ username: values.to });
-      if (!data || !data.address || !from) {
-        expandComposer();
-        throw Error("Unable to resolve recipient address");
-      }
-      const to = data.address;
 
+      const to = values.to;
       const [user0, user1] =
         from?.toString() >= to?.toString() ? [from, to] : [to, from];
       const key = await mutateAsync(`${user0.toString()}:${user1?.toString()}`);
@@ -160,7 +156,7 @@ export const useEmailer = () => {
         .createmail(
           encryptData(values.subject, cData.iv, key),
           userPublicKey,
-          to,
+          new PublicKey(to),
           "salt!",
           cData.iv,
           StorageVersion.pinata,
@@ -203,11 +199,11 @@ export const useEmailer = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
     },
     onSuccess: () => {
-      onClose();
-      refetch();
-      showToast("Mail sent successfully", {
-        type: "success",
-      });
+      // onClose();
+      // refetch();
+      // showToast("Mail sent successfully", {
+      //   type: "success",
+      // });
     },
     onError: (e) => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });

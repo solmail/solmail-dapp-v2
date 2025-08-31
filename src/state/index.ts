@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { toast } from "react-toastify";
 import { MailBoxLabels } from "src/types";
 
 export type AtomType = {
@@ -10,6 +11,7 @@ export type AtomType = {
   updatingUsername: boolean;
   action: MailShareTypes;
   context: MailBoxLabels;
+  composerProgress: { total: number; current: number };
 };
 
 export enum MailShareTypes {
@@ -27,6 +29,7 @@ export const appState = atom<AtomType>({
   action: MailShareTypes.none,
   updatingUsername: !1,
   context: MailBoxLabels.inbox,
+  composerProgress: { total: 0, current: 0 },
 });
 
 appState.debugLabel = "AppState";

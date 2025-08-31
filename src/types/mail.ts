@@ -90,12 +90,20 @@ export enum MailLabelIndex {
   "spam" = 4,
 }
 
+export type ResolveEmail = {
+  username: string;
+  resolvedAddress: string;
+  status: boolean;
+  message: string;
+};
+
 export type ComposerFormInputs = {
-  to: string;
+  to: string[];
   subject: string;
   body: string;
   files: File[];
   solanaPay?: SolanaPayPayload;
+  recipientValidation: ResolveEmail[];
 };
 
 export enum StorageVersion {

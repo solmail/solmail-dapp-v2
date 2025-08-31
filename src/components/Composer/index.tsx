@@ -1,6 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { ComposerLegacy } from "@components/Composer/Legacy";
-import { FancyBox } from "@components/FancyBox";
+import { MultiMailLoader } from "@components/MultiMailLoader";
 import { useComposer } from "@hooks/useComposer";
 
 export const Composer: React.FC = () => {
@@ -37,7 +37,7 @@ export const Composer: React.FC = () => {
             alignItems={"flex-end"}
           >
             <ComposerLegacy />
-            {composerCollapsed && <FancyBox />}
+            {composerCollapsed && <MultiMailLoader />}
           </Flex>
         </>
       )}

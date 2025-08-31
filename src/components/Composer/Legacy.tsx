@@ -3,10 +3,14 @@ import {
   Button,
   chakra,
   Flex,
-  Input,
+  Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
-import { type ComposerFormInputs, type SolanaPayPayload } from "src/types";
+import {
+  ResolveEmail,
+  type ComposerFormInputs,
+  type SolanaPayPayload,
+} from "src/types";
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
 import { Subject } from "./Subject";
 import { FieldWrapper } from "@components/Field";
@@ -18,7 +22,7 @@ import "react-quill/dist/quill.snow.css";
 import QuillEditor from "./Quill";
 import { IoSend } from "react-icons/io5";
 import { Attachments } from "./Attachments";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 import { EditorToolbar } from "./EditorToolbar";
@@ -26,15 +30,15 @@ import { useComposer } from "@hooks/useComposer";
 import { AttachmentsList } from "./AttachmentsList";
 import { RequestSolanaPay } from "@components/RequestSolanaPay";
 
-import { useEmailResolver } from "@hooks/useEmailResolver";
-
 import { useGetLinkedUsernameById } from "@hooks/useUsernames";
 import { MailShareTypes } from "@state/index";
 import { MAXIMUM_MAIL_SUBJECT_LENGTH, NO_BALANCE_LABEL } from "@const/config";
 import { useEmailer } from "@hooks/useEmailer";
+import { ChipInput } from "@components/ChipInput";
+import { useEmailResolver } from "@hooks/useEmailResolver";
 
 const initialValues = {
-  to: "",
+  to: [],
   subject: "",
   body: "",
   files: [],
@@ -46,6 +50,7 @@ export const ComposerLegacy: React.FC = () => {
   const [isComposerReady, setComposerState] = useState<boolean>(!1);
   const { mutateAsync } = useEmailer();
   const { context } = useComposer();
+  const { mutateAsync: resolveRecepient } = useEmailResolver();
 
   const {
     subject,
@@ -65,7 +70,7 @@ export const ComposerLegacy: React.FC = () => {
     shouldFocusError: true,
     defaultValues: {
       ...initialValues,
-      to: "",
+      to: [],
     },
   });
 
@@ -77,7 +82,7 @@ export const ComposerLegacy: React.FC = () => {
       if (action === MailShareTypes.reply) {
         methods.setValue(
           "to",
-          _account && _account.publicKey ? displayName : thread,
+          _account && _account.publicKey ? [displayName] : [thread],
           {
             shouldValidate: !0,
           }
@@ -121,24 +126,63 @@ export const ComposerLegacy: React.FC = () => {
   const [id, set] = useState(0);
   const { hasEnoughBalance } = useBalance();
 
-  const { composerCollapsed } = useComposer();
+  const { composerCollapsed, update } = useComposer();
 
   const { onOpen, isOpen, onClose } = useDisclosure();
 
-  const { mutateAsync: resolveRecepient } = useEmailResolver();
-  const onSubmit: SubmitHandler<ComposerFormInputs> = async (values) => {
-    await mutateAsync(values);
-  };
-
-  const onValidateAddress = async (username: string) => {
-    const res = await resolveRecepient({
-      username,
-    });
-    if (res && res.status) {
-      return !0;
+  const _resolveRecipients = async (to: string[]) => {
+    const address: ResolveEmail[] = [];
+    let status = !0;
+    let count = 0;
+    for (let i = 0; i < to.length; i++) {
+      const resolvedAddress = await resolveRecepient({
+        username: to[i],
+      });
+      address.push({
+        message: resolvedAddress?.message ?? "",
+        status: resolvedAddress?.status || !1,
+        resolvedAddress: resolvedAddress?.address?.toString() ?? "",
+        username: to[i],
+      });
+      status = status && !!resolvedAddress?.status;
+      if (status) {
+        count++;
+      }
     }
+    return { address, status, count };
+  };
+  const [isPending, startTranstion] = useTransition();
+  const onSubmit: SubmitHandler<ComposerFormInputs> = async ({
+    to,
+    ...values
+  }) => {
+    startTranstion(async () => {
+      const { address, status, count } = await _resolveRecipients(to);
+      if (!status) {
+        methods.setValue("recipientValidation", address, {
+          shouldValidate: !0,
+        });
+        return;
+      }
+      update((prev) => ({
+        ...prev,
+        composerCollapsed: !0,
+      }));
 
-    return res && res.message ? res.message : "Please enter a valid address";
+      for (let i = 0; i < address.length; i++) {
+        if (!address[i].status) continue;
+        update((prev) => ({
+          ...prev,
+          composerProgress: {
+            total: count,
+            current: prev.composerProgress.current + 1,
+          },
+        }));
+
+        await mutateAsync({ ...values, to: address[i].resolvedAddress });
+      }
+      closeComposer();
+    });
   };
 
   const handleChange = (value: string) => {
@@ -205,7 +249,7 @@ export const ComposerLegacy: React.FC = () => {
                 Close
               </Button>
               <Button
-                rightIcon={<IoSend />}
+                {...(!isPending ? { rightIcon: <IoSend /> } : {})}
                 size={"sm"}
                 variant={"green"}
                 type="submit"
@@ -213,22 +257,13 @@ export const ComposerLegacy: React.FC = () => {
                 isDisabled={!hasEnoughBalance}
               >
                 {hasEnoughBalance ? "Send" : NO_BALANCE_LABEL}
+                {isPending && <Spinner size={"sm"} ml={2} />}
               </Button>
             </Flex>
           </Flex>
           <Flex w="100%" direction={"column"}>
             <Flex mt={3}>
-              <FieldWrapper name="to" hasPadding={!1}>
-                <Input
-                  id="to"
-                  variant={"secondary"}
-                  placeholder="Wallet address or .sol domain"
-                  {...methods.register("to", {
-                    required: "To address is required",
-                    validate: onValidateAddress,
-                  })}
-                />
-              </FieldWrapper>
+              <ChipInput name="to" />
             </Flex>
             <Flex mt={3}>
               <FieldWrapper name="subject" hasPadding={!1}>
