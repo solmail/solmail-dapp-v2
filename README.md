@@ -7,6 +7,42 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+
+## Deployment & Preview Scripts
+
+We use custom npm scripts for building, deploying, and previewing the app in different environments.
+
+### Development
+```bash
+npm run deploy:dev
+```
+- Builds the project in **development mode**  
+- Deploys using `deploy.js development`
+
+### UAT
+```bash
+npm run deploy:uat
+```
+- Builds the project in **uat mode**  
+- Deploys using `deploy.js uat`
+
+### Production
+```bash
+npm run deploy:prod
+```
+- Builds the project in **production mode**  
+- Deploys using `deploy.js production`
+
+### Preview Production Build
+```bash
+npm run preview:prod
+```
+- Serves the **production build** from `./dist`  
+- Runs a local server at [http://localhost:3030](http://localhost:3030)  
+- Useful for testing the build locally before deployment
+
+
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
