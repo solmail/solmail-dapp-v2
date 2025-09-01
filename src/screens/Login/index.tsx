@@ -34,10 +34,12 @@ export const Login: React.FC = () => {
       </Flex>
       <Flex
         alignItems={"center"}
-        gap={5}
+        gap={{ md: 5, base: 3 }}
+        rowGap={0}
         fontSize={13}
         justifyContent={"center"}
         opacity={0.5}
+        flexWrap={"wrap"}
       >
         <Flex>Solmail © {new Date().getFullYear()}</Flex>
         <Flex>
