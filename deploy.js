@@ -1,10 +1,10 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "node:fs";
-import readline from "node:readline";
 import dotenv from "dotenv";
-import { glob, globSync } from "glob";
+import { globSync } from "glob";
 import mime from "mime-types";
+
 import {
   S3Client,
   ListObjectsV2Command,
@@ -17,7 +17,6 @@ import {
   ListBranchesCommand,
 } from "@aws-sdk/client-amplify";
 
-// Configuration
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const BUILD_DIR = "dist";
@@ -26,9 +25,6 @@ const MAX_BRANCHES = 10;
 
 dotenv.config({ path: "./.env" });
 
-/**
- * Configuration object for AWS services
- */
 const createAWSConfig = () => ({
   region: process.env.awsRegion,
   credentials: {
@@ -37,59 +33,32 @@ const createAWSConfig = () => ({
   },
 });
 
-/**
- * Application settings
- */
 const appSettings = {
   bucket: process.env.appBucket,
   appId: process.env.appId,
 };
 
-/**
- * Prompts user for confirmation before deployment
- * @param {string} environment - The deployment environment
- * @returns {Promise<boolean>} - User confirmation
- */
 const getUserConfirmation = async (environment) => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+  console.log(
+    `\n⚠️  WARNING: You are about to deploy to environment: "${environment}"`
+  );
+  console.log("This will delete existing files and upload new ones.");
 
-  const question = (query) =>
-    new Promise((resolve) => {
-      rl.question(query, resolve);
-    });
+  const filePath = path.join("dist", "build-info.json");
+  const rawData = fs.readFileSync(filePath, "utf-8");
+  const buildInfo = JSON.parse(rawData);
 
-  try {
+  const isConfirmed = buildInfo.mode === environment;
+
+  if (!isConfirmed) {
     console.log(
-      `\n⚠️  WARNING: You are about to deploy to environment: "${environment}"`
+      `❌ Build mismatch, dist folder contains ${buildInfo.mode} build.`
     );
-    console.log("This will delete existing files and upload new ones.");
-
-    const confirmText = `deploy-${environment.toLowerCase()}`;
-    const userInput = await question(
-      `\nTo confirm deployment, please type: ${confirmText}\n> `
-    );
-
-    const isConfirmed = userInput.trim() === confirmText;
-
-    if (!isConfirmed) {
-      console.log("❌ Deployment cancelled");
-    }
-
-    return isConfirmed;
-  } finally {
-    rl.close();
   }
+
+  return isConfirmed;
 };
 
-/**
- * Validates required configuration
- * @param {Object} awsConfig - AWS configuration
- * @param {Object} appConfig - App configuration
- * @throws {Error} - If configuration is invalid
- */
 const validateConfiguration = (awsConfig, appConfig) => {
   const errors = [];
 
@@ -120,11 +89,6 @@ const validateConfiguration = (awsConfig, appConfig) => {
   }
 };
 
-/**
- * Gets build files from the build directory
- * @returns {string[]} - Array of file paths
- * @throws {Error} - If no build files found
- */
 const getBuildFiles = () => {
   const fileList = globSync(`${BUILD_DIR}/**/*`, { nodir: true });
 
@@ -138,13 +102,6 @@ const getBuildFiles = () => {
   return fileList;
 };
 
-/**
- * Validates that the deployment branch exists
- * @param {AmplifyClient} amplifyClient - Amplify client instance
- * @param {string} appId - Amplify app ID
- * @param {string} branchName - Branch name to validate
- * @returns {Promise<boolean>} - Whether branch exists
- */
 const validateBranch = async (amplifyClient, appId, branchName) => {
   try {
     const { branches } = await amplifyClient.send(
@@ -172,12 +129,6 @@ const validateBranch = async (amplifyClient, appId, branchName) => {
   }
 };
 
-/**
- * Clears existing files from S3 bucket
- * @param {S3Client} s3Client - S3 client instance
- * @param {string} bucket - S3 bucket name
- * @param {string} prefix - S3 key prefix
- */
 const clearS3Directory = async (s3Client, bucket, prefix) => {
   try {
     const { Contents = [] } = await s3Client.send(
@@ -211,13 +162,6 @@ const clearS3Directory = async (s3Client, bucket, prefix) => {
   }
 };
 
-/**
- * Uploads files to S3
- * @param {S3Client} s3Client - S3 client instance
- * @param {string} bucket - S3 bucket name
- * @param {string} prefix - S3 key prefix
- * @param {string[]} filePaths - Array of local file paths
- */
 const uploadFilesToS3 = async (s3Client, bucket, prefix, filePaths) => {
   console.log("⬆️  Starting S3 upload...");
 
@@ -254,14 +198,6 @@ const uploadFilesToS3 = async (s3Client, bucket, prefix, filePaths) => {
   console.log(`🎉 Successfully uploaded ${uploadedCount} files to S3`);
 };
 
-/**
- * Triggers Amplify deployment
- * @param {AmplifyClient} amplifyClient - Amplify client instance
- * @param {string} appId - Amplify app ID
- * @param {string} branchName - Branch name
- * @param {string} bucket - S3 bucket name
- * @param {string} prefix - S3 key prefix
- */
 const triggerAmplifyDeployment = async (
   amplifyClient,
   appId,

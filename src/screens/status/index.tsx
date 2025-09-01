@@ -36,6 +36,10 @@ export const Status: React.FC = () => {
     <Container py={15}>
       <Flex direction={"column"}>
         <VStack>
+          <Card
+            label="Privy App ID"
+            value={import.meta.env.VITE_SOLMAIL_PRIVY_APP_ID}
+          />
           <Card label="Cluster" value={import.meta.env.VITE_SOLMAIL_CLUSTER} />
           <Card label="Mail program ID" value={IDL.address} />
           <Card

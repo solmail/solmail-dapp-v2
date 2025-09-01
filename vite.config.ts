@@ -5,14 +5,8 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
-
+import fs from "fs";
 export default defineConfig(({ mode }) => {
-  // const env = loadEnv(mode, process.cwd(), "");
-  // const ignore = env.VITE_SOLMAIL_INGORE_MODULES ?? undefined;
-  // {
-  //       routesDirectory: "./src/routes",
-  //       routeFileIgnorePattern: ignore,
-  //     }
   return {
     plugins: [
       tsconfigPaths(),
@@ -37,6 +31,31 @@ export default defineConfig(({ mode }) => {
         },
         protocolImports: true,
       }),
+
+      //
+
+      {
+        name: "generate-build-info",
+        closeBundle() {
+          const outDir = path.resolve(__dirname, "dist");
+          if (!fs.existsSync(outDir)) {
+            fs.mkdirSync(outDir, { recursive: true });
+          }
+
+          const buildInfo = {
+            mode,
+            timestamp: new Date().toISOString(),
+            random: Math.floor(Math.random() * 1000),
+          };
+
+          fs.writeFileSync(
+            path.join(outDir, "build-info.json"),
+            JSON.stringify(buildInfo, null, 2)
+          );
+
+          console.log("✅ build-info.json generated in dist/");
+        },
+      },
     ],
     server: {
       port: 3030,
