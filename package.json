@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build:prod": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build",
     "build:analyze": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode analyze",
-    "build": "tsc -b && vite build",
+    "build": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode development",
+    "build:uat": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode uat",
+    "build:prod": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
     "codegen": "graphql-codegen --config codegen.ts",
     "deploy": "node ./deploy.js development",
     "deploy:dev": "npm run build && npm run deploy",
+    "deploy:uat": "npm run build:uat && node ./deploy.js uat",
+    "deploy:prod": "npm run build:prod && node ./deploy.js production",
     "preview:prod": "http-server ./dist -p 3030 -o"
   },
   "dependencies": {

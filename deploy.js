@@ -287,49 +287,36 @@ const triggerAmplifyDeployment = async (
   }
 };
 
-/**
- * Main deployment function
- * @param {string} environment - Deployment environment name
- */
 const deployApp = async (environment) => {
   console.log(`\n🚀 AWS Amplify Deployment Script`);
   console.log(`📦 Environment: ${environment || "NOT SPECIFIED"}`);
 
   try {
-    // Validate environment parameter
     if (!environment) {
       throw new Error(
         "Environment not specified. Usage: node deploy.js <environment>"
       );
     }
 
-    // Validate configuration
     const awsConfig = createAWSConfig();
     validateConfiguration(awsConfig, appSettings);
 
-    // Get confirmation from user
     const confirmed = await getUserConfirmation(environment);
     if (!confirmed) {
       process.exit(0);
     }
 
-    // Get build files
     const filePaths = getBuildFiles();
 
-    // Initialize AWS clients
     const s3Client = new S3Client(awsConfig);
     const amplifyClient = new AmplifyClient(awsConfig);
 
-    // Validate branch exists
     await validateBranch(amplifyClient, appSettings.appId, environment);
 
-    // Clear existing files from S3
     await clearS3Directory(s3Client, appSettings.bucket, environment);
 
-    // Upload new files to S3
     await uploadFilesToS3(s3Client, appSettings.bucket, environment, filePaths);
 
-    // Trigger Amplify deployment
     await triggerAmplifyDeployment(
       amplifyClient,
       appSettings.appId,
@@ -345,6 +332,5 @@ const deployApp = async (environment) => {
   }
 };
 
-// Run deployment with command line argument
 const environment = process.argv[2];
 deployApp(environment);
