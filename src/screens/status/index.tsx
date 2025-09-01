@@ -27,7 +27,7 @@ const Card: React.FC<{ label: string; value: string }> = ({ label, value }) => {
         {label}
       </Flex>
       <Flex>{value}</Flex>
-      {isUrlString && <LinkOverlay href={encodeURI(value)} />}
+      {isUrlString && <LinkOverlay target="_blank" href={encodeURI(value)} />}
     </Flex>
   );
 };
