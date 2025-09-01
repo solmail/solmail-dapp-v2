@@ -1,6 +1,6 @@
 import { messaging } from "@integrations/firebase";
 import { getToken } from "firebase/messaging";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useToast } from "./useToast";
 import { config } from "@const/config";
 import isFunction from "lodash/isFunction";
@@ -16,7 +16,7 @@ export const useNotification = (options: Config = {}) => {
   const [enabled, setEnabled] = useState(false);
   const { address } = usePrivyWallet();
   const { mutateAsync } = useFCMTokenHandler();
-
+  const shouldShowWelcomeNotification = useRef<boolean>(!1);
   const getTokenFromStorage = () => {
     return localStorage.getItem("fcmtoken") ?? !1;
   };
@@ -36,11 +36,7 @@ export const useNotification = (options: Config = {}) => {
   const generateToken = useCallback(async () => {
     if (!getTokenFromStorage()) {
       try {
-        navigator.serviceWorker
-          .register(`/firebase-messaging-sw.js`)
-          .then((reg) => {
-            console.log(reg, "registration");
-          });
+        await navigator.serviceWorker.register(`/firebase-messaging-sw.js`);
         const token = await getToken(messaging, {
           vapidKey: import.meta.env.VITE_SOLMAIL_VAPID,
         });
@@ -51,11 +47,14 @@ export const useNotification = (options: Config = {}) => {
           userPubKey: address,
         });
 
-        sendSampleNotification({
-          title: "✅ SolMail Ready",
-          message:
-            "You'll stay updated — notifications will appear for every new mail.",
-        });
+        if (shouldShowWelcomeNotification.current) {
+          sendSampleNotification({
+            title: "SolMail Ready",
+            message:
+              "You'll stay updated — notifications will appear for every new mail.",
+          });
+          shouldShowWelcomeNotification.current = !1;
+        }
 
         setEnabled(true);
       } catch {
@@ -82,6 +81,7 @@ export const useNotification = (options: Config = {}) => {
       } else {
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
+          shouldShowWelcomeNotification.current = !0;
           onGetPermission();
         } else {
           showToast(

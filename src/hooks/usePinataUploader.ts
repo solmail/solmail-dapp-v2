@@ -44,7 +44,7 @@ export const usePinataUploader = () => {
     mutationFn: async ({ data }) => {
       const token = await getPinataToken();
       const { data: res } = await axios.post(
-        import.meta.env.VITE_PINATA_PPINNING_SERVICE_URL,
+        import.meta.env.VITE_PINATA_PINNING_SERVICE_URL,
         data,
         {
           headers: {

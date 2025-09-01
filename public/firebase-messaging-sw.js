@@ -22,32 +22,35 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
     ...notification,
     icon: "https://www.solmail.so/_next/static/media/logo-only.be4816dc.png",
-    data: { url: "http://localhost:3030/" },
+    data: {
+      url: "http://localhost:3030/",
+      clickAction: "open_app",
+    },
   };
-
+  console.log("here notfi");
   if (notification && notification.title) {
     self.registration.showNotification(notification.title, notificationOptions);
   }
 });
-
+console.log("here");
 self.addEventListener("notificationclick", (event) => {
-  console.log("here");
-  event.notification.close();
+  console.log("Notification click received: ", event);
 
-  const url = event.notification.data.url;
+  event.notification.close();
 
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
         for (const client of clientList) {
-          if (client.url === url && "focus" in client) {
+          console.log(client);
+          if (client.url.includes("localhost") && "focus" in client) {
             return client.focus();
           }
         }
 
         if (clients.openWindow) {
-          return clients.openWindow(url);
+          return clients.openWindow(event.notification.data.url);
         }
       })
   );

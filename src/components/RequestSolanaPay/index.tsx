@@ -143,7 +143,14 @@ export const RequestSolanaPay: React.FC<
                 </FieldWrapper>
               </Flex>
             </HStack>
-            <HStack {...group} mt={4}>
+            <HStack
+              {...group}
+              mt={4}
+              flexWrap={{
+                base: "wrap",
+                md: "initial",
+              }}
+            >
               {tokens.map((token) => {
                 const radio = getRadioProps({ value: token.address });
                 return (
