@@ -5,7 +5,7 @@ import { MailPreviewAttachments } from "@components/MailPreviewAttchments";
 import { MailPreviewHeader } from "@components/MailPreviewHeader";
 import { PaymentRequests } from "@components/PaymentRequest";
 import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
-import { ChipInput } from "@components/SegmentLoader";
+
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { useMailStatus } from "@hooks/useMailStatus";
