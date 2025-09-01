@@ -1,5 +1,4 @@
 import { atom } from "jotai";
-import { toast } from "react-toastify";
 import { MailBoxLabels } from "src/types";
 
 export type AtomType = {
@@ -23,7 +22,7 @@ export enum MailShareTypes {
 export const appState = atom<AtomType>({
   isComposerOpen: !1,
   composerCollapsed: !1,
-  composerState: "",
+  composerState: "Here we go",
   thread: "",
   ref: "",
   action: MailShareTypes.none,

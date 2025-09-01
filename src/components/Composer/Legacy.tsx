@@ -7,6 +7,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import {
+  QueryKeys,
   ResolveEmail,
   type ComposerFormInputs,
   type SolanaPayPayload,
@@ -36,6 +37,7 @@ import { MAXIMUM_MAIL_SUBJECT_LENGTH, NO_BALANCE_LABEL } from "@const/config";
 import { useEmailer } from "@hooks/useEmailer";
 import { ChipInput } from "@components/ChipInput";
 import { useEmailResolver } from "@hooks/useEmailResolver";
+import { useQueryClient } from "@tanstack/react-query";
 
 const initialValues = {
   to: [],
@@ -129,6 +131,7 @@ export const ComposerLegacy: React.FC = () => {
   const { composerCollapsed, update } = useComposer();
 
   const { onOpen, isOpen, onClose } = useDisclosure();
+  const queryClient = useQueryClient();
 
   const _resolveRecipients = async (to: string[]) => {
     const address: ResolveEmail[] = [];
@@ -181,6 +184,7 @@ export const ComposerLegacy: React.FC = () => {
 
         await mutateAsync({ ...values, to: address[i].resolvedAddress });
       }
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
       closeComposer();
     });
   };

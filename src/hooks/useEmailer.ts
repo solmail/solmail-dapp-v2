@@ -196,14 +196,9 @@ export const useEmailer = () => {
           showWalletUIs: !1,
         },
       });
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
     },
     onSuccess: () => {
-      // onClose();
-      // refetch();
-      // showToast("Mail sent successfully", {
-      //   type: "success",
-      // });
+      refetch();
     },
     onError: (e) => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });

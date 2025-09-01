@@ -18,8 +18,10 @@ export const useComposer = () => {
       return {
         ...prev,
         isComposerOpen: !1,
-        composerCollapsed: !1,
         thread: "",
+        composerCollapsed: !1,
+        composerState: "",
+        composerProgress: { current: 0, total: 0 },
       };
     });
   };
