@@ -31,6 +31,7 @@ type Profile = {
       timestamp: string;
     }[];
   };
+  total_mail_token_reward: number;
   timestamp: string;
 };
 

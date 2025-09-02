@@ -1,4 +1,11 @@
-import { Button, Container, Flex, Grid, GridItem } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Flex,
+  Grid,
+  GridItem,
+  Spinner,
+} from "@chakra-ui/react";
 import { AnalyticCard } from "@components/AnalyticCard";
 
 import SolanaLogo from "@assets/solana.png";
@@ -11,9 +18,14 @@ import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 import { config } from "@const/config";
 import { RewardsChart } from "@components/RewardsChart";
 import { Quests } from "@components/QuestSlider";
+import { useTokenClaimer } from "@hooks/useTokenClaimer";
 
 export const ReferralDashboard = () => {
   const { data } = useProfile();
+  const { mutateAsync, isPending } = useTokenClaimer();
+  const onClickHandler = async () => {
+    await mutateAsync();
+  };
   return (
     <Flex as={Container} maxW={"100%"} py={5} w="100%">
       <CustomScrollbarWrapper>
@@ -86,7 +98,7 @@ export const ReferralDashboard = () => {
               <AnalyticCard
                 icon={config.logo}
                 label="Claimable $MAIL"
-                value="0"
+                value={data?.total_mail_token_reward ?? 0}
               />
               <AnalyticCard
                 icon={SolanaLogo}
@@ -95,13 +107,17 @@ export const ReferralDashboard = () => {
               />
               <Flex px={5}>
                 <Button
-                  isDisabled
+                  data-isDisabled={
+                    !!((data?.total_mail_token_reward ?? 0) <= 0)
+                  }
                   size={"sm"}
                   variant="green"
                   borderRadius={20}
                   bg="green.500 !important"
+                  onClick={onClickHandler}
                 >
                   Claim all
+                  {isPending && <Spinner ml={2} size={"sm"} />}
                 </Button>
               </Flex>
             </Flex>

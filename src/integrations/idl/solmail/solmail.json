@@ -1,5 +1,5 @@
 {
-  "address": "Mai1UbiFBUvDnE2DDRxp765sRtX792zw24cgSpcgrz1",
+  "address": "MAiLX6A4AC9HUaet45d7uT8LPaAAgzqu7auSw2YJBjQ",
   "metadata": {
     "name": "solmail",
     "version": "0.1.0",
@@ -60,7 +60,7 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -74,16 +74,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "bidder"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -122,40 +119,8 @@
       ],
       "accounts": [
         {
-          "name": "bid_account"
-        },
-        {
-          "name": "marketplace_treasury",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
-                ]
-              }
-            ]
-          }
+          "name": "bid_account",
+          "writable": true
         },
         {
           "name": "marketplace_settings",
@@ -190,7 +155,7 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -204,16 +169,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "bidder"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -282,7 +244,7 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -296,16 +258,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "claimer"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -381,40 +340,8 @@
       ],
       "accounts": [
         {
-          "name": "bid_account"
-        },
-        {
-          "name": "marketplace_treasury",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
-                ]
-              }
-            ]
-          }
+          "name": "bid_account",
+          "writable": true
         },
         {
           "name": "marketplace_settings",
@@ -449,7 +376,7 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -463,16 +390,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "claimer"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -492,7 +416,7 @@
     {
       "name": "claim_username_from_mail_bid",
       "docs": [
-        "Claim username after winning a MAIL token bid - NO RATE LIMITING"
+        "Claim username after winning a MAIL token bid"
       ],
       "discriminator": [
         67,
@@ -573,7 +497,34 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "rate_limit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "winner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -587,16 +538,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "winner"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -608,7 +556,7 @@
         {
           "name": "marketplace_treasury_token_account",
           "docs": [
-            "Treasury token account to receive winning bid tokens"
+            "Treasury token account to receive winning bid tokens - must be owned by official treasury PDA"
           ],
           "writable": true,
           "optional": true
@@ -632,7 +580,7 @@
     {
       "name": "claim_username_from_sol_bid",
       "docs": [
-        "Claim username after winning a SOL bid - NO RATE LIMITING"
+        "Claim username after winning a SOL bid"
       ],
       "discriminator": [
         136,
@@ -682,39 +630,6 @@
           }
         },
         {
-          "name": "marketplace_treasury",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
-                ]
-              }
-            ]
-          }
-        },
-        {
           "name": "username_account",
           "writable": true,
           "pda": {
@@ -746,7 +661,34 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "rate_limit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "winner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -760,16 +702,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "winner"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -782,6 +721,55 @@
         {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cleanup_expired_user_bids",
+      "docs": [
+        "Clean up expired user bids"
+      ],
+      "discriminator": [
+        212,
+        246,
+        171,
+        19,
+        5,
+        45,
+        109,
+        176
+      ],
+      "accounts": [
+        {
+          "name": "user_bids",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  98,
+                  105,
+                  100,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "signer": true
         }
       ],
       "args": []
@@ -1087,7 +1075,7 @@
     {
       "name": "create_mail_bid",
       "docs": [
-        "Create a new MAIL token bid for a username"
+        "Create a new MAIL token bid for a username with fixed fee collection"
       ],
       "discriminator": [
         85,
@@ -1134,7 +1122,7 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -1148,54 +1136,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "bidder"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
-              }
-            ]
-          }
-        },
-        {
-          "name": "username_account",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "username"
-              },
-              {
-                "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
               }
             ]
           }
@@ -1231,6 +1178,9 @@
               }
             ]
           }
+        },
+        {
+          "name": "username_account_check"
         },
         {
           "name": "bidder_token_account",
@@ -1501,7 +1451,7 @@
           }
         },
         {
-          "name": "user_bid",
+          "name": "user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -1515,54 +1465,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "bidder"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
-              }
-            ]
-          }
-        },
-        {
-          "name": "username_account",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "username"
-              },
-              {
-                "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
               }
             ]
           }
@@ -1631,6 +1540,9 @@
               }
             ]
           }
+        },
+        {
+          "name": "username_account_check"
         },
         {
           "name": "bidder",
@@ -1844,7 +1756,7 @@
     {
       "name": "create_username",
       "docs": [
-        "Create a new username account without mailbox assignment - RATE LIMITED for direct creation only"
+        "Create a new username account without mailbox assignment"
       ],
       "discriminator": [
         166,
@@ -2074,6 +1986,133 @@
       "args": []
     },
     {
+      "name": "create_username_temprorary",
+      "discriminator": [
+        207,
+        4,
+        38,
+        149,
+        14,
+        173,
+        35,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "username_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  110,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "username"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  46,
+                  109,
+                  97,
+                  105,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "rate_limit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace_settings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "createmail",
       "docs": [
         "Create mail V2"
@@ -2206,6 +2245,62 @@
           }
         }
       ]
+    },
+    {
+      "name": "emergency_pause_marketplace",
+      "docs": [
+        "Emergency pause for bidding (admin only)"
+      ],
+      "discriminator": [
+        39,
+        202,
+        192,
+        66,
+        29,
+        240,
+        182,
+        228
+      ],
+      "accounts": [
+        {
+          "name": "marketplace_settings",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": []
     },
     {
       "name": "initialize_mail_treasury",
@@ -3137,7 +3232,7 @@
           }
         },
         {
-          "name": "new_user_bid",
+          "name": "new_user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -3151,16 +3246,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "new_bidder"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -3183,7 +3275,7 @@
           "signer": true
         },
         {
-          "name": "previous_user_bid",
+          "name": "previous_user_bids",
           "writable": true,
           "optional": true,
           "pda": {
@@ -3198,17 +3290,14 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "bid_account.current_highest_bidder",
                 "account": "BidAccount"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -3448,7 +3537,7 @@
           }
         },
         {
-          "name": "new_user_bid",
+          "name": "new_user_bids",
           "writable": true,
           "pda": {
             "seeds": [
@@ -3462,16 +3551,13 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "new_bidder"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -3487,7 +3573,7 @@
           "optional": true
         },
         {
-          "name": "previous_user_bid",
+          "name": "previous_user_bids",
           "writable": true,
           "optional": true,
           "pda": {
@@ -3502,17 +3588,14 @@
                   95,
                   98,
                   105,
-                  100
+                  100,
+                  115
                 ]
               },
               {
                 "kind": "account",
                 "path": "bid_account.current_highest_bidder",
                 "account": "BidAccount"
-              },
-              {
-                "kind": "account",
-                "path": "bid_account"
               }
             ]
           }
@@ -3750,72 +3833,6 @@
           }
         },
         {
-          "name": "metadata_account",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "metadata_program"
-              },
-              {
-                "kind": "account",
-                "path": "username_mint"
-              }
-            ],
-            "program": {
-              "kind": "account",
-              "path": "metadata_program"
-            }
-          }
-        },
-        {
-          "name": "collection_metadata",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "metadata_program"
-              },
-              {
-                "kind": "account",
-                "path": "central_state.collection_mint",
-                "account": "SolmailCentralState"
-              }
-            ],
-            "program": {
-              "kind": "account",
-              "path": "metadata_program"
-            }
-          }
-        },
-        {
           "name": "nft_destination",
           "writable": true
         },
@@ -3835,14 +3852,6 @@
         {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
-        },
-        {
-          "name": "metadata_program",
-          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-        },
-        {
-          "name": "rent",
-          "address": "SysvarRent111111111111111111111111111111111"
         }
       ],
       "args": [
@@ -3967,16 +3976,16 @@
       ]
     },
     {
-      "name": "UserBid",
+      "name": "UserBids",
       "discriminator": [
-        13,
-        209,
-        228,
-        159,
-        155,
-        166,
-        149,
-        53
+        146,
+        79,
+        182,
+        223,
+        41,
+        20,
+        192,
+        47
       ]
     },
     {
@@ -4148,6 +4157,19 @@
         126,
         189,
         43
+      ]
+    },
+    {
+      "name": "EnhancedFinancialTransactionEvent",
+      "discriminator": [
+        174,
+        213,
+        7,
+        23,
+        186,
+        231,
+        12,
+        149
       ]
     },
     {
@@ -4688,7 +4710,7 @@
     {
       "code": 6013,
       "name": "InvalidUsername",
-      "msg": "Invalid username - must be 1-32 characters, alphanumeric and underscores only"
+      "msg": "Invalid username - must be 3-32 characters, alphanumeric and underscores only"
     },
     {
       "code": 6014,
@@ -5135,6 +5157,7 @@
     {
       "name": "BidAccount",
       "docs": [
+        "ENHANCED Bid Account - Holds active bid information for a specific username with bid type tracking",
         "Fixed-size fields first for efficient querying"
       ],
       "type": {
@@ -5142,10 +5165,6 @@
         "fields": [
           {
             "name": "current_highest_bidder",
-            "type": "pubkey"
-          },
-          {
-            "name": "original_creator",
             "type": "pubkey"
           },
           {
@@ -5179,10 +5198,6 @@
           {
             "name": "total_fees_collected",
             "type": "u64"
-          },
-          {
-            "name": "cleanup_deadline",
-            "type": "u32"
           },
           {
             "name": "username",
@@ -5444,9 +5459,6 @@
           },
           {
             "name": "Expired"
-          },
-          {
-            "name": "CleanedUp"
           }
         ]
       }
@@ -5596,6 +5608,63 @@
           {
             "name": "total_amount_processed",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EnhancedFinancialTransactionEvent",
+      "docs": [
+        "Enhanced financial transaction event with fee details"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transaction_type",
+            "type": "string"
+          },
+          {
+            "name": "from_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "to_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "primary_amount",
+            "type": "u64"
+          },
+          {
+            "name": "platform_fee",
+            "type": "u64"
+          },
+          {
+            "name": "total_amount",
+            "type": "u64"
+          },
+          {
+            "name": "fee_rate_basis_points",
+            "type": "u16"
+          },
+          {
+            "name": "success",
+            "type": "bool"
+          },
+          {
+            "name": "executed_at",
+            "type": "u32"
+          },
+          {
+            "name": "related_username",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "marketplace_settings",
+            "type": "pubkey"
           }
         ]
       }
@@ -6033,6 +6102,9 @@
     },
     {
       "name": "MarketplaceSettings",
+      "docs": [
+        "ENHANCED Marketplace Settings - Global configuration for bidding system with fixed fee structure"
+      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -6244,6 +6316,9 @@
     },
     {
       "name": "PlatformFeeCollectedEvent",
+      "docs": [
+        "New events for enhanced fee collection and marketplace configuration"
+      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -6518,6 +6593,12 @@
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "linked_username",
+            "type": {
+              "option": "pubkey"
+            }
           }
         ]
       }
@@ -6716,17 +6797,10 @@
       }
     },
     {
-      "name": "UserBid",
-      "docs": [
-        "Individual UserBid account - one per (user, bid_account) pair"
-      ],
+      "name": "UserBidInfo",
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "user",
-            "type": "pubkey"
-          },
           {
             "name": "bid_account",
             "type": "pubkey"
@@ -6784,16 +6858,42 @@
             }
           },
           {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
             "name": "username",
             "type": "string"
           },
           {
             "name": "domain",
             "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserBids",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "active_bids",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "UserBidInfo"
+                }
+              }
+            }
+          },
+          {
+            "name": "total_bids_created",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
@@ -6860,6 +6960,10 @@
     },
     {
       "name": "UsernameAccount",
+      "docs": [
+        "OPTIMIZED Username Account structure PDA",
+        "Fixed-size fields first for efficient memcmp filtering with predictable offsets"
+      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -7262,6 +7366,10 @@
     },
     {
       "name": "UsernameWrapper",
+      "docs": [
+        "OPTIMIZED Username Wrapper - PDA that holds username authority during tokenization",
+        "Fixed-size fields first for efficient querying"
+      ],
       "type": {
         "kind": "struct",
         "fields": [

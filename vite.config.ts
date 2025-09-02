@@ -45,7 +45,6 @@ export default defineConfig(({ mode }) => {
           const buildInfo = {
             mode,
             timestamp: new Date().toISOString(),
-            random: Math.floor(Math.random() * 1000),
           };
 
           fs.writeFileSync(
