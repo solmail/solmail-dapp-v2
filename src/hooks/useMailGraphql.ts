@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { GET_USER_MAILBOX } from "@integrations/idl/graphql/queries/getMailBox";
+import { GET_USER_MAILBOX } from "@integrations/graphql/queries/getMailBox";
 import { usePrivyWallet } from "./usePrivyWallet";
 import {
   MailType,

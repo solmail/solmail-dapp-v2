@@ -126,7 +126,7 @@ export const ComposerLegacy: React.FC = () => {
   ]);
 
   const [id, set] = useState(0);
-  const { hasEnoughBalance } = useBalance();
+  const { hasEnoughBalance } = useBalance(undefined, 0.01021728);
 
   const { composerCollapsed, update } = useComposer();
 
@@ -182,7 +182,11 @@ export const ComposerLegacy: React.FC = () => {
           },
         }));
 
-        await mutateAsync({ ...values, to: address[i].resolvedAddress });
+        try {
+          await mutateAsync({ ...values, to: address[i].resolvedAddress });
+        } catch {
+          continue;
+        }
       }
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
       closeComposer();

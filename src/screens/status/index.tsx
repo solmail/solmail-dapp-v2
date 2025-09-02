@@ -8,7 +8,7 @@ import {
   LinkOverlay,
 } from "@chakra-ui/react";
 
-import IDL from "@integrations/idl/solmail/solmail.json";
+import IDL from "@integrations/idl/index";
 import { Link } from "@tanstack/react-router";
 import { isValidUrl } from "@utils/string";
 
@@ -36,10 +36,12 @@ export const Status: React.FC = () => {
     <Container py={15}>
       <Flex direction={"column"}>
         <VStack>
+          <Card label="Build" value={import.meta.env.MODE} />
           <Card
             label="Privy App ID"
             value={import.meta.env.VITE_SOLMAIL_PRIVY_APP_ID}
           />
+
           <Card label="Cluster" value={import.meta.env.VITE_SOLMAIL_CLUSTER} />
           <Card label="Mail program ID" value={IDL.address} />
           <Card
@@ -67,7 +69,6 @@ export const Status: React.FC = () => {
             label="Sentry"
             value={import.meta.env.VITE_SOLMAIL_SENTRY_DSN}
           />
-
           <Card label="Rewards" value={import.meta.env.VITE_REWARDS_BACKEND} />
           <Card
             label="Backend"

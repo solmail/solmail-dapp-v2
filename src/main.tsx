@@ -8,7 +8,7 @@ import { AppTheme } from "@theme/index";
 const router = createRouter({ routeTree });
 import { PrivyProvider, type WalletListEntry } from "@privy-io/react-auth";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { client } from "@integrations/idl/graphql";
+import { client } from "@integrations/graphql";
 import { ApolloProvider } from "@apollo/client";
 
 import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";

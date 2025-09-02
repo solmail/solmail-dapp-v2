@@ -49,10 +49,10 @@ export const useBalance = (
     if (!data) return !1;
     const amount = requestedAmount
       ? toRawAmount(requestedAmount, decimals)
-      : fee;
+      : toRawAmount("0", decimals);
     const balance = new BigNumber(data);
 
-    if (balance.lt(amount)) {
+    if (balance.minus(fee).lt(amount)) {
       return !1;
     }
 
