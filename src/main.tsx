@@ -10,7 +10,7 @@ import { PrivyProvider, type WalletListEntry } from "@privy-io/react-auth";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { client } from "@integrations/idl/graphql";
 import { ApolloProvider } from "@apollo/client";
-import { ToastContainer } from "react-toastify";
+
 import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
 import * as Sentry from "@sentry/react";
 
@@ -18,6 +18,7 @@ import { DevTools } from "jotai-devtools";
 import "jotai-devtools/styles.css";
 import { PRIVACY_POLICY_LINK, TERMS_AND_CONDITIONS_LINK } from "@const/config";
 import { queryclient } from "@integrations/tanstack";
+import { ToastContainerWrapper } from "@components/ToastContainerWrapper";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SOLMAIL_SENTRY_DSN,
@@ -50,7 +51,7 @@ export const ALL_SUPPORTED_WALLETS: WalletListEntry[] = [
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <DevTools />
+    <DevTools position="bottom-right" />
     <QueryClientProvider client={queryclient}>
       <ApolloProvider client={client}>
         <PrivyProvider
@@ -76,8 +77,8 @@ createRoot(document.getElementById("root")!).render(
             },
           }}
         >
-          <ToastContainer hideProgressBar theme="dark" autoClose={4500} />
           <ChakraProvider theme={AppTheme}>
+            <ToastContainerWrapper />
             <RouterProvider router={router} />
           </ChakraProvider>
         </PrivyProvider>

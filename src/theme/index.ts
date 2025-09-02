@@ -22,6 +22,13 @@ export const AppTheme = extendTheme({
         fontSize: 15,
         color: mode("rgb(78 88 99)", "#b6b6b6")(props),
       },
+      ".Toastify__toast": {
+        marginBottom: 15,
+        "--toastify-toast-width": {
+          base: "90% !important",
+          md: "320px !important",
+        },
+      },
       ".Toastify__toast-theme--dark": {
         backdropFilter: "blur(10px)",
         borderRadius: "20px",

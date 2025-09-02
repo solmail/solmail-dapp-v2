@@ -15,6 +15,7 @@ import LogoFull from "@assets/logo-full.png";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorBoundaryPage } from "@components/ErrorBoundary";
 import * as Sentry from "@sentry/react";
+
 export const AppMainLayout: React.FC = () => {
   const { ready, authenticated } = usePrivy();
   const navigate = useNavigate();
