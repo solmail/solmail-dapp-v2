@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/solmail.json`.
  */
 export type Solmail = {
-  "address": "5VNBFr2dJTUy3eDwMdSoTb37jzmcpoAL4WH27fcAh98t",
+  "address": "Mai1UbiFBUvDnE2DDRxp765sRtX792zw24cgSpcgrz1",
   "metadata": {
     "name": "solmail",
     "version": "0.1.0",
@@ -498,7 +498,7 @@ export type Solmail = {
     {
       "name": "claimUsernameFromMailBid",
       "docs": [
-        "Claim username after winning a MAIL token bid - NO RATE LIMITING as requested"
+        "Claim username after winning a MAIL token bid - NO RATE LIMITING"
       ],
       "discriminator": [
         67,
@@ -638,7 +638,7 @@ export type Solmail = {
     {
       "name": "claimUsernameFromSolBid",
       "docs": [
-        "Claim username after winning a SOL bid - NO RATE LIMITING as requested"
+        "Claim username after winning a SOL bid - NO RATE LIMITING"
       ],
       "discriminator": [
         136,
@@ -793,88 +793,6 @@ export type Solmail = {
       "args": []
     },
     {
-      "name": "cleanupExpiredSolBidAccount",
-      "docs": [
-        "Cleanup expired SOL bid accounts to prevent storage bloat"
-      ],
-      "discriminator": [
-        147,
-        104,
-        250,
-        143,
-        53,
-        87,
-        60,
-        251
-      ],
-      "accounts": [
-        {
-          "name": "bidAccount",
-          "writable": true
-        },
-        {
-          "name": "cleanupAuthority",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "closeUserSolBidAccount",
-      "docs": [
-        "Allow users to close their own UserBid accounts and reclaim rent"
-      ],
-      "discriminator": [
-        215,
-        78,
-        20,
-        176,
-        246,
-        98,
-        185,
-        148
-      ],
-      "accounts": [
-        {
-          "name": "userBid",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "user"
-              },
-              {
-                "kind": "account",
-                "path": "user_bid.bid_account",
-                "account": "userBid"
-              }
-            ]
-          }
-        },
-        {
-          "name": "user",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "createCollectionMasterEdition",
       "docs": [
         "Create collection master edition"
@@ -919,7 +837,6 @@ export type Solmail = {
         },
         {
           "name": "collectionMint",
-          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -949,7 +866,6 @@ export type Solmail = {
         },
         {
           "name": "metadataAccount",
-          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -1177,7 +1093,7 @@ export type Solmail = {
     {
       "name": "createMailBid",
       "docs": [
-        "Create a new MAIL token bid for a username with fixed fee collection"
+        "Create a new MAIL token bid for a username"
       ],
       "discriminator": [
         85,
@@ -2162,133 +2078,6 @@ export type Solmail = {
         }
       ],
       "args": []
-    },
-    {
-      "name": "createUsernameTemprorary",
-      "discriminator": [
-        207,
-        4,
-        38,
-        149,
-        14,
-        173,
-        35,
-        252
-      ],
-      "accounts": [
-        {
-          "name": "usernameAccount",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "username"
-              },
-              {
-                "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "rateLimit",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  114,
-                  97,
-                  116,
-                  101,
-                  95,
-                  108,
-                  105,
-                  109,
-                  105,
-                  116
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "authority"
-              }
-            ]
-          }
-        },
-        {
-          "name": "marketplaceSettings",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "authority",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "username",
-          "type": "string"
-        }
-      ]
     },
     {
       "name": "createmail",
@@ -3967,6 +3756,72 @@ export type Solmail = {
           }
         },
         {
+          "name": "metadataAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "metadataProgram"
+              },
+              {
+                "kind": "account",
+                "path": "usernameMint"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "metadataProgram"
+            }
+          }
+        },
+        {
+          "name": "collectionMetadata",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "metadataProgram"
+              },
+              {
+                "kind": "account",
+                "path": "central_state.collection_mint",
+                "account": "solmailCentralState"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "metadataProgram"
+            }
+          }
+        },
+        {
           "name": "nftDestination",
           "writable": true
         },
@@ -3986,6 +3841,14 @@ export type Solmail = {
         {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "metadataProgram",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
         }
       ],
       "args": [

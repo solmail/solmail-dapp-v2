@@ -70,7 +70,7 @@ export const useClaimUserName = () => {
       );
 
       await program.methods
-        .createUsernameTemprorary(username)
+        .createUsername(username)
         .accounts({
           usernameAccount: usernameAccountPDA,
           rateLimit: rateLimitPDA,
