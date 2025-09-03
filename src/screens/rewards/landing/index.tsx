@@ -107,7 +107,7 @@ export const ReferralDashboard = () => {
               />
               <Flex px={5}>
                 <Button
-                  isDisabled={
+                  data-isDisabled={
                     !!(parseFloat(`${data?.total_mail_token_reward ?? 0}`) <= 0)
                   }
                   size={"sm"}

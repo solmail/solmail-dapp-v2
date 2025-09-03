@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode preprod",
+    "dev": "vite --mode development",
     "build:analyze": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode analyze",
     "build": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode development",
     "build:preprod": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode preprod",
