@@ -24,7 +24,6 @@ export const useTokenClaimer = () => {
         wallet: address,
       });
 
-      console.log(data);
       if (data && data.transaction) {
         const obj = data?.transaction;
 
@@ -63,6 +62,8 @@ export const useTokenClaimer = () => {
 
         await fetch("/rewards/confirm-transaction", "POST", executionPayload);
         return !0;
+      } else {
+        throw "Failed to claim token";
       }
     },
     onSuccess: () => {

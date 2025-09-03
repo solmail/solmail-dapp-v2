@@ -63,7 +63,7 @@ export const Status: React.FC = () => {
           />
           <Card
             label="Price API"
-            value={import.meta.env.VITE_SOLMAIL_PRICE_API}
+            value={import.meta.env.VITE_SOLMAIL_JUPITER_PRICE_API}
           />
           <Card
             label="Sentry"
