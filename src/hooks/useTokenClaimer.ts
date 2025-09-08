@@ -75,7 +75,7 @@ export const useTokenClaimer = () => {
     onError: (e) => {
       refetch();
       showToast(getErrorMessage(e, "Failed to claim token"), {
-        type: "success",
+        type: "error",
       });
     },
   });
