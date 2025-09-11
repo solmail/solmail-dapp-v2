@@ -6,6 +6,8 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import fs from "fs";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+
 export default defineConfig(({ mode }) => {
   return {
     plugins: [
@@ -32,8 +34,6 @@ export default defineConfig(({ mode }) => {
         protocolImports: true,
       }),
 
-      //
-
       {
         name: "generate-build-info",
         closeBundle() {
@@ -55,6 +55,38 @@ export default defineConfig(({ mode }) => {
           console.log("✅ build-info.json generated in dist/");
         },
       },
+
+      viteStaticCopy({
+        watch: true as any,
+        targets: [
+          {
+            src: "src/firebase-messaging-sw.js",
+            dest: ".", // root → available at /firebase-messaging-sw.js
+            transform: (contents) => {
+              let content = contents.toString();
+
+              const envMap = {
+                VITE_SOLMAIL_API_KEY: process.env.VITE_SOLMAIL_API_KEY,
+                VITE_SOLMAIL_AUTH_DOMAIN: process.env.VITE_SOLMAIL_AUTH_DOMAIN,
+                VITE_SOLMAIL_PROJECT_ID: process.env.VITE_SOLMAIL_PROJECT_ID,
+                VITE_SOLMAIL_STORAGE_BUCKET:
+                  process.env.VITE_SOLMAIL_STORAGE_BUCKET,
+                VITE_SOLMAIL_MESSAGING_SENDER_ID:
+                  process.env.VITE_SOLMAIL_MESSAGING_SENDER_ID,
+                VITE_SOLMAIL_APP_ID: process.env.VITE_SOLMAIL_APP_ID,
+                VITE_SOLMAIL_MEASUREMENT_ID:
+                  process.env.VITE_SOLMAIL_MEASUREMENT_ID,
+              };
+
+              for (const [key, value] of Object.entries(envMap)) {
+                content = content.replaceAll(key, value || "");
+              }
+
+              return content;
+            },
+          },
+        ],
+      }),
     ],
     server: {
       port: 3030,
