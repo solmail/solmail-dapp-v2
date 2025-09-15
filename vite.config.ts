@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
@@ -6,7 +6,6 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import fs from "fs";
-import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig(({ mode }) => {
   return {
@@ -55,38 +54,33 @@ export default defineConfig(({ mode }) => {
           console.log("✅ build-info.json generated in dist/");
         },
       },
+      {
+        name: "service-worker-registration",
+        configureServer() {
+          const src = path.resolve("src/firebase-messaging-sw.js");
+          const dest = path.resolve("public/firebase-messaging-sw.js");
 
-      viteStaticCopy({
-        watch: true as any,
-        targets: [
-          {
-            src: "src/firebase-messaging-sw.js",
-            dest: ".", // root → available at /firebase-messaging-sw.js
-            transform: (contents) => {
-              let content = contents.toString();
+          const env = loadEnv(mode, process.cwd(), "VITE_");
+          let content = fs.readFileSync(src, "utf-8");
 
-              const envMap = {
-                VITE_SOLMAIL_API_KEY: process.env.VITE_SOLMAIL_API_KEY,
-                VITE_SOLMAIL_AUTH_DOMAIN: process.env.VITE_SOLMAIL_AUTH_DOMAIN,
-                VITE_SOLMAIL_PROJECT_ID: process.env.VITE_SOLMAIL_PROJECT_ID,
-                VITE_SOLMAIL_STORAGE_BUCKET:
-                  process.env.VITE_SOLMAIL_STORAGE_BUCKET,
-                VITE_SOLMAIL_MESSAGING_SENDER_ID:
-                  process.env.VITE_SOLMAIL_MESSAGING_SENDER_ID,
-                VITE_SOLMAIL_APP_ID: process.env.VITE_SOLMAIL_APP_ID,
-                VITE_SOLMAIL_MEASUREMENT_ID:
-                  process.env.VITE_SOLMAIL_MEASUREMENT_ID,
-              };
+          const envMap = {
+            VITE_SOLMAIL_API_KEY: env.VITE_SOLMAIL_API_KEY,
+            VITE_SOLMAIL_AUTH_DOMAIN: env.VITE_SOLMAIL_AUTH_DOMAIN,
+            VITE_SOLMAIL_PROJECT_ID: env.VITE_SOLMAIL_PROJECT_ID,
+            VITE_SOLMAIL_STORAGE_BUCKET: env.VITE_SOLMAIL_STORAGE_BUCKET,
+            VITE_SOLMAIL_MESSAGING_SENDER_ID:
+              env.VITE_SOLMAIL_MESSAGING_SENDER_ID,
+            VITE_SOLMAIL_APP_ID: env.VITE_SOLMAIL_APP_ID,
+            VITE_SOLMAIL_MEASUREMENT_ID: env.VITE_SOLMAIL_MEASUREMENT_ID,
+          };
 
-              for (const [key, value] of Object.entries(envMap)) {
-                content = content.replaceAll(key, value || "");
-              }
+          for (const [key, value] of Object.entries(envMap)) {
+            content = content.replaceAll(key, value || "");
+          }
 
-              return content;
-            },
-          },
-        ],
-      }),
+          fs.writeFileSync(dest, content);
+        },
+      },
     ],
     server: {
       port: 3030,
