@@ -163,7 +163,11 @@ export function SegmentedCircularLoader({
         },
       }}
     >
-      {label && <chakra.span>{label}</chakra.span>}
+      {label && (
+        <chakra.span fontWeight={"bold"} color={"light.100"}>
+          {label}
+        </chakra.span>
+      )}
       <Box as="span" position="absolute" inset={0} style={spinStyle}>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
           <g>{paths}</g>

@@ -67,7 +67,6 @@ export const QuestSlider = () => {
             px={4}
             alignItems={"center"}
             justifyContent={"center"}
-            py={"6vh"}
             direction={"column"}
           >
             <SegmentedCircularLoader
@@ -109,7 +108,7 @@ export const QuestSlider = () => {
 
 export const Quests = () => {
   return (
-    <Flex direction={"column"}>
+    <Flex direction={"column"} minH={250} maxH={250}>
       <Flex
         justifyContent={"space-between"}
         px={5}
