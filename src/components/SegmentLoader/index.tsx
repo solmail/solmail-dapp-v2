@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, useToken } from "@chakra-ui/react";
+import { Box, chakra, useToken } from "@chakra-ui/react";
 
 type SegmentedCircularLoaderProps = {
   segments?: number;
@@ -13,6 +13,7 @@ type SegmentedCircularLoaderProps = {
   spin?: boolean;
   snapToSegments?: boolean;
   ariaLabel?: string;
+  label?: string;
 };
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
@@ -45,6 +46,7 @@ export function SegmentedCircularLoader({
   spin = false,
   snapToSegments = false,
   ariaLabel = "segmented circular loader",
+  label = "",
 }: SegmentedCircularLoaderProps) {
   const r = (size - thickness) / 2;
   const cx = size / 2;
@@ -161,6 +163,7 @@ export function SegmentedCircularLoader({
         },
       }}
     >
+      {label && <chakra.span>{label}</chakra.span>}
       <Box as="span" position="absolute" inset={0} style={spinStyle}>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
           <g>{paths}</g>

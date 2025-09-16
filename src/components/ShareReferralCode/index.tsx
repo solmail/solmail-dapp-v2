@@ -144,7 +144,7 @@ Let’s grow together `;
             <Flex textAlign={"center"} mb={4} opacity={0.5}>
               Start referring today and turn your network into rewards!
             </Flex>
-            <FieldWrapper name="code">
+            <FieldWrapper name="code" hasPadding={!1}>
               <Flex
                 position={"relative"}
                 data-group
@@ -173,10 +173,13 @@ Let’s grow together `;
                       variant={"unstyled"}
                       fontWeight={"bold"}
                       placeholder="Referral Code"
+                      maxLength={8}
                       textTransform={"uppercase"}
                       {...methods.register("code", {
                         required: "Code is required",
                         validate: validateCode,
+                        maxLength: 8,
+                        max: 8,
                       })}
                     />
                   </Box>

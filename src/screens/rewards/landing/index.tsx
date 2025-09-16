@@ -19,13 +19,18 @@ import { config } from "@const/config";
 import { RewardsChart } from "@components/RewardsChart";
 import { Quests } from "@components/QuestSlider";
 import { useTokenClaimer } from "@hooks/useTokenClaimer";
+import { useEffect } from "react";
 
 export const ReferralDashboard = () => {
-  const { data } = useProfile();
+  const { data, refetch } = useProfile();
   const { mutateAsync, isPending } = useTokenClaimer();
   const onClickHandler = async () => {
     await mutateAsync();
   };
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
   return (
     <Flex as={Container} maxW={"100%"} py={5} w="100%">
       <CustomScrollbarWrapper>
@@ -107,7 +112,7 @@ export const ReferralDashboard = () => {
               />
               <Flex px={5}>
                 <Button
-                  data-isDisabled={
+                  isDisabled={
                     !!(parseFloat(`${data?.total_mail_token_reward ?? 0}`) <= 0)
                   }
                   size={"sm"}
@@ -136,7 +141,17 @@ export const ReferralDashboard = () => {
               base: 4,
             }}
           >
-            <Flex h="100%" bg="surface.600" borderRadius={15}>
+            <Flex
+              h="100%"
+              borderRadius={15}
+              sx={{
+                bgColor: "surface.600",
+                opacity: 0.8,
+                backgroundImage: `
+                  repeating-radial-gradient(circle at 0 0, transparent 0, rgba(229, 229, 247, 0.02) 10px)
+                `,
+              }}
+            >
               <Quests />
             </Flex>
           </GridItem>

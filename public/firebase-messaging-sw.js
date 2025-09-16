@@ -2,39 +2,36 @@ importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js");
 
 firebase.initializeApp({
-  apiKey: "deve-AIzaSyDKpWKWmhGgekdxIm5fEPYw8R3SDht2Ook",
-  authDomain: "mail-88238.firebaseapp.com",
-  projectId: "mail-88238",
-  storageBucket: "mail-88238.firebasestorage.app",
-  messagingSenderId: "938559469938",
-  appId: "1:938559469938:web:d273fbdf4e7d58296f05eb",
-  measurementId: "G-NBMH17W3DC",
+  apiKey: "AIzaSyCwxBwXIgJq3ELDAfywvPktd1uvCL12HyA",
+  authDomain: "solmail-v2.firebaseapp.com",
+  projectId: "solmail-v2",
+  storageBucket: "solmail-v2.firebasestorage.app",
+  messagingSenderId: "196607540208",
+  appId: "1:196607540208:web:b769e52612f6076a3f7b35",
+  measurementId: "G-0X49VLGKBP",
 });
 
 const messaging = firebase.messaging();
 
+// Handle background push messages
 messaging.onBackgroundMessage((payload) => {
-  const notification = payload.data;
-  if (!notification) {
-    return;
-  }
+  console.log("[SW] Received background message", payload);
 
+  const { title, body, url } = payload.data || {};
+
+  const notificationTitle = title || "New Message";
   const notificationOptions = {
-    ...notification,
-    body: `You have 1 new solmail.`,
-    title: `New Message`,
+    body: body || "You have a new Solmail.",
     icon: "https://www.solmail.so/_next/static/media/logo-only.be4816dc.png",
     data: {
-      url: "http://localhost:3030/",
-      clickAction: "open_app",
+      url: url || "http://localhost:3030/",
     },
   };
 
-  if (notification && notification.title) {
-    self.registration.showNotification(`New Message`, notificationOptions);
-  }
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
+// Handle clicks on the notification
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(
@@ -42,12 +39,10 @@ self.addEventListener("notificationclick", (event) => {
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
         for (const client of clientList) {
-          console.log(client);
           if (client.url.includes("localhost") && "focus" in client) {
             return client.focus();
           }
         }
-
         if (clients.openWindow) {
           return clients.openWindow(event.notification.data.url);
         }

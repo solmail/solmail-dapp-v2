@@ -1,22 +1,32 @@
 import { useState } from "react";
-import { Box, Flex, Image, IconButton } from "@chakra-ui/react";
+import { Flex, IconButton } from "@chakra-ui/react";
 
-import QuestImage from "@assets/quest.png";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
+import { SegmentedCircularLoader } from "@components/SegmentLoader";
 
-type QuestsType = {
-  id: number;
-  image: string;
-};
-export const QuestSlider = ({ quests }: { quests: QuestsType[] }) => {
+const SLIDES = [
+  {
+    label: "Invite 20 friends",
+    count: "5/20",
+    progress: 5 / 20,
+    id: 1,
+  },
+  {
+    label: "Sent 50 emails",
+    count: "30/50",
+    progress: 30 / 50,
+    id: 2,
+  },
+];
+export const QuestSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev === 0 ? quests.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1));
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev === quests.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === SLIDES.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -50,20 +60,32 @@ export const QuestSlider = ({ quests }: { quests: QuestsType[] }) => {
         transform={`translateX(-${currentIndex * 100}%)`}
         transition="transform 0.4s ease"
       >
-        {quests.map((quest) => (
-          <Box key={quest.id} flex="0 0 100%" px={4}>
-            <Flex
-              direction="column"
-              borderRadius="lg"
-              boxShadow="lg"
-              align="center"
-              textAlign="center"
-              key={quest.id}
-              px={5}
-            >
-              <Image borderRadius={15} w="100%" src={QuestImage} />
+        {SLIDES.map((quest) => (
+          <Flex
+            key={quest.id.toString()}
+            flex="0 0 100%"
+            px={4}
+            alignItems={"center"}
+            justifyContent={"center"}
+            py={"6vh"}
+            direction={"column"}
+          >
+            <SegmentedCircularLoader
+              segments={100}
+              progress={quest.progress}
+              spin={!1}
+              snapToSegments={!0}
+              thickness={8}
+              size={100}
+              activeColor="solana.middle"
+              trackColor="gray.700"
+              gapAngle={0}
+              label={quest.count}
+            />
+            <Flex fontWeight={"medium"} py={2} mt={2}>
+              {quest.label}
             </Flex>
-          </Box>
+          </Flex>
         ))}
       </Flex>
 
@@ -84,20 +106,6 @@ export const QuestSlider = ({ quests }: { quests: QuestsType[] }) => {
     </Flex>
   );
 };
-const quests: QuestsType[] = [
-  {
-    id: 1,
-    image: QuestImage,
-  },
-  {
-    id: 2,
-    image: QuestImage,
-  },
-  {
-    id: 3,
-    image: QuestImage,
-  },
-];
 
 export const Quests = () => {
   return (
@@ -115,7 +123,7 @@ export const Quests = () => {
         </Flex>
         <Flex>Referral</Flex>
       </Flex>
-      <QuestSlider quests={quests} />
+      <QuestSlider />
     </Flex>
   );
 };

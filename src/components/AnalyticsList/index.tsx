@@ -96,7 +96,7 @@ export const AnalyticsList: React.FC = () => {
                   <Tr>
                     <Th>Amount</Th>
 
-                    <Th>Date Joined</Th>
+                    <Th>Date </Th>
                     <Th>Activity</Th>
                   </Tr>
                 </Thead>

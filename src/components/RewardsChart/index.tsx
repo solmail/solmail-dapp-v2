@@ -27,8 +27,8 @@ const ComingSoonFeature: React.FC = () => {
         Refer and Earn
       </Flex>
       <Flex opacity={0.6} fontSize={13} textAlign={"center"}>
-        Earn XP from referrals and quests. Also you get 50% fees of your friends
-        trade!
+        Earn XP through referrals and quests. Redeem your points for $MAIL
+        tokens and more rewards.
       </Flex>
     </Flex>
   );

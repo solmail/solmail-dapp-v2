@@ -13,28 +13,25 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// Handle background push messages
 messaging.onBackgroundMessage((payload) => {
-  const notification = payload.data;
-  if (!notification) {
-    return;
-  }
+  console.log("[SW] Received background message", payload);
 
+  const { title, body, url } = payload.data || {};
+
+  const notificationTitle = title || "New Message";
   const notificationOptions = {
-    ...notification,
-    body: `You have 1 new solmail.`,
-    title: `New Message`,
+    body: body || "You have a new Solmail.",
     icon: "https://www.solmail.so/_next/static/media/logo-only.be4816dc.png",
     data: {
-      url: "http://localhost:3030/",
-      clickAction: "open_app",
+      url: url || "http://localhost:3030/",
     },
   };
 
-  if (notification && notification.title) {
-    self.registration.showNotification(`New Message`, notificationOptions);
-  }
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
+// Handle clicks on the notification
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(
@@ -42,12 +39,10 @@ self.addEventListener("notificationclick", (event) => {
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
         for (const client of clientList) {
-          console.log(client);
           if (client.url.includes("localhost") && "focus" in client) {
             return client.focus();
           }
         }
-
         if (clients.openWindow) {
           return clients.openWindow(event.notification.data.url);
         }

@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 
 export const useGetWalletById = (id?: string) => {
   const { wallets } = useSolanaWallets();
+
   const get = useCallback(
     (id: string, walletClientType?: string) => {
       const _wallet = wallets.find(

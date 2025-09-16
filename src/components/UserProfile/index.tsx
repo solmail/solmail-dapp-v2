@@ -285,9 +285,11 @@ export const LoginInfo: React.FC = () => {
     <Flex direction={"column"} alignItems={"center"}>
       <Flex fontWeight={"bold"}>Logged in via</Flex>
       <Flex direction={"row"} gap={1} mt={"3px"} alignItems={"center"}>
-        <Flex>
-          <Image boxSize={"16px"} src={icon} />
-        </Flex>
+        {icon && (
+          <Flex>
+            <Image boxSize={"16px"} src={icon} key={displayName} />
+          </Flex>
+        )}
 
         <Flex fontSize={13}>
           {isWallet ? shortenPrincipalId(displayName) : displayName}

@@ -33,3 +33,5 @@ export const FIREBASE_CONFIG = {
   appId: import.meta.env.VITE_SOLMAIL_APP_ID,
   measurementId: import.meta.env.VITE_SOLMAIL_MEASUREMENT_ID,
 };
+
+console.log(FIREBASE_CONFIG);

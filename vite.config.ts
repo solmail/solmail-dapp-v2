@@ -56,29 +56,67 @@ export default defineConfig(({ mode }) => {
       },
       {
         name: "service-worker-registration",
-        configureServer() {
+
+        configureServer(server) {
           const src = path.resolve("src/firebase-messaging-sw.js");
           const dest = path.resolve("public/firebase-messaging-sw.js");
 
-          const env = loadEnv(mode, process.cwd(), "VITE_");
-          let content = fs.readFileSync(src, "utf-8");
+          const generateFile = () => {
+            const env = loadEnv(mode, process.cwd(), "VITE_");
+            let content = fs.readFileSync(src, "utf-8");
 
-          const envMap = {
-            VITE_SOLMAIL_API_KEY: env.VITE_SOLMAIL_API_KEY,
-            VITE_SOLMAIL_AUTH_DOMAIN: env.VITE_SOLMAIL_AUTH_DOMAIN,
-            VITE_SOLMAIL_PROJECT_ID: env.VITE_SOLMAIL_PROJECT_ID,
-            VITE_SOLMAIL_STORAGE_BUCKET: env.VITE_SOLMAIL_STORAGE_BUCKET,
-            VITE_SOLMAIL_MESSAGING_SENDER_ID:
-              env.VITE_SOLMAIL_MESSAGING_SENDER_ID,
-            VITE_SOLMAIL_APP_ID: env.VITE_SOLMAIL_APP_ID,
-            VITE_SOLMAIL_MEASUREMENT_ID: env.VITE_SOLMAIL_MEASUREMENT_ID,
+            const envMap = {
+              VITE_SOLMAIL_API_KEY: env.VITE_SOLMAIL_API_KEY,
+              VITE_SOLMAIL_AUTH_DOMAIN: env.VITE_SOLMAIL_AUTH_DOMAIN,
+              VITE_SOLMAIL_PROJECT_ID: env.VITE_SOLMAIL_PROJECT_ID,
+              VITE_SOLMAIL_STORAGE_BUCKET: env.VITE_SOLMAIL_STORAGE_BUCKET,
+              VITE_SOLMAIL_MESSAGING_SENDER_ID:
+                env.VITE_SOLMAIL_MESSAGING_SENDER_ID,
+              VITE_SOLMAIL_APP_ID: env.VITE_SOLMAIL_APP_ID,
+              VITE_SOLMAIL_MEASUREMENT_ID: env.VITE_SOLMAIL_MEASUREMENT_ID,
+            };
+
+            for (const [key, value] of Object.entries(envMap)) {
+              content = content.replaceAll(key, value || "");
+            }
+
+            fs.writeFileSync(dest, content);
           };
+          generateFile();
 
-          for (const [key, value] of Object.entries(envMap)) {
-            content = content.replaceAll(key, value || "");
-          }
+          server.watcher.add(src);
+          server.watcher.on("change", (changedFile) => {
+            if (changedFile === src) {
+              generateFile();
+            }
+          });
+        },
+        buildStart: () => {
+          const src = path.resolve("src/firebase-messaging-sw.js");
+          const dest = path.resolve("public/firebase-messaging-sw.js");
 
-          fs.writeFileSync(dest, content);
+          const generateFile = () => {
+            const env = loadEnv(mode, process.cwd(), "VITE_");
+            let content = fs.readFileSync(src, "utf-8");
+
+            const envMap = {
+              VITE_SOLMAIL_API_KEY: env.VITE_SOLMAIL_API_KEY,
+              VITE_SOLMAIL_AUTH_DOMAIN: env.VITE_SOLMAIL_AUTH_DOMAIN,
+              VITE_SOLMAIL_PROJECT_ID: env.VITE_SOLMAIL_PROJECT_ID,
+              VITE_SOLMAIL_STORAGE_BUCKET: env.VITE_SOLMAIL_STORAGE_BUCKET,
+              VITE_SOLMAIL_MESSAGING_SENDER_ID:
+                env.VITE_SOLMAIL_MESSAGING_SENDER_ID,
+              VITE_SOLMAIL_APP_ID: env.VITE_SOLMAIL_APP_ID,
+              VITE_SOLMAIL_MEASUREMENT_ID: env.VITE_SOLMAIL_MEASUREMENT_ID,
+            };
+
+            for (const [key, value] of Object.entries(envMap)) {
+              content = content.replaceAll(key, value || "");
+            }
+
+            fs.writeFileSync(dest, content);
+          };
+          generateFile();
         },
       },
     ],
