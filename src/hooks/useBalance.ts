@@ -52,12 +52,15 @@ export const useBalance = (
       : toRawAmount("0", decimals);
     const balance = new BigNumber(data);
 
+    if (symbol !== "SOL") {
+      return balance.gte(amount);
+    }
     if (balance.minus(fee).lt(amount)) {
       return !1;
     }
 
     return !0;
-  }, [data, decimals, fee, requestedAmount]);
+  }, [data, decimals, fee, requestedAmount, symbol]);
 
   return {
     data,

@@ -32,6 +32,7 @@ import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 import { useBalance } from "@hooks/useBalance";
 import { NO_BALANCE_LABEL } from "@const/config";
 import { useSolanaPayLogo } from "@hooks/useSolanaPayLogo";
+
 export const SolanaPay: React.FC<
   Omit<ModalProps, "children"> &
     PaymentConfig & {
@@ -59,6 +60,7 @@ export const SolanaPay: React.FC<
   const { isOpen: isDone, onOpen } = useDisclosure();
   const SolanaPayLogo = useSolanaPayLogo();
   const { isPending, sendTransaction } = useSolanaPay({
+    splToken: symbol !== "SOL" ? address : "",
     ref: reference,
     qrUrl: paymentUrl,
     onSuccess: onClose,
@@ -135,6 +137,7 @@ export const SolanaPay: React.FC<
             <Flex>
               <ClipboardText>{recipient}</ClipboardText>
             </Flex>
+
             {!isDone && (
               <>
                 <Flex>Pay with embedded wallet</Flex>

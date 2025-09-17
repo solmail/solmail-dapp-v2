@@ -1,11 +1,18 @@
-import { Button, Flex, Image, Spinner, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  chakra,
+  Flex,
+  Image,
+  Spinner,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { SolanaPay } from "@components/SolanaPay";
 
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { useToken } from "@hooks/useToken";
 import { useCallback, useState } from "react";
-import { IoCheckmarkDoneSharp } from "react-icons/io5";
+
 import type { PaymentConfig, StatusType } from "src/types";
 
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
@@ -43,14 +50,23 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
   const { symbol } = useToken(tokenaddress ?? "");
   return (
     <>
-      <Button
-        size={"sm"}
-        onClick={openPayment}
-        rightIcon={isDone ? <IoCheckmarkDoneSharp /> : undefined}
-      >
+      <Button size={"sm"} onClick={openPayment}>
         {isStatusChecking && <Spinner size={"sm"} mr={2} />}
         <Image mr={1} src={SolanaPayLogo} w="50px" />
         {`${amount} ${symbol}`}
+
+        {isDone && (
+          <chakra.span
+            bg="green.500"
+            fontSize={12}
+            px={2}
+            py={"2px"}
+            borderRadius={15}
+            ml={2}
+          >
+            Payment Done
+          </chakra.span>
+        )}
       </Button>
 
       <SolanaPay

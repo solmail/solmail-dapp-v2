@@ -29,6 +29,7 @@ type Options = {
   onError?: (e: Error) => void;
   onPaymentStatusUpdate?: (s: StatusType) => void;
   decimals: number;
+  splToken?: string;
 };
 const _ERROR = "Failed to transfer amount";
 export const useSolanaPay = ({
@@ -38,6 +39,7 @@ export const useSolanaPay = ({
   onError,
   onPaymentStatusUpdate,
   decimals,
+  splToken,
 }: Options) => {
   const { provider } = useGetMailProgramInstance();
   const { isConnected: connected, wallet } = usePrivyWallet();
@@ -168,6 +170,7 @@ export const useSolanaPay = ({
         const { recipient, amount, reference } = parseURL(
           qrUrl
         ) as TransferRequestURL;
+
         if (!amount || !ref) return;
 
         const signatureInfo = await findReference(connection, ref, {
@@ -181,6 +184,7 @@ export const useSolanaPay = ({
             recipient: recipient,
             amount,
             reference,
+            ...(splToken ? { splToken: new PublicKey(splToken) } : {}),
           },
           { commitment: "confirmed" }
         );
@@ -196,6 +200,7 @@ export const useSolanaPay = ({
           onSuccess();
         }
       } catch (e) {
+        console.log(e);
         if (isFunction(onPaymentStatusUpdate)) {
           onPaymentStatusUpdate({
             isDone: !1,

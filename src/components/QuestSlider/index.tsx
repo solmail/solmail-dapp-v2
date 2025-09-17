@@ -5,20 +5,6 @@ import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { SegmentedCircularLoader } from "@components/SegmentLoader";
 import { useProfile } from "@hooks/useProfile";
 
-const SLIDES = [
-  {
-    label: "Invite 20 more friends",
-    count: "5/20",
-    progress: 5 / 20,
-    id: 1,
-  },
-  {
-    label: "Sent 50 more emails",
-    count: "30/50",
-    progress: 30 / 50,
-    id: 2,
-  },
-];
 export const QuestSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { data } = useProfile();
