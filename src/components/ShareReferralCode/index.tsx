@@ -90,15 +90,14 @@ export const ShareReferralCode: React.FC<
   const { onCopy, hasCopied } = useClipboard(data?.referral_code ?? "");
 
   const message = useMemo(() => {
-    return `Hey!
+    return `Hey! 🚀
+I’ve been using SolMail, the first Web3 communication and identity app on Solana — where your inbox is also your wallet.
 
-I’m using this amazing platform and I think you’ll love it too.
+ Sign up with my referral code: ${data?.referral_code ?? ""} and earn exclusive rewards!
 
-Use my referral code: **${data?.referral_code ?? ""}** to sign up and get exclusive rewards or bonuses!
+👉 Join here: ${URL}
 
-Start here  ${URL}
-
-Let’s grow together `;
+ Let’s build the future of Web3 communication together ✉️✨`;
   }, [URL, data?.referral_code]);
   const { isPending, mutateAsync } = useReferralCodeUpdate();
   const onSubmitHandler: SubmitHandler<Form> = async ({ code }) => {

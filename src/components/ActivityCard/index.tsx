@@ -50,7 +50,10 @@ export const TransferCard: React.FC<TransferCard> = ({ transaction }) => {
       </Flex>
       <Flex direction={"column"} flex={"auto"}>
         <Flex justifyContent={"space-between"}>
-          <Flex fontWeight={"bold"}>{token?.symbol}</Flex>
+          <Flex fontWeight={"medium"}>
+            {`${isCredit ? "Receive" : "Sent"}
+            ${token?.symbol}`}
+          </Flex>
           <Flex
             color={isCredit ? "green.500" : "red.500"}
             fontSize={16}

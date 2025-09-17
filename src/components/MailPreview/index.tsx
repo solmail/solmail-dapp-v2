@@ -49,7 +49,6 @@ export const MailPreview: React.FC = () => {
                           sx={{
                             "*": {
                               maxWidth: "100% !important",
-                              color: "light.100",
                             },
 
                             h1: {

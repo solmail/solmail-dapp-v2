@@ -13,7 +13,7 @@ import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { useToken } from "@hooks/useToken";
 import { useCallback, useState } from "react";
 
-import type { PaymentConfig, StatusType } from "src/types";
+import { MailBoxLabels, type PaymentConfig, type StatusType } from "src/types";
 
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { useSolanaPayLogo } from "@hooks/useSolanaPayLogo";
@@ -64,7 +64,9 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
             borderRadius={15}
             ml={2}
           >
-            Payment Done
+            {context === MailBoxLabels.inbox
+              ? "Payment Done"
+              : "Payment Received"}
           </chakra.span>
         )}
       </Button>

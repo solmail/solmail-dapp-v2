@@ -27,7 +27,7 @@ export const MailMeta: React.FC = () => {
       flexWrap={"wrap"}
       fontSize={12}
       borderTop={"solid 1px"}
-      borderTopColor={"surface.400"}
+      borderTopColor={"surface.500"}
       py={5}
       gap={3}
       alignItems={"center"}
