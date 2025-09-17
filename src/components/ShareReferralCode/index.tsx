@@ -182,7 +182,7 @@ Let’s grow together `;
                           value: 8,
                           message: "Maximum length should be 8",
                         },
-                        min: {
+                        minLength: {
                           value: 3,
                           message: "Minimum length should be 3",
                         },
