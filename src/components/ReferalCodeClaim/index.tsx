@@ -116,6 +116,7 @@ export const ReferalCodeClaim: React.FC<Omit<ModalProps, "children">> = ({
                     id="code"
                     {...methods.register("code", {
                       validate: validateCode,
+                      min: "",
                       required: {
                         value: !!code.trim(),
                         message: "Please enter a valid referral code",

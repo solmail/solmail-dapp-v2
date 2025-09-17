@@ -13,7 +13,7 @@ type SegmentedCircularLoaderProps = {
   spin?: boolean;
   snapToSegments?: boolean;
   ariaLabel?: string;
-  label?: string;
+  label?: string | number;
 };
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
@@ -52,7 +52,6 @@ export function SegmentedCircularLoader({
   const cx = size / 2;
   const cy = size / 2;
 
-  // Resolve Chakra theme colors (hex values)
   const trackStroke = useToken("colors", trackColor);
   const activeStroke = useToken("colors", activeColor);
 
@@ -76,7 +75,6 @@ export function SegmentedCircularLoader({
     const baseStart = -90 + i * (segmentAngle + gapAngle);
     const baseEnd = baseStart + segmentAngle;
 
-    // Track path (always visible)
     const trackPath = describeArc(cx, cy, r, baseStart, baseEnd);
     paths.push(
       <path
@@ -90,7 +88,6 @@ export function SegmentedCircularLoader({
       />
     );
 
-    // Active full segment
     if (i < filledWhole) {
       const activePath = describeArc(cx, cy, r, baseStart, baseEnd);
 
@@ -114,9 +111,7 @@ export function SegmentedCircularLoader({
           }}
         />
       );
-    }
-    // Partial segment (if progress is not whole)
-    else if (i === filledWhole && partialFrac > 0) {
+    } else if (i === filledWhole && partialFrac > 0) {
       const partialEnd = baseStart + segmentAngle * partialFrac;
       const partialPath = describeArc(cx, cy, r, baseStart, partialEnd);
 

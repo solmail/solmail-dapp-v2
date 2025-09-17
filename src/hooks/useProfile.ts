@@ -4,10 +4,18 @@ import { useHttp } from "@hooks/useHttp";
 
 import { useAuthStatus } from "./useAuthState";
 
+type Quest = {
+  title: string;
+  current: number;
+  target: number;
+};
+
+type Quests = Quest[];
 type Profile = {
   pk: string;
   referred_by: string;
   referral_code: string;
+  quests: Quests;
   milestone: {
     title: string;
     boost_factor: number;

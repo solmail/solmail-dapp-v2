@@ -173,13 +173,19 @@ Let’s grow together `;
                       variant={"unstyled"}
                       fontWeight={"bold"}
                       placeholder="Referral Code"
-                      maxLength={8}
                       textTransform={"uppercase"}
                       {...methods.register("code", {
                         required: "Code is required",
                         validate: validateCode,
-                        maxLength: 8,
-                        max: 8,
+
+                        maxLength: {
+                          value: 8,
+                          message: "Maximum length should be 8",
+                        },
+                        min: {
+                          value: 3,
+                          message: "Minimum length should be 3",
+                        },
                       })}
                     />
                   </Box>

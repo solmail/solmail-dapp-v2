@@ -3,16 +3,17 @@ import { Flex, IconButton } from "@chakra-ui/react";
 
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { SegmentedCircularLoader } from "@components/SegmentLoader";
+import { useProfile } from "@hooks/useProfile";
 
 const SLIDES = [
   {
-    label: "Invite 20 friends",
+    label: "Invite 20 more friends",
     count: "5/20",
     progress: 5 / 20,
     id: 1,
   },
   {
-    label: "Sent 50 emails",
+    label: "Sent 50 more emails",
     count: "30/50",
     progress: 30 / 50,
     id: 2,
@@ -20,13 +21,19 @@ const SLIDES = [
 ];
 export const QuestSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const { data } = useProfile();
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1));
+    if (!data?.quests) {
+      return;
+    }
+    setCurrentIndex((prev) => (prev === 0 ? data.quests.length - 1 : prev - 1));
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev === SLIDES.length - 1 ? 0 : prev + 1));
+    if (!data?.quests) {
+      return;
+    }
+    setCurrentIndex((prev) => (prev === data.quests.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -60,9 +67,9 @@ export const QuestSlider = () => {
         transform={`translateX(-${currentIndex * 100}%)`}
         transition="transform 0.4s ease"
       >
-        {SLIDES.map((quest) => (
+        {data?.quests?.map((quest) => (
           <Flex
-            key={quest.id.toString()}
+            key={quest.title.split(" ").join("")}
             flex="0 0 100%"
             px={4}
             alignItems={"center"}
@@ -71,7 +78,7 @@ export const QuestSlider = () => {
           >
             <SegmentedCircularLoader
               segments={100}
-              progress={quest.progress}
+              progress={quest.current / quest.target}
               spin={!1}
               snapToSegments={!0}
               thickness={8}
@@ -79,10 +86,10 @@ export const QuestSlider = () => {
               activeColor="solana.middle"
               trackColor="gray.700"
               gapAngle={0}
-              label={quest.count}
+              label={quest.current ?? 0}
             />
             <Flex fontWeight={"medium"} py={2} mt={2}>
-              {quest.label}
+              {quest.title ?? ""}
             </Flex>
           </Flex>
         ))}
