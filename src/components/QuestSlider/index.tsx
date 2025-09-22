@@ -72,7 +72,7 @@ export const QuestSlider = () => {
               activeColor="solana.middle"
               trackColor="gray.700"
               gapAngle={0}
-              label={quest.current ?? 0}
+              label={`${quest.xp ?? 0}XP`}
             />
             <Flex fontWeight={"medium"} py={2} mt={2}>
               {quest.title ?? ""}
