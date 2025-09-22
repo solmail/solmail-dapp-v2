@@ -4,7 +4,11 @@ import { MailCard } from "@components/MailCard";
 import { useGetInbox } from "@hooks/useGetInbox";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import isFunction from "lodash/isFunction";
+import { LazyView } from "@components/LazyView";
 
+const PendingCard: React.FC = () => {
+  return <Flex w="100%" minH={79}></Flex>;
+};
 export interface InboxRef {
   refresh: () => void;
 }
@@ -42,7 +46,12 @@ export const Inbox = forwardRef<
         {mail && mail.length > 0 && (
           <VStack w="100%" overflow={"hidden"} h="100%" px={2} gap={2}>
             {mail.map((item) => (
-              <MailCard key={`${context}_${item.id?.toString()}`} {...item} />
+              <LazyView
+                key={`${context}_${item.id?.toString()}`}
+                pendingComponent={<PendingCard />}
+              >
+                <MailCard {...item} />
+              </LazyView>
             ))}
           </VStack>
         )}
