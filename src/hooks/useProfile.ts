@@ -8,6 +8,7 @@ type Quest = {
   title: string;
   current: number;
   target: number;
+  xp: string;
 };
 
 type Quests = Quest[];
