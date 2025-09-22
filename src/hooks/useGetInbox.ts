@@ -18,6 +18,7 @@ import { useGetMailProgramInstance } from "@hooks/useMailProgramInstance";
 import type { Solmail } from "@integrations/idl/solmail-preprod/solmail";
 import { isOlderThan } from "@utils/time";
 import { usePrivyWallet } from "./usePrivyWallet";
+import { PublicKey } from "@solana/web3.js";
 
 const fetchAllMails = async (
   program: Program<Solmail>,
@@ -167,9 +168,14 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   useEffect(() => {
     let listener: number;
     if (program) {
-      listener = (program as any).addEventListener(
+      listener = (program as Program<Solmail>).addEventListener(
         "mailV2SendEvent",
-        (event: any) => {
+        (event: {
+          from: PublicKey;
+          to: PublicKey;
+          id: string;
+          mailbox: PublicKey;
+        }) => {
           if (
             address &&
             event.to &&
