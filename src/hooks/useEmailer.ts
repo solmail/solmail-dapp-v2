@@ -52,6 +52,8 @@ export const useEmailer = () => {
       updateStatus("Preparing your mail");
       collpaseComposer();
 
+      throw "Oops";
+
       const to = values.to;
       const [user0, user1] =
         from?.toString() >= to?.toString() ? [from, to] : [to, from];
@@ -133,7 +135,7 @@ export const useEmailer = () => {
 
       const formData = new FormData();
       formData.append("file", textFile);
-      let id: any;
+      let id: string | undefined;
       try {
         const contentId = await uploadToPinata({
           data: formData,
@@ -170,7 +172,7 @@ export const useEmailer = () => {
         .instruction();
 
       const updateEmailInstruction = await program.methods
-        .updatemail(id)
+        .updatemail(id as string)
         .accounts({
           mail: mailAccount.publicKey,
           authority: userPublicKey,
@@ -201,12 +203,13 @@ export const useEmailer = () => {
       refetch();
     },
     onError: (e) => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
+      alert(1);
       showToast(getErrorMessage(e, "Failed to send mail"), {
         type: "error",
       });
       refetch();
       expandComposer();
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
     },
   });
 };

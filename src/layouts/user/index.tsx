@@ -23,6 +23,7 @@ import { useUsernamePopup } from "@hooks/useUsernamePopup";
 import { useAtom } from "jotai";
 import { AuthState } from "@state/auth";
 import { ENABLE_USERNAME_CLAIM } from "@const/config";
+import { useFCMNotifications } from "@hooks/useFCMNotifications";
 
 export const UserLayout: React.FC = () => {
   const { address } = usePrivyWallet();
@@ -47,6 +48,16 @@ export const UserLayout: React.FC = () => {
   const { hasUserNames, account } = useGetLinkedUsernameById(address);
 
   const [isUserReady, setIsUserReady] = useState<boolean>(!1);
+  const permissonRequested = useRef<boolean>(!1);
+  const { hasRequested, requestPermisson, isRegistering } =
+    useFCMNotifications();
+
+  useEffect(() => {
+    if (!hasRequested && !isRegistering && !permissonRequested.current) {
+      permissonRequested.current = !0;
+      requestPermisson();
+    }
+  }, [hasRequested, isRegistering, requestPermisson]);
 
   useEffect(() => {
     if (

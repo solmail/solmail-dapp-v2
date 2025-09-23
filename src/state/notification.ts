@@ -1,15 +1,10 @@
-import { atomWithStorage } from "jotai/utils";
+import { atom } from "jotai";
 
-export const notificationAtom = atomWithStorage<{
-  notificationEnabled: boolean;
-  isRegistered: boolean;
+type NotificationType = {
+  hasRequested: boolean;
   isRegistering: boolean;
-  isRequested: boolean;
-  permisson: NotificationPermission;
-}>("settings:notification", {
-  notificationEnabled: false,
-  isRegistered: !1,
+};
+export const notificationAtom = atom<NotificationType>({
+  hasRequested: !1,
   isRegistering: !1,
-  isRequested: !1,
-  permisson: Notification.permission,
 });
