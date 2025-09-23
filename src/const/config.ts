@@ -34,4 +34,5 @@ export const FIREBASE_CONFIG = {
   measurementId: import.meta.env.VITE_SOLMAIL_MEASUREMENT_ID,
 };
 
-console.log(FIREBASE_CONFIG);
+export const ENABLE_USERNAME_CLAIM =
+  import.meta.env.VITE_SOLMAIL_ENABLE_USERNAME_CLAIM === "true";

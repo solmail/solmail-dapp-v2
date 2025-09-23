@@ -22,6 +22,7 @@ import { LinkUserName } from "@components/LinkUsername";
 import { useUsernamePopup } from "@hooks/useUsernamePopup";
 import { useAtom } from "jotai";
 import { AuthState } from "@state/auth";
+import { ENABLE_USERNAME_CLAIM } from "@const/config";
 
 export const UserLayout: React.FC = () => {
   const { address } = usePrivyWallet();
@@ -124,7 +125,7 @@ export const UserLayout: React.FC = () => {
       return;
     }
 
-    if (CAN_REQUEST_USERNAME) {
+    if (CAN_REQUEST_USERNAME && ENABLE_USERNAME_CLAIM) {
       autoRequestExecuted.current = !0;
       if (!hasUserNames) {
         onOpen();
@@ -158,7 +159,9 @@ export const UserLayout: React.FC = () => {
         onClose={onCloseHandler}
       />
 
-      <ClaimUserName isOpen={isOpen} onClose={_onClose} />
+      {ENABLE_USERNAME_CLAIM && (
+        <ClaimUserName isOpen={isOpen} onClose={_onClose} />
+      )}
 
       <LinkUserName isOpen={requestUsernameLink} onClose={_onClose} />
 

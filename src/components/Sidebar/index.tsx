@@ -16,7 +16,7 @@ import {
   useOutsideClick,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { config } from "@const/config";
+import { config, ENABLE_USERNAME_CLAIM } from "@const/config";
 import { MENU } from "@const/menu";
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import { BsPlusCircleFill } from "react-icons/bs";
@@ -232,37 +232,41 @@ export const Sidebar: React.FC = () => {
               return <SidebarMenu key={menu.id} {...menu} />;
             })}
           </VStack>
-          {isFetched && !hasUserNames && !username && !isLoading && (
-            <Flex
-              align={"start"}
-              borderTop={"solid 1px"}
-              borderTopColor={"surface.300"}
-              py={3}
-              px={3}
-              direction={"column"}
-            >
-              <Flex direction={"column"}>
-                <Flex fontSize={14} opacity={0.5}>
-                  Create username
-                </Flex>
-                <Flex
-                  cursor={"pointer"}
-                  alignItems={"center"}
-                  mb={5}
-                  transition={"all ease .2s"}
-                  _hover={{
-                    opacity: 0.5,
-                  }}
-                  onClick={onOpen}
-                  fontWeight={"bold"}
-                  color={"solana.middle"}
-                >
-                  {DOMAINS.DEFAULT}
-                  <Icon fontSize={12} ml={2} as={BsPlusCircleFill} />
+          {ENABLE_USERNAME_CLAIM &&
+            isFetched &&
+            !hasUserNames &&
+            !username &&
+            !isLoading && (
+              <Flex
+                align={"start"}
+                borderTop={"solid 1px"}
+                borderTopColor={"surface.300"}
+                py={3}
+                px={3}
+                direction={"column"}
+              >
+                <Flex direction={"column"}>
+                  <Flex fontSize={14} opacity={0.5}>
+                    Create username
+                  </Flex>
+                  <Flex
+                    cursor={"pointer"}
+                    alignItems={"center"}
+                    mb={5}
+                    transition={"all ease .2s"}
+                    _hover={{
+                      opacity: 0.5,
+                    }}
+                    onClick={onOpen}
+                    fontWeight={"bold"}
+                    color={"solana.middle"}
+                  >
+                    {DOMAINS.DEFAULT}
+                    <Icon fontSize={12} ml={2} as={BsPlusCircleFill} />
+                  </Flex>
                 </Flex>
               </Flex>
-            </Flex>
-          )}
+            )}
         </Flex>
 
         <SidebarFooter />
