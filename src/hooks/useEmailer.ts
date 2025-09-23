@@ -201,7 +201,6 @@ export const useEmailer = () => {
       refetch();
     },
     onError: (e) => {
-      alert(1);
       showToast(getErrorMessage(e, "Failed to send mail"), {
         type: "error",
       });

@@ -12,7 +12,7 @@ export const useRefCodeValidation = () => {
         "POST"
       );
       if (data && data.code) {
-        alert(data.code);
+        console.log(data.code);
       }
     },
   });

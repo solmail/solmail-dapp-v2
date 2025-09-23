@@ -19,9 +19,9 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = "You have a new email in your inbox.";
   const notificationOptions = {
     body: "New Mail Received",
-    icon: "https://www.solmail.so/_next/static/media/logo-only.be4816dc.png",
+    icon,
     data: {
-      url: "/",
+      url: url,
     },
   };
 
