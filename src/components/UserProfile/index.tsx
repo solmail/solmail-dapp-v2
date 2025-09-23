@@ -48,12 +48,14 @@ export const UserProfileCard: React.FC = () => {
   const { username, address } = useMyUsername();
   const isLightTheme = useColorModeValue(!0, !1);
   const { toggleColorMode } = useColorMode();
+
   return (
     <Flex direction={"row"} alignItems={"center"} gap={3}>
       <Flex fontSize={20} cursor={"pointer"} onClick={toggleColorMode}>
         {isLightTheme && <Icon as={MdDarkMode} />}
         {!isLightTheme && <Icon as={MdLightMode} />}
       </Flex>
+
       <Flex
         bg="rgba(255,255,255,.1)"
         alignItems={"center"}
@@ -61,6 +63,12 @@ export const UserProfileCard: React.FC = () => {
         px={3}
         py={"8px"}
         borderRadius={4}
+        as={TanstackRouter}
+        to="/u/wallet/activity/assets"
+        transition={"all ease .2s"}
+        _hover={{
+          opacity: 0.9,
+        }}
       >
         <chakra.span alignItems={"center"} display={"inline-flex"}>
           <Icon as={LuWalletMinimal} fontSize={18} />
@@ -70,6 +78,7 @@ export const UserProfileCard: React.FC = () => {
           {formattedBalance}
         </chakra.span>
       </Flex>
+
       <Flex w={"1px"} h="100%" py={"3px"}>
         <Flex h="100%" bg="light.500" w="100%" opacity={0.3} />
       </Flex>
