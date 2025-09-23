@@ -16,9 +16,9 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   const { title, body, url, icon } = payload.data || {};
 
-  const notificationTitle = title || "New Message";
+  const notificationTitle = "You have a new email in your inbox.";
   const notificationOptions = {
-    body,
+    body: "New Mail Received",
     icon,
     data: {
       url: url,

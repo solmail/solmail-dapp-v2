@@ -1,10 +1,14 @@
 import { atom } from "jotai";
 
 type NotificationType = {
-  hasRequested: boolean;
+  hasPermisson: boolean;
+  isRegistered: boolean;
   isRegistering: boolean;
 };
+
+const id = localStorage.getItem("_i_")?.trim() ?? !1;
 export const notificationAtom = atom<NotificationType>({
-  hasRequested: !1,
+  hasPermisson: Notification.permission === "granted",
+  isRegistered: !!id,
   isRegistering: !1,
 });

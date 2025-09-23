@@ -52,8 +52,6 @@ export const useEmailer = () => {
       updateStatus("Preparing your mail");
       collpaseComposer();
 
-      throw "Oops";
-
       const to = values.to;
       const [user0, user1] =
         from?.toString() >= to?.toString() ? [from, to] : [to, from];

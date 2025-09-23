@@ -48,16 +48,8 @@ export const UserLayout: React.FC = () => {
   const { hasUserNames, account } = useGetLinkedUsernameById(address);
 
   const [isUserReady, setIsUserReady] = useState<boolean>(!1);
-  const permissonRequested = useRef<boolean>(!1);
-  const { hasRequested, requestPermisson, isRegistering } =
-    useFCMNotifications();
 
-  useEffect(() => {
-    if (!hasRequested && !isRegistering && !permissonRequested.current) {
-      permissonRequested.current = !0;
-      requestPermisson();
-    }
-  }, [hasRequested, isRegistering, requestPermisson]);
+  useFCMNotifications(isAuthenticated);
 
   useEffect(() => {
     if (
