@@ -4,9 +4,18 @@ import { usePrivy } from "@privy-io/react-auth";
 
 import { SocialShare } from "@components/SocialShare";
 import { PRIVACY_POLICY_LINK, TERMS_AND_CONDITIONS_LINK } from "@const/config";
+import { useFCMNotifications } from "@hooks/useFCMNotifications";
+import { useEffect } from "react";
 export const Login: React.FC = () => {
   const { login } = usePrivy();
 
+  const { unregister, isRegistering, isRegistered } = useFCMNotifications(!1);
+
+  useEffect(() => {
+    if (!isRegistering && isRegistered) {
+      unregister();
+    }
+  }, [isRegistered, isRegistering, unregister]);
   return (
     <Flex p={5} w="100%" direction={"column"}>
       <Flex
