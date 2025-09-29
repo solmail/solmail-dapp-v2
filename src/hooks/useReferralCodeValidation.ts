@@ -7,13 +7,15 @@ export const useRefCodeValidation = () => {
   return useMutation({
     mutationKey: [QueryKeys.MUTATION_VALIDATE_REF_CODE],
     mutationFn: async ({ code }: { code: string }) => {
-      const { data } = await fetch<{ code: string }>(
-        `/referral-code/${code}`,
-        "POST"
+      const { data } = await fetch<{ status: string; message: string }>(
+        `/users/referral-code?code=${code}`,
+        "GET"
       );
-      if (data && data.code) {
-        console.log(data.code);
+
+      if (data && data.status && data.status === "failed") {
+        return data.message ?? "Invalid code";
       }
+      return !0;
     },
   });
 };

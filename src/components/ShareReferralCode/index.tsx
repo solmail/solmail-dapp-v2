@@ -30,7 +30,7 @@ import noop from "lodash/noop";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { FieldWrapper } from "@components/Field";
 import { useReferralCodeUpdate } from "@hooks/useReferralCodeUpdate";
-import { validateCode } from "@utils/string/code";
+
 import { useRefCodeValidation } from "@hooks/useReferralCodeValidation";
 import { debounceAsync } from "@utils/debounce";
 
@@ -119,7 +119,8 @@ I’ve been using SolMail, the first Web3 communication and identity app on Sola
     }
   }, [data?.referral_code, methods]);
 
-  const { mutateAsync: validateRef } = useRefCodeValidation();
+  const { mutateAsync: validateRef, isPending: isValidatingRefCode } =
+    useRefCodeValidation();
   const debouncedMuattion = useRef<any>(debounceAsync(validateRef, 1000));
 
   const onValidateRefCode = async (value: string) => {
@@ -127,9 +128,7 @@ I’ve been using SolMail, the first Web3 communication and identity app on Sola
       const res = await debouncedMuattion.current({
         code: value.toUpperCase(),
       });
-      if (res && res.data) {
-        return !0;
-      }
+      return res;
     } catch {
       return "Failed to validate code";
     }
@@ -180,7 +179,20 @@ I’ve been using SolMail, the first Web3 communication and identity app on Sola
                     as="form"
                     id={id}
                     onSubmit={methods.handleSubmit(onSubmitHandler)}
+                    position={"relative"}
                   >
+                    {isValidatingRefCode && (
+                      <Flex
+                        position={"absolute"}
+                        inset={0}
+                        zIndex={1}
+                        alignItems={"center"}
+                        justifyContent={"flex-end"}
+                        pr={50}
+                      >
+                        <Spinner size={"sm"} />
+                      </Flex>
+                    )}
                     <Input
                       fontSize={18}
                       borderRadius={5}
