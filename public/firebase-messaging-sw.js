@@ -2,13 +2,13 @@ importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyCwxBwXIgJq3ELDAfywvPktd1uvCL12HyA",
-  authDomain: "solmail-v2.firebaseapp.com",
-  projectId: "solmail-v2",
-  storageBucket: "solmail-v2.firebasestorage.app",
-  messagingSenderId: "196607540208",
-  appId: "1:196607540208:web:b769e52612f6076a3f7b35",
-  measurementId: "G-0X49VLGKBP",
+  apiKey: "AIzaSyDBLySmBfoZa-x8lQWA-WRugo-Zrw1-QEo",
+  authDomain: "solmailapp.firebaseapp.com",
+  projectId: "solmailapp",
+  storageBucket: "solmailapp.firebasestorage.app",
+  messagingSenderId: "845553486616",
+  appId: "1:845553486616:web:7ea22c5f7e47770875ec6d",
+  measurementId: "G-RSRW01NR4B",
 });
 
 const messaging = firebase.messaging();

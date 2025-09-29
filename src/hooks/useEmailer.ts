@@ -198,6 +198,9 @@ export const useEmailer = () => {
       });
     },
     onSuccess: () => {
+      showToast("Email sent", {
+        type: "success",
+      });
       refetch();
     },
     onError: (e) => {
