@@ -103,9 +103,9 @@ export const AnalyticsList: React.FC = () => {
                 <Tbody>
                   {data?.xp &&
                     data?.xp?.transactions?.length > 0 &&
-                    data?.xp?.transactions.map((item) => {
+                    data?.xp?.transactions.map((item, index) => {
                       return (
-                        <Tr>
+                        <Tr key={index}>
                           <Td>{item.amount}</Td>
                           <Td>{formatTime(item.timestamp)}</Td>
                           <Td>{item.event_type}</Td>

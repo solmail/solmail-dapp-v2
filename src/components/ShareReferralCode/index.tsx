@@ -22,7 +22,7 @@ import { IconType } from "react-icons";
 import { BsTelegram } from "react-icons/bs";
 
 import { ClipboardText } from "@components/ClipboardText";
-import { useEffect, useId, useMemo } from "react";
+import { useEffect, useId, useMemo, useRef } from "react";
 import { FaCopy, FaPencil, FaXTwitter } from "react-icons/fa6";
 import { TbCopyCheckFilled } from "react-icons/tb";
 import { getTelegramLink, getWhatsAppLink, getXShareUrl } from "@utils/string";
@@ -31,6 +31,8 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { FieldWrapper } from "@components/Field";
 import { useReferralCodeUpdate } from "@hooks/useReferralCodeUpdate";
 import { validateCode } from "@utils/string/code";
+import { useRefCodeValidation } from "@hooks/useReferralCodeValidation";
+import { debounceAsync } from "@utils/debounce";
 
 const ShareButton: React.FC<{
   link?: string;
@@ -117,6 +119,22 @@ I’ve been using SolMail, the first Web3 communication and identity app on Sola
     }
   }, [data?.referral_code, methods]);
 
+  const { mutateAsync: validateRef } = useRefCodeValidation();
+  const debouncedMuattion = useRef<any>(debounceAsync(validateRef, 1000));
+
+  const onValidateRefCode = async (value: string) => {
+    try {
+      const res = await debouncedMuattion.current({
+        code: value.toUpperCase(),
+      });
+      if (res && res.data) {
+        return !0;
+      }
+    } catch {
+      return "Failed to validate code";
+    }
+  };
+
   return (
     <Modal isCentered {...props} onClose={onClose}>
       <ModalOverlay />
@@ -175,7 +193,7 @@ I’ve been using SolMail, the first Web3 communication and identity app on Sola
                       textTransform={"uppercase"}
                       {...methods.register("code", {
                         required: "Code is required",
-                        validate: validateCode,
+                        validate: onValidateRefCode,
 
                         maxLength: {
                           value: 8,

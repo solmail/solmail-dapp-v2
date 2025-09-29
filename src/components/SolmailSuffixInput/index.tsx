@@ -2,30 +2,11 @@ import { Box, chakra, Flex, Input, Spinner } from "@chakra-ui/react";
 import { DOMAINS } from "@const/domain";
 
 import { useUsernameStatus } from "@hooks/useUsername";
+import { debounceAsync } from "@utils/debounce";
 import { validateUsername } from "@utils/string/username";
 import { useRef } from "react";
 import { get, useFormContext } from "react-hook-form";
 import { FormClaimUsername } from "src/types";
-
-function debounceAsync<T extends (...args: any[]) => Promise<any>>(
-  fn: T,
-  delay: number
-) {
-  let timer: ReturnType<typeof setTimeout> | null = null;
-  let resolver: ((value: any) => void) | null = null;
-
-  return (...args: Parameters<T>): Promise<ReturnType<T>> => {
-    if (timer) clearTimeout(timer);
-
-    return new Promise((resolve) => {
-      resolver = resolve;
-      timer = setTimeout(async () => {
-        const result = await fn(...args);
-        resolver?.(result);
-      }, delay);
-    });
-  };
-}
 
 export const SolmailSuffixInput: React.FC<{
   onValidate: (s: boolean) => void;
