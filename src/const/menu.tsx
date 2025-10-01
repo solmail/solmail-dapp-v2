@@ -16,13 +16,19 @@ import {
 import type { MenuConfig } from "src/types";
 import { SolmailHeader } from "@components/SolmailHeader";
 import { LuMilestone } from "react-icons/lu";
-
+import { GrTransaction } from "react-icons/gr";
 export const SOLMAIL_MENU: MenuConfig[] = [
   {
     icon: IoMail,
     name: "Inbox",
     link: "/u/solmail/inbox/all",
     id: "inbox",
+  },
+  {
+    icon: GrTransaction,
+    name: "Payments",
+    link: "/u/solmail/payment/all",
+    id: "payment",
   },
   {
     icon: IoSend,

@@ -11,13 +11,13 @@ export const SolanaPayRequest: React.FC<{ amount: string; token: string }> = ({
   return (
     <Flex
       fontSize={12}
-      px="1"
       borderRadius={3}
       display={"flex"}
       alignItems={"center"}
       justifyContent={"center"}
       fontWeight={"medium"}
       color={"light.100"}
+      pr={1}
     >
       <Image mr={1} w="40px" src={SolanaPayLogo} />
       <chakra.span

@@ -11,24 +11,20 @@ import { SolanaPay } from "@components/SolanaPay";
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { useToken } from "@hooks/useToken";
-import { useCallback, useState } from "react";
 
-import { MailBoxLabels, type PaymentConfig, type StatusType } from "src/types";
+import { type PaymentConfig } from "src/types";
 
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { useSolanaPayLogo } from "@hooks/useSolanaPayLogo";
+import { usePaymentStatus } from "@hooks/usePaymentStatus";
 const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
   const SolanaPayLogo = useSolanaPayLogo();
   const { id, context } = useMailBoxContext();
   const { mail } = useMailBody(id, context);
   const { amount, tokenaddress } = props;
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: !1 });
-  const { wallet } = usePrivyWallet();
-  const [{ isDone, isChecking: isStatusChecking }, setStatus] =
-    useState<StatusType>({
-      isDone: !1,
-      isChecking: !0,
-    });
+  const { wallet, address } = usePrivyWallet();
+  const { data: isDone, isLoading } = usePaymentStatus(id, props);
 
   const openPayment = () => {
     if (
@@ -40,21 +36,16 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
     }
   };
 
-  const onStatusChange = useCallback(
-    (s: StatusType) => {
-      setStatus(s);
-    },
-    [setStatus]
-  );
-
   const { symbol } = useToken(tokenaddress ?? "");
+  const isPaymentRequested =
+    mail && mail?.from?.toString() === address.toString();
+
   return (
     <>
       <Button size={"sm"} onClick={openPayment}>
-        {isStatusChecking && <Spinner size={"sm"} mr={2} />}
+        {isLoading && <Spinner size={"sm"} mr={2} />}
         <Image mr={1} src={SolanaPayLogo} w="50px" />
         {`${amount} ${symbol}`}
-
         {isDone && (
           <chakra.span
             bg="green.500"
@@ -64,9 +55,7 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
             borderRadius={15}
             ml={2}
           >
-            {context === MailBoxLabels.inbox
-              ? "Payment Done"
-              : "Payment Received"}
+            {!isPaymentRequested ? "Payment Done" : "Payment Received"}
           </chakra.span>
         )}
       </Button>
@@ -74,7 +63,6 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
       <SolanaPay
         isOpen={isOpen}
         onClose={onClose}
-        onStatusChange={onStatusChange}
         amount={props.amount}
         message={props.message}
         recipient={props.recipient}

@@ -8,6 +8,39 @@
   },
   "instructions": [
     {
+      "name": "broadcast_message",
+      "discriminator": [
+        253,
+        144,
+        203,
+        42,
+        219,
+        122,
+        147,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "sender",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "message_type",
+          "type": "string"
+        },
+        {
+          "name": "content",
+          "type": "string"
+        },
+        {
+          "name": "metadata",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "cancel_mail_bid",
       "docs": [
         "Cancel a MAIL token bid and get refund"
@@ -787,88 +820,6 @@
       "args": []
     },
     {
-      "name": "cleanup_expired_sol_bid_account",
-      "docs": [
-        "Cleanup expired SOL bid accounts to prevent storage bloat"
-      ],
-      "discriminator": [
-        147,
-        104,
-        250,
-        143,
-        53,
-        87,
-        60,
-        251
-      ],
-      "accounts": [
-        {
-          "name": "bid_account",
-          "writable": true
-        },
-        {
-          "name": "cleanup_authority",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "close_user_sol_bid_account",
-      "docs": [
-        "Allow users to close their own UserBid accounts and reclaim rent"
-      ],
-      "discriminator": [
-        215,
-        78,
-        20,
-        176,
-        246,
-        98,
-        185,
-        148
-      ],
-      "accounts": [
-        {
-          "name": "user_bid",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "user"
-              },
-              {
-                "kind": "account",
-                "path": "user_bid.bid_account",
-                "account": "UserBid"
-              }
-            ]
-          }
-        },
-        {
-          "name": "user",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "create_collection_master_edition",
       "docs": [
         "Create collection master edition"
@@ -1110,6 +1061,38 @@
                   95,
                   118,
                   51
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace_treasury",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
                 ]
               }
             ]
@@ -1400,7 +1383,7 @@
     {
       "name": "create_marketplace_settings",
       "docs": [
-        "Create or initialize enhanced marketplace settings with fixed fee structure (admin only)"
+        "Create or initialize enhanced marketplace settings (admin only)"
       ],
       "discriminator": [
         174,
@@ -1531,6 +1514,42 @@
           "name": "max_bid_amount_tokens",
           "type": {
             "option": "u64"
+          }
+        },
+        {
+          "name": "is_paused",
+          "type": {
+            "option": "bool"
+          }
+        },
+        {
+          "name": "min_username_length",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "max_username_length",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "seller_fee_basis_points",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "ans_program_id",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "skr_tld_parent",
+          "type": {
+            "option": "pubkey"
           }
         }
       ]
@@ -2158,6 +2177,139 @@
       "args": []
     },
     {
+      "name": "create_username_seeker",
+      "discriminator": [
+        18,
+        121,
+        227,
+        225,
+        152,
+        72,
+        70,
+        216
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "username_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  110,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "username"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  46,
+                  109,
+                  97,
+                  105,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "rate_limit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace_settings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "skr_domain_account",
+          "docs": [
+            ".skr AllDomain account owned by the Seeker Phone user"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "create_username_temprorary",
       "discriminator": [
         207,
@@ -2738,6 +2890,232 @@
         {
           "name": "mailbox",
           "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "mark_mail_as_payment",
+      "discriminator": [
+        98,
+        210,
+        179,
+        157,
+        6,
+        65,
+        213,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "mail",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_marketplace_settings_add_controls",
+      "discriminator": [
+        58,
+        75,
+        106,
+        67,
+        205,
+        68,
+        39,
+        179
+      ],
+      "accounts": [
+        {
+          "name": "marketplace_settings",
+          "docs": [
+            "Authority is verified manually in the instruction handler by reading the account data"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin must be the marketplace authority",
+            "This is verified in the instruction handler by reading marketplace_settings.authority"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "is_paused",
+          "type": "bool"
+        },
+        {
+          "name": "min_username_length",
+          "type": "u8"
+        },
+        {
+          "name": "max_username_length",
+          "type": "u8"
+        },
+        {
+          "name": "seller_fee_basis_points",
+          "type": "u16"
+        },
+        {
+          "name": "ans_program_id",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "skr_tld_parent",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "migrate_treasury_add_bid_tracking",
+      "discriminator": [
+        255,
+        31,
+        125,
+        8,
+        209,
+        6,
+        110,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "marketplace_treasury",
+          "docs": [
+            "Treasury authority is verified to match marketplace authority in the instruction handler"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace_settings",
+          "docs": [
+            "Marketplace settings account to verify admin is the authority"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin must be the marketplace authority (verified via marketplace_settings constraint)"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "calculated_total_revenue",
+          "type": "u64"
+        },
+        {
+          "name": "calculated_total_bid_amount",
+          "type": "u64"
         }
       ]
     },
@@ -3443,7 +3821,7 @@
     {
       "name": "update_marketplace_settings",
       "docs": [
-        "Update existing enhanced marketplace settings with fixed fee structure (admin only)"
+        "Update existing enhanced marketplace settings(admin only)"
       ],
       "discriminator": [
         121,
@@ -3569,6 +3947,42 @@
           "name": "max_bid_amount_tokens",
           "type": {
             "option": "u64"
+          }
+        },
+        {
+          "name": "is_paused",
+          "type": {
+            "option": "bool"
+          }
+        },
+        {
+          "name": "min_username_length",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "max_username_length",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "seller_fee_basis_points",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "ans_program_id",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "skr_tld_parent",
+          "type": {
+            "option": "pubkey"
           }
         }
       ]
@@ -3847,6 +4261,104 @@
       "args": []
     },
     {
+      "name": "withdraw_sol_from_treasury",
+      "docs": [
+        "Withdraw SOL from marketplace treasury (admin only)"
+      ],
+      "discriminator": [
+        54,
+        251,
+        139,
+        174,
+        186,
+        22,
+        181,
+        143
+      ],
+      "accounts": [
+        {
+          "name": "marketplace_treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace_settings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "wrap_username",
       "docs": [
         "Wrap a username as an NFT"
@@ -3961,6 +4473,70 @@
           }
         },
         {
+          "name": "marketplace_treasury",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace_settings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "metadata_account",
           "writable": true,
           "pda": {
@@ -3994,6 +4570,35 @@
           }
         },
         {
+          "name": "collection_mint",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  109,
+                  97,
+                  105,
+                  108,
+                  95,
+                  53,
+                  54,
+                  54,
+                  53,
+                  53,
+                  54,
+                  95,
+                  118,
+                  51
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "collection_metadata",
           "pda": {
             "seeds": [
@@ -4016,8 +4621,51 @@
               },
               {
                 "kind": "account",
-                "path": "central_state.collection_mint",
-                "account": "SolmailCentralState"
+                "path": "collection_mint"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "metadata_program"
+            }
+          }
+        },
+        {
+          "name": "collection_master_edition",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "metadata_program"
+              },
+              {
+                "kind": "account",
+                "path": "collection_mint"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  100,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
               }
             ],
             "program": {
@@ -4346,6 +4994,19 @@
         189,
         244,
         211
+      ]
+    },
+    {
+      "name": "BroadcastMessageEvent",
+      "discriminator": [
+        218,
+        100,
+        18,
+        33,
+        113,
+        107,
+        164,
+        205
       ]
     },
     {
@@ -5163,113 +5824,158 @@
     },
     {
       "code": 6066,
+      "name": "BiddingPaused",
+      "msg": "Bidding paused - marketplace has paused bidding system"
+    },
+    {
+      "code": 6067,
       "name": "InvalidPreviousBidder",
       "msg": "Invalid previous bidder"
     },
     {
-      "code": 6067,
+      "code": 6068,
       "name": "ArithmeticOverflow",
       "msg": "Arithmetic overflow"
     },
     {
-      "code": 6068,
+      "code": 6069,
       "name": "InvalidBidAccountState",
       "msg": "Invalid bid account state"
     },
     {
-      "code": 6069,
+      "code": 6070,
       "name": "InsufficientAccountBalance",
       "msg": "Insufficient account balance"
     },
     {
-      "code": 6070,
+      "code": 6071,
       "name": "BidAmountTooHigh",
       "msg": "Bid amount exceeds maximum allowed"
     },
     {
-      "code": 6071,
+      "code": 6072,
       "name": "InvalidDomainAccount",
       "msg": "Invalid domain account"
     },
     {
-      "code": 6072,
+      "code": 6073,
       "name": "InvalidUsernameCharacters",
       "msg": "Username contains invalid characters"
     },
     {
-      "code": 6073,
+      "code": 6074,
       "name": "UsernameReserved",
       "msg": "Username is reserved and cannot be used"
     },
     {
-      "code": 6074,
+      "code": 6075,
       "name": "AccountSpaceError",
       "msg": "Account space calculation error"
     },
     {
-      "code": 6075,
+      "code": 6076,
       "name": "InvalidBumpSeed",
       "msg": "Invalid account bump seed"
     },
     {
-      "code": 6076,
+      "code": 6077,
       "name": "AccountDeserializationFailed",
       "msg": "Account deserialization failed"
     },
     {
-      "code": 6077,
+      "code": 6078,
       "name": "InvalidAccountDiscriminator",
       "msg": "Invalid account discriminator"
     },
     {
-      "code": 6078,
+      "code": 6079,
       "name": "InvalidTimestamp",
       "msg": "Clock drift detected - invalid timestamp"
     },
     {
-      "code": 6079,
+      "code": 6080,
       "name": "RentCalculationFailed",
       "msg": "Rent calculation failed"
     },
     {
-      "code": 6080,
+      "code": 6081,
       "name": "InvalidInstructionData",
       "msg": "Invalid instruction data"
     },
     {
-      "code": 6081,
+      "code": 6082,
       "name": "SecurityViolation",
       "msg": "Security violation detected"
     },
     {
-      "code": 6082,
+      "code": 6083,
       "name": "InvalidAccountOwner",
       "msg": "Invalid account owner"
     },
     {
-      "code": 6083,
+      "code": 6084,
       "name": "AccountClosureNotPermitted",
       "msg": "Account closure not permitted"
     },
     {
-      "code": 6084,
+      "code": 6085,
       "name": "InvalidAccountState",
       "msg": "Invalid account state or data"
     },
     {
-      "code": 6085,
+      "code": 6086,
       "name": "MailboxAlreadyLinked",
       "msg": "This mailbox is already linked to another username"
     },
     {
-      "code": 6086,
+      "code": 6087,
       "name": "MailboxLinkMismatch",
       "msg": "Mailbox link mismatch - username not linked to this mailbox"
     },
     {
-      "code": 6087,
+      "code": 6088,
       "name": "RefundGracePeriodNotMet",
       "msg": "Refund grace period not met - must wait 24 hours after bid expiration"
+    },
+    {
+      "code": 6089,
+      "name": "InvalidAllDomainProgram",
+      "msg": "Invalid AllDomain program - not ANS program"
+    },
+    {
+      "code": 6090,
+      "name": "InvalidSkrDomainAccount",
+      "msg": "Invalid .skr domain account - not owned by ANS program"
+    },
+    {
+      "code": 6091,
+      "name": "InvalidSkrDomainAccountSize",
+      "msg": "Invalid .skr domain account size - too small"
+    },
+    {
+      "code": 6092,
+      "name": "InvalidSkrDomainAccountData",
+      "msg": "Invalid .skr domain account data format"
+    },
+    {
+      "code": 6093,
+      "name": "SkrDomainOwnerMismatch",
+      "msg": ".skr domain account owner does not match authority"
+    },
+    {
+      "code": 6094,
+      "name": "InvalidSkrTldParent",
+      "msg": "Invalid .skr TLD parent account"
+    },
+    {
+      "code": 6095,
+      "name": "NotSkrDomain",
+      "msg": "Not a .skr domain - only .skr domains allowed for Seeker Phone"
+    },
+    {
+      "code": 6096,
+      "name": "FailedToBorrowAccountData",
+      "msg": "Failed to borrow account data"
     }
   ],
   "types": [
@@ -5772,6 +6478,34 @@
       }
     },
     {
+      "name": "BroadcastMessageEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "message_type",
+            "type": "string"
+          },
+          {
+            "name": "sender",
+            "type": "pubkey"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "u32"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "name": "BulkOperationEvent",
       "type": {
         "kind": "struct",
@@ -6046,6 +6780,9 @@
           },
           {
             "name": "Spam"
+          },
+          {
+            "name": "Payment"
           }
         ]
       }
@@ -6310,6 +7047,30 @@
           {
             "name": "max_bid_amount_tokens",
             "type": "u64"
+          },
+          {
+            "name": "is_paused",
+            "type": "bool"
+          },
+          {
+            "name": "min_username_length",
+            "type": "u8"
+          },
+          {
+            "name": "max_username_length",
+            "type": "u8"
+          },
+          {
+            "name": "seller_fee_basis_points",
+            "type": "u16"
+          },
+          {
+            "name": "ans_program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "skr_tld_parent",
+            "type": "pubkey"
           }
         ]
       }
@@ -6413,6 +7174,14 @@
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "total_revenue",
+            "type": "u64"
+          },
+          {
+            "name": "total_bid_amount",
+            "type": "u64"
           }
         ]
       }
