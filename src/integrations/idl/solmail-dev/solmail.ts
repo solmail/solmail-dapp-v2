@@ -14,6 +14,39 @@ export type Solmail = {
   },
   "instructions": [
     {
+      "name": "broadcastMessage",
+      "discriminator": [
+        253,
+        144,
+        203,
+        42,
+        219,
+        122,
+        147,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "sender",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "messageType",
+          "type": "string"
+        },
+        {
+          "name": "content",
+          "type": "string"
+        },
+        {
+          "name": "metadata",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "cancelMailBid",
       "docs": [
         "Cancel a MAIL token bid and get refund"
@@ -793,88 +826,6 @@ export type Solmail = {
       "args": []
     },
     {
-      "name": "cleanupExpiredSolBidAccount",
-      "docs": [
-        "Cleanup expired SOL bid accounts to prevent storage bloat"
-      ],
-      "discriminator": [
-        147,
-        104,
-        250,
-        143,
-        53,
-        87,
-        60,
-        251
-      ],
-      "accounts": [
-        {
-          "name": "bidAccount",
-          "writable": true
-        },
-        {
-          "name": "cleanupAuthority",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "closeUserSolBidAccount",
-      "docs": [
-        "Allow users to close their own UserBid accounts and reclaim rent"
-      ],
-      "discriminator": [
-        215,
-        78,
-        20,
-        176,
-        246,
-        98,
-        185,
-        148
-      ],
-      "accounts": [
-        {
-          "name": "userBid",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "user"
-              },
-              {
-                "kind": "account",
-                "path": "user_bid.bid_account",
-                "account": "userBid"
-              }
-            ]
-          }
-        },
-        {
-          "name": "user",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "createCollectionMasterEdition",
       "docs": [
         "Create collection master edition"
@@ -1116,6 +1067,38 @@ export type Solmail = {
                   95,
                   118,
                   51
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplaceTreasury",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
                 ]
               }
             ]
@@ -1406,7 +1389,7 @@ export type Solmail = {
     {
       "name": "createMarketplaceSettings",
       "docs": [
-        "Create or initialize enhanced marketplace settings with fixed fee structure (admin only)"
+        "Create or initialize enhanced marketplace settings (admin only)"
       ],
       "discriminator": [
         174,
@@ -1537,6 +1520,42 @@ export type Solmail = {
           "name": "maxBidAmountTokens",
           "type": {
             "option": "u64"
+          }
+        },
+        {
+          "name": "isPaused",
+          "type": {
+            "option": "bool"
+          }
+        },
+        {
+          "name": "minUsernameLength",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "maxUsernameLength",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "sellerFeeBasisPoints",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "ansProgramId",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "skrTldParent",
+          "type": {
+            "option": "pubkey"
           }
         }
       ]
@@ -2164,6 +2183,139 @@ export type Solmail = {
       "args": []
     },
     {
+      "name": "createUsernameSeeker",
+      "discriminator": [
+        18,
+        121,
+        227,
+        225,
+        152,
+        72,
+        70,
+        216
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "usernameAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  110,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "username"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  46,
+                  109,
+                  97,
+                  105,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "rateLimit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplaceSettings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "skrDomainAccount",
+          "docs": [
+            ".skr AllDomain account owned by the Seeker Phone user"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "createUsernameTemprorary",
       "discriminator": [
         207,
@@ -2744,6 +2896,232 @@ export type Solmail = {
         {
           "name": "mailbox",
           "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "markMailAsPayment",
+      "discriminator": [
+        98,
+        210,
+        179,
+        157,
+        6,
+        65,
+        213,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "mail",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrateMarketplaceSettingsAddControls",
+      "discriminator": [
+        58,
+        75,
+        106,
+        67,
+        205,
+        68,
+        39,
+        179
+      ],
+      "accounts": [
+        {
+          "name": "marketplaceSettings",
+          "docs": [
+            "Authority is verified manually in the instruction handler by reading the account data"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin must be the marketplace authority",
+            "This is verified in the instruction handler by reading marketplace_settings.authority"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "isPaused",
+          "type": "bool"
+        },
+        {
+          "name": "minUsernameLength",
+          "type": "u8"
+        },
+        {
+          "name": "maxUsernameLength",
+          "type": "u8"
+        },
+        {
+          "name": "sellerFeeBasisPoints",
+          "type": "u16"
+        },
+        {
+          "name": "ansProgramId",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "skrTldParent",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "migrateTreasuryAddBidTracking",
+      "discriminator": [
+        255,
+        31,
+        125,
+        8,
+        209,
+        6,
+        110,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "marketplaceTreasury",
+          "docs": [
+            "Treasury authority is verified to match marketplace authority in the instruction handler"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplaceSettings",
+          "docs": [
+            "Marketplace settings account to verify admin is the authority"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin must be the marketplace authority (verified via marketplace_settings constraint)"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "calculatedTotalRevenue",
+          "type": "u64"
+        },
+        {
+          "name": "calculatedTotalBidAmount",
+          "type": "u64"
         }
       ]
     },
@@ -3449,7 +3827,7 @@ export type Solmail = {
     {
       "name": "updateMarketplaceSettings",
       "docs": [
-        "Update existing enhanced marketplace settings with fixed fee structure (admin only)"
+        "Update existing enhanced marketplace settings(admin only)"
       ],
       "discriminator": [
         121,
@@ -3575,6 +3953,42 @@ export type Solmail = {
           "name": "maxBidAmountTokens",
           "type": {
             "option": "u64"
+          }
+        },
+        {
+          "name": "isPaused",
+          "type": {
+            "option": "bool"
+          }
+        },
+        {
+          "name": "minUsernameLength",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "maxUsernameLength",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "sellerFeeBasisPoints",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "ansProgramId",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "skrTldParent",
+          "type": {
+            "option": "pubkey"
           }
         }
       ]
@@ -3853,6 +4267,104 @@ export type Solmail = {
       "args": []
     },
     {
+      "name": "withdrawSolFromTreasury",
+      "docs": [
+        "Withdraw SOL from marketplace treasury (admin only)"
+      ],
+      "discriminator": [
+        54,
+        251,
+        139,
+        174,
+        186,
+        22,
+        181,
+        143
+      ],
+      "accounts": [
+        {
+          "name": "marketplaceTreasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplaceSettings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "wrapUsername",
       "docs": [
         "Wrap a username as an NFT"
@@ -3967,6 +4479,70 @@ export type Solmail = {
           }
         },
         {
+          "name": "marketplaceTreasury",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplaceSettings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "metadataAccount",
           "writable": true,
           "pda": {
@@ -4000,6 +4576,35 @@ export type Solmail = {
           }
         },
         {
+          "name": "collectionMint",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  109,
+                  97,
+                  105,
+                  108,
+                  95,
+                  53,
+                  54,
+                  54,
+                  53,
+                  53,
+                  54,
+                  95,
+                  118,
+                  51
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "collectionMetadata",
           "pda": {
             "seeds": [
@@ -4022,8 +4627,51 @@ export type Solmail = {
               },
               {
                 "kind": "account",
-                "path": "central_state.collection_mint",
-                "account": "solmailCentralState"
+                "path": "collectionMint"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "metadataProgram"
+            }
+          }
+        },
+        {
+          "name": "collectionMasterEdition",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "metadataProgram"
+              },
+              {
+                "kind": "account",
+                "path": "collectionMint"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  100,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
               }
             ],
             "program": {
@@ -4352,6 +5000,19 @@ export type Solmail = {
         189,
         244,
         211
+      ]
+    },
+    {
+      "name": "broadcastMessageEvent",
+      "discriminator": [
+        218,
+        100,
+        18,
+        33,
+        113,
+        107,
+        164,
+        205
       ]
     },
     {
@@ -5169,113 +5830,158 @@ export type Solmail = {
     },
     {
       "code": 6066,
+      "name": "biddingPaused",
+      "msg": "Bidding paused - marketplace has paused bidding system"
+    },
+    {
+      "code": 6067,
       "name": "invalidPreviousBidder",
       "msg": "Invalid previous bidder"
     },
     {
-      "code": 6067,
+      "code": 6068,
       "name": "arithmeticOverflow",
       "msg": "Arithmetic overflow"
     },
     {
-      "code": 6068,
+      "code": 6069,
       "name": "invalidBidAccountState",
       "msg": "Invalid bid account state"
     },
     {
-      "code": 6069,
+      "code": 6070,
       "name": "insufficientAccountBalance",
       "msg": "Insufficient account balance"
     },
     {
-      "code": 6070,
+      "code": 6071,
       "name": "bidAmountTooHigh",
       "msg": "Bid amount exceeds maximum allowed"
     },
     {
-      "code": 6071,
+      "code": 6072,
       "name": "invalidDomainAccount",
       "msg": "Invalid domain account"
     },
     {
-      "code": 6072,
+      "code": 6073,
       "name": "invalidUsernameCharacters",
       "msg": "Username contains invalid characters"
     },
     {
-      "code": 6073,
+      "code": 6074,
       "name": "usernameReserved",
       "msg": "Username is reserved and cannot be used"
     },
     {
-      "code": 6074,
+      "code": 6075,
       "name": "accountSpaceError",
       "msg": "Account space calculation error"
     },
     {
-      "code": 6075,
+      "code": 6076,
       "name": "invalidBumpSeed",
       "msg": "Invalid account bump seed"
     },
     {
-      "code": 6076,
+      "code": 6077,
       "name": "accountDeserializationFailed",
       "msg": "Account deserialization failed"
     },
     {
-      "code": 6077,
+      "code": 6078,
       "name": "invalidAccountDiscriminator",
       "msg": "Invalid account discriminator"
     },
     {
-      "code": 6078,
+      "code": 6079,
       "name": "invalidTimestamp",
       "msg": "Clock drift detected - invalid timestamp"
     },
     {
-      "code": 6079,
+      "code": 6080,
       "name": "rentCalculationFailed",
       "msg": "Rent calculation failed"
     },
     {
-      "code": 6080,
+      "code": 6081,
       "name": "invalidInstructionData",
       "msg": "Invalid instruction data"
     },
     {
-      "code": 6081,
+      "code": 6082,
       "name": "securityViolation",
       "msg": "Security violation detected"
     },
     {
-      "code": 6082,
+      "code": 6083,
       "name": "invalidAccountOwner",
       "msg": "Invalid account owner"
     },
     {
-      "code": 6083,
+      "code": 6084,
       "name": "accountClosureNotPermitted",
       "msg": "Account closure not permitted"
     },
     {
-      "code": 6084,
+      "code": 6085,
       "name": "invalidAccountState",
       "msg": "Invalid account state or data"
     },
     {
-      "code": 6085,
+      "code": 6086,
       "name": "mailboxAlreadyLinked",
       "msg": "This mailbox is already linked to another username"
     },
     {
-      "code": 6086,
+      "code": 6087,
       "name": "mailboxLinkMismatch",
       "msg": "Mailbox link mismatch - username not linked to this mailbox"
     },
     {
-      "code": 6087,
+      "code": 6088,
       "name": "refundGracePeriodNotMet",
       "msg": "Refund grace period not met - must wait 24 hours after bid expiration"
+    },
+    {
+      "code": 6089,
+      "name": "invalidAllDomainProgram",
+      "msg": "Invalid AllDomain program - not ANS program"
+    },
+    {
+      "code": 6090,
+      "name": "invalidSkrDomainAccount",
+      "msg": "Invalid .skr domain account - not owned by ANS program"
+    },
+    {
+      "code": 6091,
+      "name": "invalidSkrDomainAccountSize",
+      "msg": "Invalid .skr domain account size - too small"
+    },
+    {
+      "code": 6092,
+      "name": "invalidSkrDomainAccountData",
+      "msg": "Invalid .skr domain account data format"
+    },
+    {
+      "code": 6093,
+      "name": "skrDomainOwnerMismatch",
+      "msg": ".skr domain account owner does not match authority"
+    },
+    {
+      "code": 6094,
+      "name": "invalidSkrTldParent",
+      "msg": "Invalid .skr TLD parent account"
+    },
+    {
+      "code": 6095,
+      "name": "notSkrDomain",
+      "msg": "Not a .skr domain - only .skr domains allowed for Seeker Phone"
+    },
+    {
+      "code": 6096,
+      "name": "failedToBorrowAccountData",
+      "msg": "Failed to borrow account data"
     }
   ],
   "types": [
@@ -5778,6 +6484,34 @@ export type Solmail = {
       }
     },
     {
+      "name": "broadcastMessageEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "messageType",
+            "type": "string"
+          },
+          {
+            "name": "sender",
+            "type": "pubkey"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "u32"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "name": "bulkOperationEvent",
       "type": {
         "kind": "struct",
@@ -6052,6 +6786,9 @@ export type Solmail = {
           },
           {
             "name": "spam"
+          },
+          {
+            "name": "payment"
           }
         ]
       }
@@ -6316,6 +7053,30 @@ export type Solmail = {
           {
             "name": "maxBidAmountTokens",
             "type": "u64"
+          },
+          {
+            "name": "isPaused",
+            "type": "bool"
+          },
+          {
+            "name": "minUsernameLength",
+            "type": "u8"
+          },
+          {
+            "name": "maxUsernameLength",
+            "type": "u8"
+          },
+          {
+            "name": "sellerFeeBasisPoints",
+            "type": "u16"
+          },
+          {
+            "name": "ansProgramId",
+            "type": "pubkey"
+          },
+          {
+            "name": "skrTldParent",
+            "type": "pubkey"
           }
         ]
       }
@@ -6419,6 +7180,14 @@ export type Solmail = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "totalRevenue",
+            "type": "u64"
+          },
+          {
+            "name": "totalBidAmount",
+            "type": "u64"
           }
         ]
       }

@@ -1,4 +1,12 @@
-import { Box, chakra, Flex, LinkBox, LinkOverlay } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  chakra,
+  Flex,
+  Icon,
+  LinkBox,
+  LinkOverlay,
+} from "@chakra-ui/react";
 import { Attachment } from "@components/Attachment";
 import { Avatar } from "@components/Avatar";
 import { CustomSkeleton } from "@components/CustomSkeleton";
@@ -8,12 +16,37 @@ import { UserDisplayName } from "@components/UserDisplayName";
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { useMailStatus } from "@hooks/useMailStatus";
+import { usePaymentStatus } from "@hooks/usePaymentStatus";
+import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { Link } from "@tanstack/react-router";
 import { trim } from "@utils/string";
 import { formatTime } from "@utils/time";
-
+import { BiSolidUpArrowSquare, BiSolidDownArrowSquare } from "react-icons/bi";
 import { MailBoxLabels, type FormattedMailBox } from "src/types";
 
+const PaymentStatusBadge: React.FC<{ id: string }> = ({ id }) => {
+  const { context } = useMailBoxContext();
+  const { address } = usePrivyWallet();
+  const { payments, mail } = useMailBody(id, context);
+  const { data: isDone } = usePaymentStatus(id, payments[0] ?? {});
+  const isPaymentRequesting = mail?.to?.toString() === address?.toString();
+
+  return (
+    <Badge
+      fontWeight={"normal"}
+      p={"2px"}
+      px={2}
+      colorScheme={isDone ? "green" : "red"}
+      fontSize={9}
+    >
+      {!isDone
+        ? "Pending"
+        : isPaymentRequesting
+          ? "Payment Done"
+          : "Payment Received"}
+    </Badge>
+  );
+};
 export const MailCard: React.FC<FormattedMailBox> = ({
   from,
   createdAt,
@@ -22,6 +55,7 @@ export const MailCard: React.FC<FormattedMailBox> = ({
 }) => {
   const { isRead } = useMailStatus(id, Number(createdAt) * 1000);
   const { context, id: contextId } = useMailBoxContext();
+  const { address: myAddress } = usePrivyWallet();
   const {
     textContent,
     hasSmartView,
@@ -30,10 +64,11 @@ export const MailCard: React.FC<FormattedMailBox> = ({
     subject,
   } = useMailBody(id, context);
   const addres =
-    context !== MailBoxLabels.outbox ? from?.toString() : to?.toString();
+    myAddress.toString() === to?.toString() ? from?.toString() : to?.toString();
   const isActive = contextId && contextId === id;
 
   const hasPendingState = isMailBoxLoading;
+
   return (
     <Box
       p={2}
@@ -63,7 +98,9 @@ export const MailCard: React.FC<FormattedMailBox> = ({
         <Flex>
           <UserDisplayName address={addres} />
         </Flex>
-        <Flex fontSize={12}>{formatTime(Number(createdAt) * 1000)}</Flex>
+        <Flex fontSize={12} alignItems={"center"}>
+          {formatTime(Number(createdAt) * 1000)}
+        </Flex>
       </Flex>
       {subject && (
         <Box
@@ -84,18 +121,24 @@ export const MailCard: React.FC<FormattedMailBox> = ({
           </CustomSkeleton>
         </Box>
       )}
-      <Box fontSize={12}>
-        <CustomSkeleton isLoading={hasPendingState}>
-          <chakra.span
-            textOverflow={"ellipsis"}
-            overflow={"hidden"}
-            w={"100%"}
-            whiteSpace={"nowrap"}
-          >
-            {trim(textContent, hasSmartView ? 30 : 60, "...", "(No content)")}
-          </chakra.span>
-        </CustomSkeleton>
+
+      <Box>
+        {context === MailBoxLabels.payment && <PaymentStatusBadge id={id} />}
       </Box>
+      {context !== MailBoxLabels.payment && (
+        <Box fontSize={12}>
+          <CustomSkeleton isLoading={hasPendingState}>
+            <chakra.span
+              textOverflow={"ellipsis"}
+              overflow={"hidden"}
+              w={"100%"}
+              whiteSpace={"nowrap"}
+            >
+              {trim(textContent, hasSmartView ? 30 : 60, "...", "(No content)")}
+            </chakra.span>
+          </CustomSkeleton>
+        </Box>
+      )}
       {hasSmartView && <SmartView id={id} />}
       <LinkOverlay as={Link} to={`/u/solmail/${context}/${id.toString()}`} />
     </Box>
@@ -104,7 +147,9 @@ export const MailCard: React.FC<FormattedMailBox> = ({
 const MAX_ATTACHMENTS_TO_SHOW = 1;
 const SmartView: React.FC<{ id: string }> = ({ id }) => {
   const { context } = useMailBoxContext();
-  const { attachments, payments } = useMailBody(id, context);
+  const { attachments, payments, mail } = useMailBody(id, context);
+  const { address } = usePrivyWallet();
+  const isRequestingPayment = mail?.from?.toString() === address;
   return (
     <Flex
       direction={"row"}
@@ -113,6 +158,16 @@ const SmartView: React.FC<{ id: string }> = ({ id }) => {
       alignItems={"center"}
       mt={1}
     >
+      {context === MailBoxLabels.payment && (
+        <Icon
+          mr={1}
+          fontSize={18}
+          color={isRequestingPayment ? "green.500" : "red.500"}
+          as={
+            isRequestingPayment ? BiSolidDownArrowSquare : BiSolidUpArrowSquare
+          }
+        />
+      )}
       {payments && payments.length > 0 && payments[0] && (
         <SolanaPayRequest
           amount={payments[0]?.amount}

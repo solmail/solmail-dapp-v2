@@ -42,7 +42,11 @@ export const MailActions: React.FC = () => {
   return (
     <>
       <MailOptionRenderer
-        renderWhen={[MailBoxLabels.inbox, MailBoxLabels.spam]}
+        renderWhen={[
+          MailBoxLabels.inbox,
+          MailBoxLabels.spam,
+          MailBoxLabels.payment,
+        ]}
       >
         <Tooltip label="Reply" placement="auto">
           <IconButton
@@ -60,6 +64,7 @@ export const MailActions: React.FC = () => {
           MailBoxLabels.outbox,
           MailBoxLabels.trash,
           MailBoxLabels.spam,
+          MailBoxLabels.payment,
         ]}
       >
         <Tooltip label="Forward" placement="auto">
@@ -77,6 +82,7 @@ export const MailActions: React.FC = () => {
           MailBoxLabels.inbox,
           MailBoxLabels.outbox,
           MailBoxLabels.spam,
+          MailBoxLabels.payment,
         ]}
       >
         <Tooltip placement="auto" label="Delete" isDisabled={isPending}>
@@ -91,7 +97,11 @@ export const MailActions: React.FC = () => {
       </MailOptionRenderer>
 
       <MailOptionRenderer
-        renderWhen={[MailBoxLabels.inbox, MailBoxLabels.trash]}
+        renderWhen={[
+          MailBoxLabels.inbox,
+          MailBoxLabels.trash,
+          MailBoxLabels.payment,
+        ]}
       >
         <Tooltip placement="auto" label="Mark as spam" isDisabled={isPending}>
           <IconButton

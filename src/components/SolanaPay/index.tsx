@@ -13,7 +13,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
-  useDisclosure,
   VStack,
   type ModalProps,
 } from "@chakra-ui/react";
@@ -21,8 +20,8 @@ import {
 import { ClipboardText } from "@components/ClipboardText";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { PaymentConfig, StatusType } from "src/types";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
+import type { PaymentConfig } from "src/types";
+import { PublicKey } from "@solana/web3.js";
 import { createQR, encodeURL } from "@solana/pay";
 import BigNumber from "bignumber.js";
 import { useSolanaPay } from "@hooks/useSolanaPay";
@@ -32,14 +31,12 @@ import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 import { useBalance } from "@hooks/useBalance";
 import { NO_BALANCE_LABEL } from "@const/config";
 import { useSolanaPayLogo } from "@hooks/useSolanaPayLogo";
+import { useSolanaPayReference } from "@hooks/useSolanaPayReference";
+import { usePaymentStatus } from "@hooks/usePaymentStatus";
 
 export const SolanaPay: React.FC<
-  Omit<ModalProps, "children"> &
-    PaymentConfig & {
-      onStatusChange: (s: StatusType) => void;
-    }
+  Omit<ModalProps, "children"> & PaymentConfig
 > = ({
-  onStatusChange,
   isOpen,
   onClose,
   amount,
@@ -55,36 +52,32 @@ export const SolanaPay: React.FC<
   );
   const { id } = useMailBoxContext();
   const [paymentUrl, setUrl] = useState<URL | null>(null);
-  const [reference, setReference] = useState<PublicKey | null>(null);
   const qrRef = useRef<HTMLDivElement>(null);
-  const { isOpen: isDone, onOpen } = useDisclosure();
   const SolanaPayLogo = useSolanaPayLogo();
+  const reference = useSolanaPayReference(id);
+  const { data: isDone, refetch } = usePaymentStatus(id, {
+    amount,
+    recipient,
+    tokenaddress,
+    message,
+  });
+
   const { isPending, sendTransaction } = useSolanaPay({
     splToken: symbol !== "SOL" ? address : "",
     ref: reference,
     qrUrl: paymentUrl,
-    onSuccess: onClose,
     decimals,
-    onPaymentStatusUpdate: useCallback(
-      (s: StatusType) => {
-        if (s.isDone) {
-          onOpen();
-        }
-
-        onStatusChange(s);
-      },
-      [onOpen, onStatusChange]
-    ),
+    onSuccess: () => {
+      refetch();
+    },
   });
+
   const createQrCode = useCallback(async () => {
+    if (!reference) {
+      return;
+    }
     const amountBigint = new BigNumber(amount);
     const to = new PublicKey(recipient);
-
-    const reference = await PublicKey.createWithSeed(
-      new PublicKey(id ?? ""),
-      "SolmailSolanaPay",
-      SystemProgram.programId
-    );
 
     const url = encodeURL({
       recipient: to,
@@ -94,9 +87,9 @@ export const SolanaPay: React.FC<
       message,
       splToken: symbol !== "SOL" ? new PublicKey(address) : undefined,
     });
-    setReference(reference);
+
     setUrl(url);
-  }, [address, amount, id, message, recipient, symbol]);
+  }, [address, amount, message, recipient, reference, symbol]);
 
   useEffect(() => {
     if (!paymentUrl) {

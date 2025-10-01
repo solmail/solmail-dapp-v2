@@ -83,6 +83,7 @@ export enum MailBoxLabels {
   "trash" = "trash",
   "spam" = "spam",
   "unknown" = "unknown",
+  "payment" = "payment",
 }
 
 export enum MailLabelIndex {

@@ -182,6 +182,18 @@ export const useEmailer = () => {
         updateEmailInstruction
       );
 
+      if (values.solanaPay?.amount && values.solanaPay.tokenaddress) {
+        const paymentsStatusTransaction = await program.methods
+          .markMailAsPayment()
+          .accounts({
+            mail: mailAccount.publicKey,
+            authority: userPublicKey,
+          })
+          .instruction();
+
+        transaction.add(paymentsStatusTransaction);
+      }
+
       const latestBlockhash = await connection.getLatestBlockhash("confirmed");
       transaction.recentBlockhash = latestBlockhash.blockhash;
       transaction.feePayer = new PublicKey(

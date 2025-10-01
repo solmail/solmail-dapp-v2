@@ -1,50 +1,42 @@
-import {
-  createTransfer,
-  findReference,
-  parseURL,
-  validateTransfer,
-  type TransferRequestURL,
-} from "@solana/pay";
+import { createTransfer, parseURL, type TransferRequestURL } from "@solana/pay";
 
-import { useCallback, useEffect, useTransition } from "react";
+import { useCallback, useTransition } from "react";
 import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import { useSolanaConnection } from "./useConnection";
 import { usePrivyWallet } from "./usePrivyWallet";
 import { useToast } from "./useToast";
 import { PublicKey, Transaction } from "@solana/web3.js";
-import isFunction from "lodash/isFunction";
 
-import type { StatusType } from "src/types";
 import {
   createAssociatedTokenAccountInstruction,
   createTransferInstruction,
   getAssociatedTokenAddress,
 } from "@solana/spl-token";
 import { toRawAmount } from "@utils/formating";
+import { useQueryClient } from "@tanstack/react-query";
+import { QueryKeys } from "src/types";
 
 type Options = {
   ref: PublicKey | null;
   qrUrl: URL | null;
   onSuccess?: () => void;
   onError?: (e: Error) => void;
-  onPaymentStatusUpdate?: (s: StatusType) => void;
+
   decimals: number;
   splToken?: string;
 };
 const _ERROR = "Failed to transfer amount";
 export const useSolanaPay = ({
-  ref,
   qrUrl,
   onSuccess,
   onError,
-  onPaymentStatusUpdate,
+
   decimals,
-  splToken,
 }: Options) => {
   const { provider } = useGetMailProgramInstance();
   const { isConnected: connected, wallet } = usePrivyWallet();
   const [isPending, startTransition] = useTransition();
-
+  const queryClient = useQueryClient();
   const connection = useSolanaConnection();
   const { showToast } = useToast();
 
@@ -139,12 +131,13 @@ export const useSolanaPay = ({
         await wallet.sendTransaction(transaction, connection, {
           skipPreflight: false,
         });
+        queryClient.invalidateQueries({
+          queryKey: [QueryKeys.PAYMENT_STATUS, reference?.toString()],
+        });
 
         showToast("Successfully transferred", { type: "success" });
         onSuccess?.();
-        onPaymentStatusUpdate?.({ isDone: true, isChecking: false });
       } catch (E) {
-        onPaymentStatusUpdate?.({ isDone: false, isChecking: false });
         showToast(_ERROR, { type: "error" });
         onError?.(E instanceof Error ? E : new Error(_ERROR));
       }
@@ -155,90 +148,12 @@ export const useSolanaPay = ({
     decimals,
     isPending,
     onError,
-    onPaymentStatusUpdate,
     onSuccess,
     provider,
     qrUrl,
     showToast,
     wallet,
   ]);
-
-  const checkPaymentStatus = useCallback(
-    async (callback: (s: boolean) => void) => {
-      try {
-        if (!qrUrl) return !1;
-        const { recipient, amount, reference } = parseURL(
-          qrUrl
-        ) as TransferRequestURL;
-
-        if (!amount || !ref) return;
-
-        const signatureInfo = await findReference(connection, ref, {
-          finality: "confirmed",
-        });
-
-        await validateTransfer(
-          connection,
-          signatureInfo.signature,
-          {
-            recipient: recipient,
-            amount,
-            reference,
-            ...(splToken ? { splToken: new PublicKey(splToken) } : {}),
-          },
-          { commitment: "confirmed" }
-        );
-
-        if (isFunction(onPaymentStatusUpdate)) {
-          onPaymentStatusUpdate({
-            isDone: !0,
-            isChecking: !1,
-          });
-        }
-        callback(!0);
-        if (isFunction(onSuccess)) {
-          onSuccess();
-        }
-      } catch (e) {
-        console.log(e);
-        if (isFunction(onPaymentStatusUpdate)) {
-          onPaymentStatusUpdate({
-            isDone: !1,
-            isChecking: !1,
-          });
-        }
-        callback(!1);
-        if (isFunction(onError)) {
-          onError(e && e instanceof Error ? e : new Error(_ERROR));
-        }
-      }
-    },
-    [connection, onError, onPaymentStatusUpdate, onSuccess, qrUrl, ref]
-  );
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (ref) {
-      checkPaymentStatus((s) => {
-        if (s) {
-          return;
-        }
-        timer = setInterval(
-          () =>
-            checkPaymentStatus((status) => {
-              if (status && timer) {
-                clearInterval(timer);
-              }
-            }),
-          3000
-        );
-      });
-    }
-    return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
-  }, [checkPaymentStatus, ref]);
 
   return {
     sendTransaction,

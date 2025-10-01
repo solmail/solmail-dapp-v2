@@ -27,23 +27,25 @@ const fetchAllMails = async (
 ) => {
   try {
     const filter =
-      MailBoxLabels.outbox === type
-        ? [
-            {
-              memcmp: {
-                offset: 8,
-                bytes: provider.publicKey.toBase58(),
+      MailBoxLabels.payment === type
+        ? []
+        : MailBoxLabels.outbox === type
+          ? [
+              {
+                memcmp: {
+                  offset: 8,
+                  bytes: provider.publicKey.toBase58(),
+                },
               },
-            },
-          ]
-        : [
-            {
-              memcmp: {
-                offset: 40,
-                bytes: provider.publicKey.toBase58(),
+            ]
+          : [
+              {
+                memcmp: {
+                  offset: 40,
+                  bytes: provider.publicKey.toBase58(),
+                },
               },
-            },
-          ];
+            ];
     const result: unknown = await Promise.all([
       program.account.solMailV2.all(filter),
       program.account.solMail.all(filter),
@@ -85,6 +87,9 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
 
           case MailBoxLabels.trash:
             return MailBoxLabels.trash;
+
+          case MailBoxLabels.payment:
+            return MailBoxLabels.payment;
 
           default:
             return MailBoxLabels.unknown;
@@ -132,16 +137,23 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
       (a, b) => Number(b.createdAt) - Number(a.createdAt)
     );
 
-    if (type && [MailBoxLabels.spam, MailBoxLabels.trash].indexOf(type) > -1) {
+    if (
+      type &&
+      [MailBoxLabels.spam, MailBoxLabels.trash, MailBoxLabels.payment].indexOf(
+        type
+      ) > -1
+    ) {
       formattedMailbox = formattedMailbox.filter((mail) => {
         return mail.labelIdentifier === type;
       });
     } else {
       formattedMailbox = formattedMailbox.filter((mail) => {
         return (
-          [MailBoxLabels.spam, MailBoxLabels.trash].indexOf(
-            mail.labelIdentifier
-          ) === -1
+          [
+            MailBoxLabels.spam,
+            MailBoxLabels.trash,
+            MailBoxLabels.payment,
+          ].indexOf(mail.labelIdentifier) === -1
         );
       });
     }
@@ -168,7 +180,7 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   useEffect(() => {
     let listener: number;
     if (program) {
-      listener = (program as Program<Solmail>).addEventListener(
+      listener = (program as any).addEventListener(
         "mailV2SendEvent",
         (event: {
           from: PublicKey;
