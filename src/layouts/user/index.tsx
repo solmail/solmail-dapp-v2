@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import { Composer } from "@components/Composer";
 import { Navbar } from "@components/Navbar";
 import { Sidebar } from "@components/Sidebar";
@@ -24,6 +24,7 @@ import { useAtom } from "jotai";
 import { AuthState } from "@state/auth";
 import { ENABLE_USERNAME_CLAIM } from "@const/config";
 import { useFCMNotifications } from "@hooks/useFCMNotifications";
+import { SeekerTest } from "@components/SeekerTest";
 
 export const UserLayout: React.FC = () => {
   const { address } = usePrivyWallet();
@@ -185,6 +186,7 @@ export const UserLayout: React.FC = () => {
           <Navbar />
         </Flex>
         <Flex data-body flex={"auto"}>
+          <SeekerTest />
           {isAuthenticated && (
             <>
               {hasAccount && (
@@ -194,7 +196,7 @@ export const UserLayout: React.FC = () => {
                 </>
               )}
 
-              {isAuthenticated && requestWalletCreation && (
+              {!1 && isAuthenticated && requestWalletCreation && (
                 <RequestAccountCreation
                   isOpen={true}
                   onClose={noop}
