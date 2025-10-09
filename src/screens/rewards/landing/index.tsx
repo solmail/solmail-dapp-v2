@@ -147,9 +147,6 @@ export const ReferralDashboard = () => {
               sx={{
                 bgColor: "surface.600",
                 opacity: 0.8,
-                backgroundImage: `
-                  repeating-radial-gradient(circle at 0 0, transparent 0, rgba(229, 229, 247, 0.02) 10px)
-                `,
               }}
             >
               <Quests />

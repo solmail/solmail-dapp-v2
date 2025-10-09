@@ -98,10 +98,10 @@ export const QuestSlider = () => {
     </Flex>
   );
 };
-
+const ENABLE_QUESTS = !1;
 export const Quests = () => {
   return (
-    <Flex direction={"column"} minH={250} maxH={250}>
+    <Flex w="100%" direction={"column"} minH={250} maxH={250}>
       <Flex
         justifyContent={"space-between"}
         px={5}
@@ -109,13 +109,26 @@ export const Quests = () => {
         flex={"auto"}
         alignItems={"center"}
         maxH={"70"}
+        w="100%"
       >
         <Flex fontWeight={"bold"} fontSize={20}>
           Quests
         </Flex>
         <Flex>Referral</Flex>
       </Flex>
-      <QuestSlider />
+      {ENABLE_QUESTS && <QuestSlider />}
+      {!ENABLE_QUESTS && (
+        <Flex
+          h="100%"
+          w="100%"
+          fontWeight={"medium"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          pb={20}
+        >
+          Coming soon
+        </Flex>
+      )}
     </Flex>
   );
 };

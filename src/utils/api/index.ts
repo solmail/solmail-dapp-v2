@@ -6,7 +6,8 @@ import type {
   AxiosResponse,
 } from "axios";
 import * as Sentry from "@sentry/react";
-import { getConnectedUser } from "@utils/jotai/getUser";
+import { getConnectedUser, getToken } from "@utils/jotai/getUser";
+
 /**
  * Axios api config to use to call api calls
  * @param url path
@@ -24,15 +25,19 @@ export const apiConfig = async <T>(
   data?: any,
   params?: any,
   includeAuth?: boolean,
-  requestType?: string,
+  requestType?: string | Record<string, string>,
   withCredentials?: boolean
 ): Promise<AxiosResponse<T>> => {
   const instance: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_SOLMAIL_BACKEND_API,
     headers: {
-      ...(requestType && { "X-Request-Type": requestType }),
+      ...(requestType
+        ? typeof requestType === "string"
+          ? { "X-Request-Type": requestType }
+          : requestType
+        : {}),
       ...(includeAuth && {
-        Authorization: `${localStorage.getItem("auth:token")}`,
+        Authorization: `${getToken()}`,
       }),
     },
     withCredentials,
@@ -70,8 +75,6 @@ export const apiConfig = async <T>(
       } else {
         errorMessage += SOMETHING_WENT_WRONG;
       }
-      localStorage.clear();
-      window.location.reload();
 
       const config = error.config;
 
@@ -86,6 +89,9 @@ export const apiConfig = async <T>(
         tags: { type: "backend-api" },
         extra: { payload, headers },
       });
+      localStorage.clear();
+      window.location.reload();
+
       return Promise.reject(errorMessage);
     }
   );

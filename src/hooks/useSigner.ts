@@ -6,16 +6,20 @@ import { PublicKey } from "@solana/web3.js";
 import { useSignMessage } from "@privy-io/react-auth/solana";
 import { useTransition } from "react";
 import { useAuthStatus } from "@hooks/useAuthState";
-import { getToken, STORAGE_NAME } from "@utils/string/token";
+import { getToken } from "@utils/string/token";
+import { AuthTokenResponse } from "src/types/token";
+import { useTokenRefresher } from "@hooks/useTokenRefresh";
+import { STORAGE_NAME } from "@const/config";
 
 export const useSigner = () => {
   const { wallet } = usePrivyWallet();
   const { isSignInRequested, update } = useAuthStatus();
   const [isPending, start] = useTransition();
   const { signMessage } = useSignMessage();
-
+  const isAuthDone = !!getToken();
+  useTokenRefresher(isAuthDone);
   const { isOpen: isAuthenticated, onOpen } = useDisclosure({
-    defaultIsOpen: !!getToken(),
+    defaultIsOpen: isAuthDone,
   });
 
   const setToken = (token: string) => {
@@ -49,27 +53,29 @@ export const useSigner = () => {
 
       if (!signature) return false;
       const publicKey = new PublicKey(wallet.address).toBase58();
-      const { data }: AxiosResponse<{ authToken: string }> = await apiConfig<{
-        authToken: string;
-      }>(
-        "wallet-auth",
-        "POST",
-        {
-          nonce,
-          signature,
-          publicKey,
-          ...(gmtValue && { gmtValue }),
-        },
-        undefined,
-        false,
-        "generate-jwt",
-        true
-      );
-      if (data.authToken) {
-        setToken(data.authToken);
+      const { data }: AxiosResponse<AuthTokenResponse> =
+        await apiConfig<AuthTokenResponse>(
+          "wallet-auth",
+          "POST",
+          {
+            nonce,
+            signature,
+            publicKey,
+            ...(gmtValue && { gmtValue }),
+          },
+          undefined,
+          false,
+          "generate-jwt",
+          true
+        );
+      if (data.refreshToken) {
+        setToken(data.refreshToken);
         update({
+          token: data.authToken ?? "",
+          updatedAt: new Date().getTime(),
           isAuthenticated: !0,
         });
+
         onOpen();
 
         return true;
@@ -112,6 +118,8 @@ export const useSigner = () => {
           onOpen();
           return;
         }
+      } else {
+        alert();
       }
     });
   };

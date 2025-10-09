@@ -114,3 +114,10 @@ export type TokenTransferForm = {
   token: string;
   amount: string;
 };
+
+export type AuthTokenResponse = {
+  authToken: string;
+  expiresIn: number;
+  refreshToken: string;
+  refreshExpiresIn: number;
+};

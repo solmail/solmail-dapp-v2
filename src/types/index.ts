@@ -54,6 +54,7 @@ export enum QueryKeys {
   "JUPITER_PRICE" = "JUPITER_PRICE",
   "HELIUS_GNERIC" = "HELIUS_GNERIC",
   "WEB_2_MAIL" = "WEB_2_MAIL",
+  "TOKEN_REFRESHER" = "TOKEN_REFRESHER",
 }
 
 export type StatusType = {

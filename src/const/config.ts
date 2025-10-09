@@ -36,3 +36,5 @@ export const FIREBASE_CONFIG = {
 
 export const ENABLE_USERNAME_CLAIM =
   import.meta.env.VITE_SOLMAIL_ENABLE_USERNAME_CLAIM === "true";
+
+export const STORAGE_NAME = "auth:token";
