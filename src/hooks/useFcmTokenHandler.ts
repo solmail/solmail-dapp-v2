@@ -16,6 +16,7 @@ export const useFCMTokenHandler = () => {
         "POST",
         {
           ...payload,
+          deviceType: "web",
         },
         {},
         true

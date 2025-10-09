@@ -14,14 +14,19 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  const { url, icon } = payload.data || {};
+  const { icon, click_action, body, title } = payload.data || {};
 
-  const notificationTitle = "You have a new email in your inbox.";
+  if (!title || !body) {
+    return;
+  }
+
+  const notificationTitle = title ?? "You have a new email in your inbox.";
+
   const notificationOptions = {
-    body: "New Mail Received",
+    body,
     icon,
     data: {
-      url: url,
+      url: click_action,
     },
   };
 
@@ -48,20 +53,3 @@ self.addEventListener("notificationclick", (event) => {
       })
   );
 });
-
-// self.addEventListener("push", (event) => {
-//   if (!event.data) return;
-
-//   const payload = event.data.json();
-//   const { title, body, icon, url } = payload.data || payload.notification || {};
-
-//   const notificationOptions = {
-//     body,
-//     icon,
-//     data: { url },
-//   };
-
-//   event.waitUntil(
-//     self.registration.showNotification(title, notificationOptions)
-//   );
-// });

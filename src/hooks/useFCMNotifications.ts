@@ -113,6 +113,20 @@ export const useFCMNotifications = (autoRequest: boolean = !1) => {
     }
   }, [autoRequest, requestPemisson]);
 
+  const ref = useRef<boolean>(false);
+  useEffect(() => {
+    if (!ref.current) {
+      ref.current = true;
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          registrations.forEach((registration) => {
+            registration.update();
+          });
+        });
+      }
+    }
+  }, []);
+
   return {
     hasPermisson,
     isRegistered,
