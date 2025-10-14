@@ -24,6 +24,7 @@ export type FormattedTokens = TokenAccount &
     decimals: number;
     icon: string;
     price: Price | undefined;
+    isNFT: boolean;
   };
 
 export const useTokensOwned = () => {
@@ -73,6 +74,7 @@ export const useTokensOwned = () => {
           decimals: token_info?.decimals ?? 9,
           icon: content?.links?.image ?? "",
           price: priceData && priceData[id] ? priceData[id] : undefined,
+          isNFT: token_info?.supply === 1,
         };
       })
       .filter((item) => !!item);
@@ -109,6 +111,7 @@ export const useTokenMeta = (id: string | undefined) => {
       symbol: data?.content?.metadata?.symbol,
       logo: data?.content?.files[0]?.cdn_uri,
       decimals: data?.token_info?.decimals ?? 9,
+      isNft: data?.token_info?.supply === 1,
     } as FormattedToken;
   }, [data]);
   return {

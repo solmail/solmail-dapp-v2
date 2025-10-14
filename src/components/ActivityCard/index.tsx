@@ -1,5 +1,7 @@
 import { Flex, Icon, Image, LinkBox, LinkOverlay } from "@chakra-ui/react";
+import { NftChip } from "@components/NftChip";
 import { BASE_TOKEN } from "@const/tokens";
+
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { useTokenMeta } from "@hooks/useTokensOwned";
 import { formatTokenBalance } from "@utils/formating";
@@ -22,10 +24,12 @@ export const TransferCard: React.FC<TransferCard> = ({ transaction }) => {
     : BASE_TOKEN.mint;
 
   const { token } = useTokenMeta(mintAddress);
+
   const isCredit = address && address !== transaction?.feePayer;
   const amount = IS_TOKEN_TRANSFER
     ? transaction.tokenTransfers[0].tokenAmount
     : transaction?.nativeTransfers?.[0].amount;
+
   return (
     <Flex
       direction={"row"}
@@ -52,7 +56,8 @@ export const TransferCard: React.FC<TransferCard> = ({ transaction }) => {
         <Flex justifyContent={"space-between"}>
           <Flex fontWeight={"medium"}>
             {`${isCredit ? "Receive" : "Sent"}
-            ${token?.symbol}`}
+            ${token?.symbol}`}{" "}
+            {token?.isNft && <NftChip />}
           </Flex>
           <Flex
             color={isCredit ? "green.500" : "red.500"}

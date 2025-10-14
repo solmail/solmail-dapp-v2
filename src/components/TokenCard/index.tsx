@@ -1,4 +1,5 @@
 import { chakra, Flex, Icon, Image, Tooltip } from "@chakra-ui/react";
+import { NftChip } from "@components/NftChip";
 import { BASE_TOKEN } from "@const/tokens";
 import { FormattedTokens } from "@hooks/useTokensOwned";
 import { formatTokenBalance, formatUsdValue } from "@utils/formating";
@@ -13,6 +14,7 @@ export const TokenCard: React.FC<FormattedTokens> = ({
   decimals,
   price,
   mint,
+  isNFT,
 }) => {
   return (
     <Flex
@@ -40,7 +42,10 @@ export const TokenCard: React.FC<FormattedTokens> = ({
 
       <Flex flex={"auto"} direction={"column"}>
         <Flex direction={"row"} justifyContent={"space-between"}>
-          <Flex fontWeight={"bold"}>{symbol ?? ""}</Flex>
+          <Flex fontWeight={"bold"}>
+            {symbol ?? ""}
+            {isNFT && <NftChip ml={1} />}
+          </Flex>
           <Flex fontWeight={"bold"}>
             <chakra.span>{formatUsdValue(price?.usdPrice ?? 0)}</chakra.span>
           </Flex>

@@ -21,6 +21,7 @@ export const useGetTransactions = () => {
     queryFn: () => fetchTransactions(address),
     enabled: !!address,
   });
+
   return {
     data,
     isLoading,

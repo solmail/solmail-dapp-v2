@@ -98,6 +98,7 @@ export type FormattedToken = {
   name: string;
   decimals: number;
   logo: string;
+  isNft: boolean;
 };
 
 export type SolanaTransactionSignatureInfo = {
