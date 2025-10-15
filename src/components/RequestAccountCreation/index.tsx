@@ -1,6 +1,7 @@
 import {
   Button,
   Flex,
+  Icon,
   IconButton,
   Modal,
   ModalBody,
@@ -19,6 +20,7 @@ import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { useSessionHandler } from "@hooks/useSessionHandler";
 import { isFunction } from "lodash";
 import { useMemo } from "react";
+import { FaLightbulb } from "react-icons/fa6";
 import { GrRefresh } from "react-icons/gr";
 import { RiShutDownLine } from "react-icons/ri";
 
@@ -49,6 +51,7 @@ export const RequestAccountCreation: React.FC<
       const res = await mutateAsync();
       if (res) {
         if (isFunction(onSuccess)) {
+          refetch();
           onSuccess();
         }
       }
@@ -63,7 +66,7 @@ export const RequestAccountCreation: React.FC<
       <ModalContent position={"relative"}>
         <ModalHeader textAlign={"center"}>
           <Flex direction={"row"} justifyContent={"space-between"}>
-            <Flex>Create mailbox</Flex>
+            <Flex>Create Mailbox</Flex>
             <Flex>
               <Button
                 onClick={onLogout}
@@ -89,7 +92,7 @@ export const RequestAccountCreation: React.FC<
               alignItems={"center"}
               justifyContent={"center"}
             >
-              Available balance
+              Available Balance
             </Flex>
             <Flex alignItems={"center"} justifyContent={"center"}>
               {formattedBalance}
@@ -114,24 +117,30 @@ export const RequestAccountCreation: React.FC<
                   {isPending || checkingMailAccountStatus || isSigningOut ? (
                     <Spinner size={"sm"} />
                   ) : (
-                    "Create mailbox"
+                    "Create Mailbox"
                   )}
                 </Button>
               </Tooltip>
             </Flex>
-            <Flex
-              alignItems={"center"}
-              justifyContent={"center"}
-              textAlign={"center"}
-              borderTop={"solid 1px"}
-              borderTopColor={"surface.500"}
-              pt={4}
-              mt={3}
-              fontSize={13}
-              opacity={0.6}
-            >
-              Please add funds to your embedded wallet before creating a
-              mailbox.
+
+            <Flex direction={"column"} alignItems={"center"} my={4} mt={6}>
+              <Flex fontWeight={"bold"}>
+                Deposit SOL to Activate Your Mailbox
+              </Flex>
+              <Flex mt={1} opacity={0.6} textAlign={"center"} fontSize={13}>
+                Your SolMail wallet is now ready — powered by Privy!. To create
+                your mailbox and start sending messages, please deposit a small
+                amount of SOL
+              </Flex>
+              <Flex
+                mt={3}
+                fontSize={13}
+                color={"yellow.500"}
+                alignItems={"center"}
+              >
+                <Icon as={FaLightbulb} fontSize={10} mr={1} />
+                Minimum required: 0.02 Sol
+              </Flex>
             </Flex>
           </Flex>
         </ModalBody>

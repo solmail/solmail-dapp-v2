@@ -266,9 +266,13 @@ export const LoginInfo: React.FC = () => {
   const { get } = useGetWalletById();
 
   const { isWallet, displayName, icon } = useMemo(() => {
-    const account: any = user?.linkedAccounts.sort((a, b) => {
-      return Number(b.latestVerifiedAt) - Number(a.latestVerifiedAt);
-    })[0];
+    const account: any = user?.linkedAccounts
+      .filter((wallet: any) => {
+        return wallet.walletClientType !== "privy";
+      })
+      .sort((a, b) => {
+        return Number(b.latestVerifiedAt) - Number(a.latestVerifiedAt);
+      })[0];
 
     if (!account || (!account.address && !account.email)) {
       return {
