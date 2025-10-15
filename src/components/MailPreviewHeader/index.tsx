@@ -7,6 +7,7 @@ import { DOMAINS } from "@const/domain";
 
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
+import { usePrivyWallet } from "@hooks/usePrivyWallet";
 
 import { useGetLinkedUsernameById } from "@hooks/useUsernames";
 
@@ -17,15 +18,26 @@ import { MailBoxLabels } from "src/types";
 
 export const MailPreviewHeader: React.FC = () => {
   const { context, id } = useMailBoxContext();
-
+  const { address: myAddress } = usePrivyWallet();
   const { isInternalMail } = useMailBody(id, context);
 
-  const label = context !== MailBoxLabels.outbox ? "From" : "To";
   const { mail } = useMailBody(id, context);
+  const label =
+    context === MailBoxLabels.payment
+      ? myAddress === mail?.from?.toString()
+        ? "To"
+        : "From"
+      : context !== MailBoxLabels.outbox
+        ? "From"
+        : "To";
   const address =
-    context !== MailBoxLabels.outbox
-      ? mail?.from?.toString()
-      : mail?.to?.toString();
+    context === MailBoxLabels.payment
+      ? mail?.from?.toString() === myAddress
+        ? mail.to.toString()
+        : mail?.from?.toString()
+      : context !== MailBoxLabels.outbox
+        ? mail?.from?.toString()
+        : mail?.to?.toString();
   const { displayName } = useGetLinkedUsernameById(address);
 
   return (

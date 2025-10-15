@@ -143,9 +143,18 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
         type
       ) > -1
     ) {
-      formattedMailbox = formattedMailbox.filter((mail) => {
-        return mail.labelIdentifier === type;
-      });
+      if (type === MailBoxLabels.payment) {
+        formattedMailbox = formattedMailbox.filter((mail) => {
+          return (
+            mail.labelIdentifier === type &&
+            (mail.from.toString() === address || mail.to.toString() === address)
+          );
+        });
+      } else {
+        formattedMailbox = formattedMailbox.filter((mail) => {
+          return mail.labelIdentifier === type;
+        });
+      }
     } else {
       formattedMailbox = formattedMailbox.filter((mail) => {
         return (
