@@ -21,6 +21,7 @@ import { Route as ULayoutAccountIndexRouteImport } from './routes/u/_layout/acco
 import { Route as ULayoutWalletLayoutRouteImport } from './routes/u/_layout/wallet/_layout'
 import { Route as ULayoutSolmailNotFoundRouteImport } from './routes/u/_layout/solmail/$not-found'
 import { Route as ULayoutSolsignDashboardIndexRouteImport } from './routes/u/_layout/solsign/dashboard/index'
+import { Route as ULayoutSolmailAirdropIndexRouteImport } from './routes/u/_layout/solmail/airdrop/index'
 import { Route as ULayoutRewardsMilestonesIndexRouteImport } from './routes/u/_layout/rewards/milestones/index'
 import { Route as ULayoutRewardsDashboardIndexRouteImport } from './routes/u/_layout/rewards/dashboard/index'
 import { Route as ULayoutWalletLayoutNotFoundRouteImport } from './routes/u/_layout/wallet/_layout/$not-found'
@@ -92,6 +93,12 @@ const ULayoutSolsignDashboardIndexRoute =
   ULayoutSolsignDashboardIndexRouteImport.update({
     id: '/solsign/dashboard/',
     path: '/solsign/dashboard/',
+    getParentRoute: () => ULayoutRoute,
+  } as any)
+const ULayoutSolmailAirdropIndexRoute =
+  ULayoutSolmailAirdropIndexRouteImport.update({
+    id: '/solmail/airdrop/',
+    path: '/solmail/airdrop/',
     getParentRoute: () => ULayoutRoute,
   } as any)
 const ULayoutRewardsMilestonesIndexRoute =
@@ -168,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/u/wallet/$not-found': typeof ULayoutWalletLayoutNotFoundRoute
   '/u/rewards/dashboard': typeof ULayoutRewardsDashboardIndexRoute
   '/u/rewards/milestones': typeof ULayoutRewardsMilestonesIndexRoute
+  '/u/solmail/airdrop': typeof ULayoutSolmailAirdropIndexRoute
   '/u/solsign/dashboard': typeof ULayoutSolsignDashboardIndexRoute
   '/u/wallet/activity/$id': typeof ULayoutWalletLayoutActivityIdRoute
   '/u/wallet/pay': typeof ULayoutWalletLayoutPayIndexRoute
@@ -190,6 +198,7 @@ export interface FileRoutesByTo {
   '/u/wallet/$not-found': typeof ULayoutWalletLayoutNotFoundRoute
   '/u/rewards/dashboard': typeof ULayoutRewardsDashboardIndexRoute
   '/u/rewards/milestones': typeof ULayoutRewardsMilestonesIndexRoute
+  '/u/solmail/airdrop': typeof ULayoutSolmailAirdropIndexRoute
   '/u/solsign/dashboard': typeof ULayoutSolsignDashboardIndexRoute
   '/u/wallet/activity/$id': typeof ULayoutWalletLayoutActivityIdRoute
   '/u/wallet/pay': typeof ULayoutWalletLayoutPayIndexRoute
@@ -215,6 +224,7 @@ export interface FileRoutesById {
   '/u/_layout/wallet/_layout/$not-found': typeof ULayoutWalletLayoutNotFoundRoute
   '/u/_layout/rewards/dashboard/': typeof ULayoutRewardsDashboardIndexRoute
   '/u/_layout/rewards/milestones/': typeof ULayoutRewardsMilestonesIndexRoute
+  '/u/_layout/solmail/airdrop/': typeof ULayoutSolmailAirdropIndexRoute
   '/u/_layout/solsign/dashboard/': typeof ULayoutSolsignDashboardIndexRoute
   '/u/_layout/wallet/_layout/activity/$id': typeof ULayoutWalletLayoutActivityIdRoute
   '/u/_layout/wallet/_layout/pay/': typeof ULayoutWalletLayoutPayIndexRoute
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/u/wallet/$not-found'
     | '/u/rewards/dashboard'
     | '/u/rewards/milestones'
+    | '/u/solmail/airdrop'
     | '/u/solsign/dashboard'
     | '/u/wallet/activity/$id'
     | '/u/wallet/pay'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/u/wallet/$not-found'
     | '/u/rewards/dashboard'
     | '/u/rewards/milestones'
+    | '/u/solmail/airdrop'
     | '/u/solsign/dashboard'
     | '/u/wallet/activity/$id'
     | '/u/wallet/pay'
@@ -285,6 +297,7 @@ export interface FileRouteTypes {
     | '/u/_layout/wallet/_layout/$not-found'
     | '/u/_layout/rewards/dashboard/'
     | '/u/_layout/rewards/milestones/'
+    | '/u/_layout/solmail/airdrop/'
     | '/u/_layout/solsign/dashboard/'
     | '/u/_layout/wallet/_layout/activity/$id'
     | '/u/_layout/wallet/_layout/pay/'
@@ -381,6 +394,13 @@ declare module '@tanstack/react-router' {
       path: '/solsign/dashboard'
       fullPath: '/u/solsign/dashboard'
       preLoaderRoute: typeof ULayoutSolsignDashboardIndexRouteImport
+      parentRoute: typeof ULayoutRoute
+    }
+    '/u/_layout/solmail/airdrop/': {
+      id: '/u/_layout/solmail/airdrop/'
+      path: '/solmail/airdrop'
+      fullPath: '/u/solmail/airdrop'
+      preLoaderRoute: typeof ULayoutSolmailAirdropIndexRouteImport
       parentRoute: typeof ULayoutRoute
     }
     '/u/_layout/rewards/milestones/': {
@@ -496,6 +516,7 @@ interface ULayoutRouteChildren {
   ULayoutSolmailTrashIdRoute: typeof ULayoutSolmailTrashIdRoute
   ULayoutRewardsDashboardIndexRoute: typeof ULayoutRewardsDashboardIndexRoute
   ULayoutRewardsMilestonesIndexRoute: typeof ULayoutRewardsMilestonesIndexRoute
+  ULayoutSolmailAirdropIndexRoute: typeof ULayoutSolmailAirdropIndexRoute
   ULayoutSolsignDashboardIndexRoute: typeof ULayoutSolsignDashboardIndexRoute
 }
 
@@ -512,6 +533,7 @@ const ULayoutRouteChildren: ULayoutRouteChildren = {
   ULayoutSolmailTrashIdRoute: ULayoutSolmailTrashIdRoute,
   ULayoutRewardsDashboardIndexRoute: ULayoutRewardsDashboardIndexRoute,
   ULayoutRewardsMilestonesIndexRoute: ULayoutRewardsMilestonesIndexRoute,
+  ULayoutSolmailAirdropIndexRoute: ULayoutSolmailAirdropIndexRoute,
   ULayoutSolsignDashboardIndexRoute: ULayoutSolsignDashboardIndexRoute,
 }
 

@@ -17,6 +17,7 @@ import type { MenuConfig } from "src/types";
 import { SolmailHeader } from "@components/SolmailHeader";
 import { LuMilestone } from "react-icons/lu";
 import { GrTransaction } from "react-icons/gr";
+import { BiBullseye } from "react-icons/bi";
 export const SOLMAIL_MENU: MenuConfig[] = [
   {
     icon: IoMail,
@@ -47,6 +48,12 @@ export const SOLMAIL_MENU: MenuConfig[] = [
     name: "Trash",
     link: "/u/solmail/trash/all",
     id: "trash",
+  },
+  {
+    icon: BiBullseye,
+    name: "Airdrop",
+    link: "/u/solmail/airdrop/",
+    id: "airdrop",
   },
 ];
 
