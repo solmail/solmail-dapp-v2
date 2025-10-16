@@ -2,7 +2,7 @@ import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
 import { Program } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { useGetMailProgramInstance } from "./useMailProgramInstance";
-import type { Solmail } from "@integrations/idl/solmail-preprod/solmail";
+import type { Solmail } from "@integrations/idl/index";
 import { QueryKeys } from "src/types";
 import { useToast } from "./useToast";
 import { getErrorMessage } from "@utils/error/getErrorMessage";

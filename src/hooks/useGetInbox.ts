@@ -15,7 +15,7 @@ import {
 } from "src/types";
 import { useMemo, useCallback, useEffect, useRef } from "react";
 import { useGetMailProgramInstance } from "@hooks/useMailProgramInstance";
-import type { Solmail } from "@integrations/idl/solmail-preprod/solmail";
+import type { Solmail } from "@integrations/idl/index";
 import { isOlderThan } from "@utils/time";
 import { usePrivyWallet } from "./usePrivyWallet";
 import { PublicKey } from "@solana/web3.js";

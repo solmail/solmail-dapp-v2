@@ -8,7 +8,7 @@ import {
   LinkOverlay,
 } from "@chakra-ui/react";
 
-import IDL from "@integrations/idl/index";
+import { IDL } from "@integrations/idl/index";
 import { Link } from "@tanstack/react-router";
 import { isValidUrl } from "@utils/string";
 

@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/solmail.json`.
  */
 export type Solmail = {
-  address: "Mai1UbiFBUvDnE2DDRxp765sRtX792zw24cgSpcgrz1";
+  address: "5VNBFr2dJTUy3eDwMdSoTb37jzmcpoAL4WH27fcAh98t";
   metadata: {
     name: "solmail";
     version: "0.1.0";
@@ -722,55 +722,23 @@ export type Solmail = {
               {
                 kind: "const";
                 value: [
-                  83,
+                  115,
                   111,
                   108,
                   109,
                   97,
                   105,
                   108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
-                ];
-              },
-            ];
-          };
-        },
-        {
-          name: "marketplaceSettings";
-          docs: ["Marketplace settings to verify authority"];
-          pda: {
-            seeds: [
-              {
-                kind: "const";
-                value: [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
                   95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115,
+                  53,
+                  54,
+                  54,
+                  53,
+                  53,
+                  54,
+                  95,
+                  118,
+                  51,
                 ];
               },
             ];
@@ -891,22 +859,23 @@ export type Solmail = {
               {
                 kind: "const";
                 value: [
-                  83,
+                  115,
                   111,
                   108,
                   109,
                   97,
                   105,
                   108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
+                  95,
+                  53,
+                  54,
+                  54,
+                  53,
+                  53,
+                  54,
+                  95,
+                  118,
+                  51,
                 ];
               },
             ];
@@ -939,39 +908,6 @@ export type Solmail = {
                   117,
                   114,
                   121,
-                ];
-              },
-            ];
-          };
-        },
-        {
-          name: "marketplaceSettings";
-          docs: ["Marketplace settings to verify authority"];
-          pda: {
-            seeds: [
-              {
-                kind: "const";
-                value: [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115,
                 ];
               },
             ];
@@ -1547,22 +1483,23 @@ export type Solmail = {
               {
                 kind: "const";
                 value: [
-                  83,
+                  115,
                   111,
                   108,
                   109,
                   97,
                   105,
                   108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
+                  95,
+                  53,
+                  54,
+                  54,
+                  53,
+                  53,
+                  54,
+                  95,
+                  118,
+                  51,
                 ];
               },
             ];
@@ -1656,39 +1593,6 @@ export type Solmail = {
                 89,
               ];
             };
-          };
-        },
-        {
-          name: "marketplaceSettings";
-          docs: ["Marketplace settings to verify authority"];
-          pda: {
-            seeds: [
-              {
-                kind: "const";
-                value: [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115,
-                ];
-              },
-            ];
           };
         },
         {
@@ -1902,15 +1806,7 @@ export type Solmail = {
       accounts: [
         {
           name: "authority";
-          docs: ["Username owner and fee payer"];
           writable: true;
-          signer: true;
-        },
-        {
-          name: "domainOwner";
-          docs: [
-            "Domain owner who authorizes username creation via .skr domain ownership",
-          ];
           signer: true;
         },
         {
@@ -1983,7 +1879,96 @@ export type Solmail = {
         },
         {
           name: "skrDomainAccount";
-          docs: [".skr AllDomain account owned by domain_owner"];
+          docs: [".skr AllDomain account owned by the Seeker Phone user"];
+        },
+        {
+          name: "systemProgram";
+          address: "11111111111111111111111111111111";
+        },
+      ];
+      args: [
+        {
+          name: "username";
+          type: "string";
+        },
+      ];
+    },
+    {
+      name: "createUsernameTemprorary";
+      discriminator: [207, 4, 38, 149, 14, 173, 35, 252];
+      accounts: [
+        {
+          name: "usernameAccount";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [117, 115, 101, 114, 110, 97, 109, 101];
+              },
+              {
+                kind: "arg";
+                path: "username";
+              },
+              {
+                kind: "const";
+                value: [115, 111, 108, 46, 109, 97, 105, 108];
+              },
+            ];
+          };
+        },
+        {
+          name: "rateLimit";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [114, 97, 116, 101, 95, 108, 105, 109, 105, 116];
+              },
+              {
+                kind: "account";
+                path: "authority";
+              },
+            ];
+          };
+        },
+        {
+          name: "marketplaceSettings";
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115,
+                ];
+              },
+            ];
+          };
+        },
+        {
+          name: "authority";
+          writable: true;
+          signer: true;
         },
         {
           name: "systemProgram";
@@ -3823,22 +3808,23 @@ export type Solmail = {
               {
                 kind: "const";
                 value: [
-                  83,
+                  115,
                   111,
                   108,
                   109,
                   97,
                   105,
                   108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
+                  95,
+                  53,
+                  54,
+                  54,
+                  53,
+                  53,
+                  54,
+                  95,
+                  118,
+                  51,
                 ];
               },
             ];
