@@ -12,7 +12,7 @@ export const RewardsProfile: React.FC = () => {
 
   const {
     isOpen: isEditMode,
-    onOpen: enableEditMode,
+
     onClose: disableEditMode,
   } = useDisclosure();
   return (
@@ -47,7 +47,7 @@ export const RewardsProfile: React.FC = () => {
       <Badge mt={2} colorScheme="green" px="8px" py="2px" borderRadius={15}>
         Boost 🚀 x{data?.milestone?.boost_factor}
       </Badge>
-      <Button
+      {/* <Button
         onClick={() => {
           enableEditMode();
           onOpen();
@@ -57,7 +57,7 @@ export const RewardsProfile: React.FC = () => {
         w="full"
       >
         Edit Referral
-      </Button>
+      </Button> */}
       <Button
         mt={2}
         leftIcon={<FaShareAlt />}
@@ -65,7 +65,6 @@ export const RewardsProfile: React.FC = () => {
         variant={"green"}
         w="full"
         onClick={() => {
-          disableEditMode();
           onOpen();
         }}
       >
