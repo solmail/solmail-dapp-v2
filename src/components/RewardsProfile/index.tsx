@@ -10,11 +10,7 @@ export const RewardsProfile: React.FC = () => {
   const { data } = useProfile();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const {
-    isOpen: isEditMode,
-
-    onClose: disableEditMode,
-  } = useDisclosure();
+  const { isOpen: isEditMode } = useDisclosure();
   return (
     <Flex
       direction="column"
