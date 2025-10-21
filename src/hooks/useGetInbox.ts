@@ -19,6 +19,7 @@ import type { Solmail } from "@integrations/idl/index";
 import { isOlderThan } from "@utils/time";
 import { usePrivyWallet } from "./usePrivyWallet";
 import { PublicKey } from "@solana/web3.js";
+import { useMailBoxGraphql } from "./useMailGraphql";
 
 const fetchAllMails = async (
   program: Program<Solmail>,
@@ -60,6 +61,7 @@ const fetchAllMails = async (
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const { program, provider } = useGetMailProgramInstance();
   const { address } = usePrivyWallet();
+  useMailBoxGraphql();
   const { data, isLoading, refetch, isRefetching } =
     useQuery<FetchAllMailsResult>({
       queryKey: [QueryKeys.MAILBOX, type],
