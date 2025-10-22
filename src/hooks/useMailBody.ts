@@ -94,12 +94,13 @@ export const useMailBody = (
     isLoading,
     isFetched,
   } = useQuery<string>({
-    queryKey: [QueryKeys.MAIL_BODY, id, mail?.body],
+    queryKey: [QueryKeys.MAIL_BODY, id],
     queryFn:
       mail && mail.body
         ? () => getMailContent(mail.body, mail.version as StorageVersion)
         : skipToken,
     enabled: !!(id && mail && mail.body),
+    staleTime: 1000 * 60,
   });
 
   const [mailContent, attachments, textContent, payments, attachmentRef] =

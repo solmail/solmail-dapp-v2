@@ -1,20 +1,27 @@
 import { useQuery } from "@apollo/client";
 import { GET_USER_MAILBOX } from "@integrations/graphql/queries/getMailBox";
 import { usePrivyWallet } from "./usePrivyWallet";
-import {} from "src/gql/graphql";
+import { GetUserInboxQueryVariables, MailLabel } from "src/gql/graphql";
+import { GetUserInboxResponse } from "src/types";
 
 export const useMailBoxGraphql = () => {
   const { address } = usePrivyWallet();
-  const { loading, error, data } = useQuery<any, any>(GET_USER_MAILBOX, {
+  const { loading, error, data, refetch } = useQuery<
+    GetUserInboxResponse,
+    GetUserInboxQueryVariables
+  >(GET_USER_MAILBOX, {
     variables: {
       wallet: address,
-      excludedLabels: ["Spam"],
+      excludedLabels: [MailLabel.Spam],
       limit: 20,
     },
   });
+
   return {
-    loading,
+    isLoading: loading,
     error,
     data,
+    isRefetching: !1,
+    refetch,
   };
 };
