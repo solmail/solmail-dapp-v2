@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
+    "prod:dev":"vite --mode production",
     "build:analyze": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode analyze",
     "build": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode development",
     "build:preprod": "set NODE_OPTIONS=--max-old-space-size=4096 && tsc -b && vite build --mode preprod",
@@ -14,8 +15,8 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "deploy": "node ./deploy.js development",
     "deploy:dev": "npm run build && npm run deploy",
-    "deploy:preprod": "npm run build:preprod && node ./deploy.js preprod",
-    "deploy:prod": "npm run build:prod && node ./deploy.js production",
+    "deploy:preprod": "npm run build:preprod && node ./deploy.js main",
+    "deploy:prod": "npm run build:prod && node ./deploy.js main",
     "preview:prod": "http-server ./dist -p 3030 -o"
   },
   "dependencies": {
