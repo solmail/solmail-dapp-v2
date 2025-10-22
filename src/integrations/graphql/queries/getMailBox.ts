@@ -1,38 +1,39 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_MAILBOX = gql`
-  query GetUserMailbox(
-    $userAddress: String!
-    $mailType: MailType
+  query GetUserInbox(
+    $wallet: String!
+    $excludedLabels: [MailLabel!]
     $limit: Int
-    $offset: Int
   ) {
-    getUserMailbox(
-      userAddress: $userAddress
-      mailType: $mailType
-      limit: $limit
-      offset: $offset
-    ) {
-      address
+    userInbox(wallet: $wallet, excludedLabels: $excludedLabels, limit: $limit) {
+      wallet
+      count
       mails {
         id
+        from
+        to
         subject
         body
-        fromAddress
-        toAddress
-        isRead
-        parentId
-        isEncrypted
-        version
-        mailbox
-        direction
+        label
+        mark_as_read
+        created_at
+        senderMailAccount {
+          authority
+          mailbox
+          linkedUsernames {
+            username
+            domain
+          }
+        }
+        recipientMailAccount {
+          authority
+          mailbox
+        }
       }
-      pagination {
-        total
-        limit
-        offset
-        hasNext
-        hasPrev
+      appliedFilters {
+        excludedLabels
+        usedGSI
       }
     }
   }

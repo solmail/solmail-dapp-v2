@@ -60,6 +60,7 @@ const fetchAllMails = async (
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const { program, provider } = useGetMailProgramInstance();
   const { address } = usePrivyWallet();
+
   const { data, isLoading, refetch, isRefetching } =
     useQuery<FetchAllMailsResult>({
       queryKey: [QueryKeys.MAILBOX, type],

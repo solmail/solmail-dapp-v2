@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import type { IconType } from "react-icons/lib";
+import { MailsResponse } from "src/gql/graphql";
 export * from "./mail";
 export * from "./referrals";
 export type MenuConfig = {
@@ -76,4 +77,8 @@ export type SolanaPayPayload = {
   amount: string;
   message: string;
   tokenaddress: string;
+};
+
+export type GetUserInboxResponse = {
+  userInbox: MailsResponse;
 };
