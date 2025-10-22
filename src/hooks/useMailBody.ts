@@ -100,7 +100,7 @@ export const useMailBody = (
         ? () => getMailContent(mail.body, mail.version as StorageVersion)
         : skipToken,
     enabled: !!(id && mail && mail.body),
-    staleTime: 1000 * 60,
+    staleTime: Infinity,
   });
 
   const [mailContent, attachments, textContent, payments, attachmentRef] =
@@ -112,7 +112,9 @@ export const useMailBody = (
       MailREsponseAttachment[],
     ] => {
       if (isInternalMail(mail?.version as StorageVersion)) {
-        return [content ?? "", [], content ?? "", [], []];
+        const div = document.createElement("div");
+        div.innerHTML = content ?? "";
+        return [content ?? "", [], div.textContent ?? "", [], []];
       }
 
       if (!content || !content) {
@@ -155,6 +157,8 @@ export const useMailBody = (
             payments.push(pay);
           });
         }
+
+        console.log(div);
         return [
           div.innerHTML,
           attachments,
