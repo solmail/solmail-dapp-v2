@@ -239,7 +239,7 @@ const deployApp = async (environment) => {
 
     const confirmed = await getUserConfirmation(environment);
     if (!confirmed) {
-      process.exit(0);
+     // process.exit(0);
     }
 
     const filePaths = getBuildFiles();
