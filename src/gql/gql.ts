@@ -14,9 +14,11 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  mutation UpdateMailReadStatus($mailId: String!, $markAsRead: Boolean!) {\n    updateMailReadStatus(mailId: $mailId, markAsRead: $markAsRead) {\n      success\n      message\n      mail {\n        id\n        subject\n        mark_as_read\n        from\n        to\n      }\n    }\n  }\n": typeof types.UpdateMailReadStatusDocument,
     "\n  query GetUserMails(\n    $wallet: String!\n    $type: MailType!\n    $limit: Int\n    $offset: Int\n  ) {\n    mailsByType(wallet: $wallet, type: $type, limit: $limit, offset: $offset) {\n      wallet\n      count\n      mails {\n        id\n        from\n        to\n        subject\n        body\n        label\n        mark_as_read\n        version\n        public_key\n        created_at\n        senderMailAccount {\n          authority\n          mailbox\n          linkedUsernames {\n            username\n            domain\n          }\n        }\n        recipientMailAccount {\n          authority\n          mailbox\n        }\n      }\n      appliedFilters {\n        excludedLabels\n        usedGSI\n      }\n    }\n  }\n": typeof types.GetUserMailsDocument,
 };
 const documents: Documents = {
+    "\n  mutation UpdateMailReadStatus($mailId: String!, $markAsRead: Boolean!) {\n    updateMailReadStatus(mailId: $mailId, markAsRead: $markAsRead) {\n      success\n      message\n      mail {\n        id\n        subject\n        mark_as_read\n        from\n        to\n      }\n    }\n  }\n": types.UpdateMailReadStatusDocument,
     "\n  query GetUserMails(\n    $wallet: String!\n    $type: MailType!\n    $limit: Int\n    $offset: Int\n  ) {\n    mailsByType(wallet: $wallet, type: $type, limit: $limit, offset: $offset) {\n      wallet\n      count\n      mails {\n        id\n        from\n        to\n        subject\n        body\n        label\n        mark_as_read\n        version\n        public_key\n        created_at\n        senderMailAccount {\n          authority\n          mailbox\n          linkedUsernames {\n            username\n            domain\n          }\n        }\n        recipientMailAccount {\n          authority\n          mailbox\n        }\n      }\n      appliedFilters {\n        excludedLabels\n        usedGSI\n      }\n    }\n  }\n": types.GetUserMailsDocument,
 };
 
@@ -34,6 +36,10 @@ const documents: Documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateMailReadStatus($mailId: String!, $markAsRead: Boolean!) {\n    updateMailReadStatus(mailId: $mailId, markAsRead: $markAsRead) {\n      success\n      message\n      mail {\n        id\n        subject\n        mark_as_read\n        from\n        to\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateMailReadStatus($mailId: String!, $markAsRead: Boolean!) {\n    updateMailReadStatus(mailId: $mailId, markAsRead: $markAsRead) {\n      success\n      message\n      mail {\n        id\n        subject\n        mark_as_read\n        from\n        to\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

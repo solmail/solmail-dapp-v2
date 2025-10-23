@@ -67,8 +67,9 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
         isV1: !1,
         user0: new PublicKey(user0),
         user1: new PublicKey(user1),
-        markAsRead: !1,
+        markAsRead: mail.mark_as_read ?? !1,
         labelIdentifier: MailBoxLabels.inbox,
+        uid: mail.id ?? "",
       };
 
       return formattedMail;

@@ -16,7 +16,7 @@ import { UserDisplayName } from "@components/UserDisplayName";
 
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
-import { useMailStatus } from "@hooks/useMailStatus";
+
 import { usePaymentStatus } from "@hooks/usePaymentStatus";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { Link } from "@tanstack/react-router";
@@ -49,8 +49,8 @@ const PaymentStatusBadge: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
-  const { from, createdAt, id, to } = props;
-  const { isRead } = useMailStatus(id, Number(createdAt) * 1000);
+  const { from, createdAt, id, to, markAsRead: isRead } = props;
+
   const { context, id: contextId } = useMailBoxContext();
   const { address: myAddress } = usePrivyWallet();
   const {

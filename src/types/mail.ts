@@ -61,6 +61,7 @@ export type FormattedMailBox = Pick<
   isV1: boolean;
   encKey: string;
   labelIdentifier: MailBoxLabels;
+  uid: string | undefined;
 };
 
 export type Attachment = {

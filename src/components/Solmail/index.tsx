@@ -26,7 +26,7 @@ export const Solmail: React.FC = () => {
   const { update } = useComposer();
   const { context, id } = useMailBoxContext();
 
-  const [{ status, hasInboxUpdates }] = useAtom(MailListStatusState);
+  const [{ status, hasInboxUpdates }, set] = useAtom(MailListStatusState);
   const isPending = status === MailListStatus.updating;
   const inbox = useRef<InboxRef>(null);
 
@@ -49,6 +49,13 @@ export const Solmail: React.FC = () => {
     dispatchCustomEvent({
       type: EventTypes.inbox_force_update,
     });
+  };
+
+  const onClose = () => {
+    set((prev) => ({
+      ...prev,
+      hasInboxUpdates: !1,
+    }));
   };
 
   return (
@@ -118,7 +125,7 @@ export const Solmail: React.FC = () => {
                 position="relative"
                 right={-1}
                 top={-1}
-                onClick={() => {}}
+                onClick={onClose}
               />
             </Alert>
           </Flex>

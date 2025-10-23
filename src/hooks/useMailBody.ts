@@ -64,6 +64,7 @@ export const useMailBody = (
   payments: PaymentConfig[];
   attachmentRef: MailREsponseAttachment[];
   isInternalMail: boolean;
+  id: string | undefined;
 } => {
   const mail = useGetInboxFromCache(id);
 
@@ -186,5 +187,6 @@ export const useMailBody = (
       (payments && payments.length > 0),
     attachmentRef,
     isInternalMail: isInternalMail(mail?.version as StorageVersion),
+    id,
   };
 };
