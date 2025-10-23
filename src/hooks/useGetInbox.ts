@@ -12,6 +12,8 @@ import {
   MailListStatus,
 } from "@state/inbox";
 import { CustomEventType, EVENT_NAME, EventTypes } from "@utils/event";
+import { useGetMailProgramInstance } from "./useMailProgramInstance";
+import { usePrivyWallet } from "./usePrivyWallet";
 
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);
@@ -19,6 +21,8 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [count, setCount] = useState<number>(0);
   const [, set] = useAtom(MailListState);
   const [, setStatus] = useAtom(MailListStatusState);
+  const { program, provider } = useGetMailProgramInstance();
+  const { address } = usePrivyWallet();
   const { data, isLoading, refetch, isRefetching } = useMailBoxGraphql({
     type,
     offset: page * limit,
@@ -75,7 +79,8 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     return () => {
       window.removeEventListener(EVENT_NAME, customEventHandler);
     };
-  }, [data?.mailsByType?.count, isLoading, isRefetching]);
+  }, [data?.mailsByType?.count, isLoading, isRefetching, refetch]);
+
   const { pages, hasNext, hasPrev } = useMemo(() => {
     const pages = Math.ceil(count / limit);
     const hasPrev = page > 0;
@@ -107,6 +112,34 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
       }));
     }
   }, [isLoading, isRefetching, setStatus]);
+
+  useEffect(() => {
+    let listener: number;
+    if (program) {
+      listener = (program as any).addEventListener(
+        "mailV2SendEvent",
+        (event: {
+          from: PublicKey;
+          to: PublicKey;
+          id: string;
+          mailbox: PublicKey;
+        }) => {
+          if (
+            address &&
+            event.to &&
+            event.to?.toString() === address.toString()
+          ) {
+            setTimeout(() => refetch(), 2000);
+          }
+        }
+      );
+    }
+    return () => {
+      if (program) {
+        program.removeEventListener(listener);
+      }
+    };
+  }, [address, program, refetch]);
 
   return {
     mail:

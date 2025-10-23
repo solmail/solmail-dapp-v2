@@ -15,6 +15,8 @@ import { awaitTransactionSignatureConfirmation } from "@utils/transaction";
 import { useToast } from "./useToast";
 import { getErrorMessage } from "@utils/error/getErrorMessage";
 import { dispatchCustomEvent, EventTypes } from "@utils/event";
+import { useMailBoxContext } from "./useMailBoxContext";
+import { useNavigate } from "@tanstack/react-router";
 
 type Args = {
   index: MailLabelIndex;
@@ -25,7 +27,12 @@ export const useLabelIndexUpdate = (id: string) => {
   const connection = useSolanaConnection();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
+  const { context } = useMailBoxContext();
+  const navigate = useNavigate({ from: `/u/solmail/${context}/$id` });
 
+  const redirect = () => {
+    navigate({ to: `/u/solmail/${context}/all` });
+  };
   const clear = () => {
     queryClient.setQueryData(
       [QueryKeys.MAILBOX, MailBoxLabels.inbox],
@@ -57,6 +64,7 @@ export const useLabelIndexUpdate = (id: string) => {
       dispatchCustomEvent({
         type: EventTypes.status_update,
       });
+      redirect();
     },
     onError: (e) => {
       showToast(getErrorMessage(e, "Failed to update"), {

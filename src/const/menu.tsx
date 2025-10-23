@@ -28,7 +28,7 @@ export const SOLMAIL_MENU: MenuConfig[] = [
   {
     icon: GrTransaction,
     name: "Payments",
-    link: "/u/solmail/payment/all",
+    link: "/u/solmail/payments/all",
     id: "payment",
   },
   {
