@@ -10,6 +10,8 @@ export enum MailListStatus {
   "reday",
 }
 
-export const MailListStatusState = atom<{ status: MailListStatus }>({
+type State = { status: MailListStatus; hasInboxUpdates: boolean };
+export const MailListStatusState = atom<State>({
   status: MailListStatus.idle,
+  hasInboxUpdates: !1,
 });

@@ -1,5 +1,6 @@
 export enum EventTypes {
   "status_update",
+  "inbox_force_update",
 }
 export type Payload = {
   type: EventTypes;

@@ -1,7 +1,7 @@
 import { FormattedMailBox, MailBoxLabels } from "src/types";
 
 import { useMailBoxGraphql } from "./useMailGraphql";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { DEFAULT_MAILS_OFFSET, MAILS_PER_PAGE } from "@const/config";
 
@@ -14,6 +14,8 @@ import {
 import { CustomEventType, EVENT_NAME, EventTypes } from "@utils/event";
 import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import { usePrivyWallet } from "./usePrivyWallet";
+import { isOlderThan } from "@utils/time";
+import { useMailBoxContext } from "./useMailBoxContext";
 
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);
@@ -21,13 +23,26 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [count, setCount] = useState<number>(0);
   const [, set] = useAtom(MailListState);
   const [, setStatus] = useAtom(MailListStatusState);
-  const { program, provider } = useGetMailProgramInstance();
+  const { program } = useGetMailProgramInstance();
   const { address } = usePrivyWallet();
+  const { context } = useMailBoxContext();
   const { data, isLoading, refetch, isRefetching } = useMailBoxGraphql({
     type,
     offset: page * limit,
     limit,
   });
+
+  const clearInboxInfo = useCallback(() => {
+    setStatus((prev) => ({
+      ...prev,
+      hasInboxUpdates: !1,
+    }));
+  }, [setStatus]);
+
+  const goToMainInbox = useCallback(() => {
+    setPage(() => 0);
+    clearInboxInfo();
+  }, [clearInboxInfo]);
 
   const formattedMails = useMemo(() => {
     const mails = data?.mailsByType?.mails ?? [];
@@ -67,11 +82,16 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     const customEventHandler = (event: Event) => {
       const customEvent = event as CustomEvent<CustomEventType>;
 
-      if (
-        customEvent.detail &&
-        customEvent.detail.type === (EventTypes.status_update as unknown)
-      ) {
-        refetch();
+      if (customEvent.detail) {
+        if (customEvent.detail.type === (EventTypes.status_update as unknown)) {
+          refetch();
+        }
+
+        if (
+          customEvent.detail.type === (EventTypes.inbox_force_update as unknown)
+        ) {
+          goToMainInbox();
+        }
       }
     };
 
@@ -79,7 +99,13 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     return () => {
       window.removeEventListener(EVENT_NAME, customEventHandler);
     };
-  }, [data?.mailsByType?.count, isLoading, isRefetching, refetch]);
+  }, [
+    data?.mailsByType?.count,
+    goToMainInbox,
+    isLoading,
+    isRefetching,
+    refetch,
+  ]);
 
   const { pages, hasNext, hasPrev } = useMemo(() => {
     const pages = Math.ceil(count / limit);
@@ -89,9 +115,17 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     return { pages, hasNext, hasPrev };
   }, [count, limit, page]);
 
-  const onPrev = useCallback(() => setPage((prev) => prev - 1), [setPage]);
-  const onNext = useCallback(() => setPage((prev) => prev + 1), [setPage]);
+  const onPrev = useCallback(() => {
+    setPage((prev) => prev - 1);
+    clearInboxInfo();
+  }, [clearInboxInfo]);
+
+  const onNext = useCallback(() => {
+    setPage((prev) => prev + 1);
+    clearInboxInfo();
+  }, [clearInboxInfo]);
   const [placeholder, setPlaceholder] = useState<FormattedMailBox[]>([]);
+
   useEffect(() => {
     if (!isLoading && !isRefetching && formattedMails) {
       setPlaceholder(formattedMails);
@@ -129,6 +163,12 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
             event.to &&
             event.to?.toString() === address.toString()
           ) {
+            if (context === MailBoxLabels.inbox && page > 0) {
+              setStatus((prev) => ({
+                ...prev,
+                hasInboxUpdates: !0,
+              }));
+            }
             setTimeout(() => refetch(), 2000);
           }
         }
@@ -139,7 +179,23 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
         program.removeEventListener(listener);
       }
     };
-  }, [address, program, refetch]);
+  }, [address, context, page, program, refetch, setStatus]);
+
+  const updated = useRef<number>(new Date().getTime());
+
+  useEffect(() => {
+    const handleFocus = () => {
+      if (!updated.current || isOlderThan(updated.current))
+        if (!isLoading && !isRefetching) {
+          refetch();
+          updated.current = new Date().getTime();
+        }
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [isLoading, isRefetching, refetch]);
 
   return {
     mail:

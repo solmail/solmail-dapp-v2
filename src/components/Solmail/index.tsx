@@ -1,4 +1,15 @@
-import { Flex, IconButton, Spinner, SlideFade, Icon } from "@chakra-ui/react";
+import {
+  Flex,
+  IconButton,
+  Spinner,
+  SlideFade,
+  Icon,
+  Alert,
+  Box,
+  AlertTitle,
+  CloseButton,
+  chakra,
+} from "@chakra-ui/react";
 import { Inbox, type InboxRef } from "@components/Inbox";
 import { MailPreview } from "@components/MailPreview";
 import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
@@ -6,6 +17,7 @@ import { useComposer } from "@hooks/useComposer";
 
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { MailListStatusState, MailListStatus } from "@state/inbox";
+import { dispatchCustomEvent, EventTypes } from "@utils/event";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
@@ -14,7 +26,7 @@ export const Solmail: React.FC = () => {
   const { update } = useComposer();
   const { context, id } = useMailBoxContext();
 
-  const [{ status }] = useAtom(MailListStatusState);
+  const [{ status, hasInboxUpdates }] = useAtom(MailListStatusState);
   const isPending = status === MailListStatus.updating;
   const inbox = useRef<InboxRef>(null);
 
@@ -32,6 +44,13 @@ export const Solmail: React.FC = () => {
   }, [context, update]);
 
   const { onOpen, isOpen } = useComposer();
+
+  const onClickForceUpdate = () => {
+    dispatchCustomEvent({
+      type: EventTypes.inbox_force_update,
+    });
+  };
+
   return (
     <Flex w="100%" direction={"row"}>
       <Flex
@@ -74,6 +93,36 @@ export const Solmail: React.FC = () => {
             />
           </Flex>
         </Flex>
+        {hasInboxUpdates && (
+          <Flex>
+            <Alert status="success">
+              <Box>
+                <AlertTitle>New Mail</AlertTitle>
+                <Box fontSize={13}>
+                  You’ve got new messages —
+                  <chakra.span
+                    onClick={onClickForceUpdate}
+                    _hover={{
+                      opacity: 0.8,
+                    }}
+                    ml={1}
+                    textDecoration={"underline"}
+                    cursor={"pointer"}
+                  >
+                    click here to view them.
+                  </chakra.span>
+                </Box>
+              </Box>
+              <CloseButton
+                alignSelf="flex-start"
+                position="relative"
+                right={-1}
+                top={-1}
+                onClick={() => {}}
+              />
+            </Alert>
+          </Flex>
+        )}
         <Flex flex={"auto"} position={"relative"}>
           <Flex position={"absolute"} inset={0}>
             <Flex
