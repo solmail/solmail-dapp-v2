@@ -11,12 +11,7 @@ import {
   MailListStatusState,
   MailListStatus,
 } from "@state/inbox";
-import {
-  CustomEventType,
-  dispatchCustomEvent,
-  EVENT_NAME,
-  EventTypes,
-} from "@utils/event";
+import { CustomEventType, EVENT_NAME, EventTypes } from "@utils/event";
 
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);

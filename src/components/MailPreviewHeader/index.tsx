@@ -1,4 +1,4 @@
-import { Button, chakra, Flex } from "@chakra-ui/react";
+import { chakra, Flex } from "@chakra-ui/react";
 import { Avatar } from "@components/Avatar";
 import { ClipboardText } from "@components/ClipboardText";
 import { MailActions } from "@components/MailActions";
@@ -10,7 +10,6 @@ import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 
 import { useGetLinkedUsernameById } from "@hooks/useUsernames";
-import { dispatchCustomEvent, EventTypes } from "@utils/event";
 
 import { shortenPrincipalId } from "@utils/string";
 import { format } from "@utils/time";
