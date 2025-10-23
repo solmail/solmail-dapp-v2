@@ -15,6 +15,7 @@ import {
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);
   const [limit] = useState<number>(MAILS_PER_PAGE);
+  const [count, setCount] = useState<number>(0);
   const [, set] = useAtom(MailListState);
   const [, setStatus] = useAtom(MailListStatusState);
   const { data, isLoading, refetch, isRefetching } = useMailBoxGraphql({
@@ -53,14 +54,19 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
       return formattedMail;
     });
   }, [data?.mailsByType?.mails]);
+
+  useEffect(() => {
+    if (!isLoading && !isRefetching) {
+      setCount(data?.mailsByType?.count ?? 0);
+    }
+  }, [data?.mailsByType?.count, isLoading, isRefetching]);
   const { pages, hasNext, hasPrev } = useMemo(() => {
-    const count = data?.mailsByType?.count ?? 0;
     const pages = Math.ceil(count / limit);
     const hasPrev = page > 0;
     const hasNext = page + 1 < pages;
 
     return { pages, hasNext, hasPrev };
-  }, [data?.mailsByType?.count, limit, page]);
+  }, [count, limit, page]);
 
   const onPrev = useCallback(() => setPage((prev) => prev - 1), [setPage]);
   const onNext = useCallback(() => setPage((prev) => prev + 1), [setPage]);

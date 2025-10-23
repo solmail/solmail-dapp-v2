@@ -46,7 +46,14 @@ export const Inbox = forwardRef<InboxRef>((_, ref) => {
         )}
 
         {pages > 1 && (
-          <Flex direction={"column"} px={5} alignItems={"center"} mt={3}>
+          <Flex
+            direction={"column"}
+            px={5}
+            alignItems={"center"}
+            pt={3}
+            borderTop={"solid 1px"}
+            borderTopColor={"surface.900"}
+          >
             <Flex gap={1}>
               <Button onClick={onPrev} isDisabled={!hasPrev} size={"sm"}>
                 Prev
@@ -56,8 +63,8 @@ export const Inbox = forwardRef<InboxRef>((_, ref) => {
                 Next
               </Button>
             </Flex>
-            <Flex fontSize={12} mt={1}>
-              page {page} of {pages}
+            <Flex fontSize={12} mt={1} mb={1} opacity={0.6}>
+              Page {page} of {pages}
             </Flex>
           </Flex>
         )}

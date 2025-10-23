@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   chakra,
+  Fade,
   Flex,
   Icon,
   LinkBox,
@@ -67,77 +68,84 @@ export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
   const hasPendingState = isMailBoxLoading;
 
   return (
-    <Box
-      p={2}
-      w="full"
-      pl="50px"
-      position={"relative"}
-      cursor={"pointer"}
-      transition={"all ease .2s"}
-      borderRadius={10}
-      fontSize={14}
-      as={LinkBox}
-      fontWeight={!isRead ? "600" : ""}
-      opacity={!isRead ? 1 : 0.5}
-      pr={5}
-      bg={isActive ? "surface.800" : ""}
-      _hover={{
-        bg: "surface.800",
-      }}
-    >
-      <Avatar
-        top={2}
-        left={"10px"}
-        name={addres}
-        isInternalMail={isInternalMail}
-      />
-      <Flex mb={"2px"} justifyContent={"space-between"}>
-        <Flex>
-          <UserDisplayName address={addres} />
+    <Flex as={Fade} in delay={0.1} w="100%">
+      <Box
+        p={2}
+        w="full"
+        pl="50px"
+        position={"relative"}
+        cursor={"pointer"}
+        transition={"all ease .2s"}
+        borderRadius={10}
+        fontSize={14}
+        as={LinkBox}
+        fontWeight={!isRead ? "600" : ""}
+        opacity={!isRead ? 1 : 0.5}
+        pr={5}
+        bg={isActive ? "surface.800" : ""}
+        _hover={{
+          bg: "surface.800",
+        }}
+      >
+        <Avatar
+          top={2}
+          left={"10px"}
+          name={addres}
+          isInternalMail={isInternalMail}
+        />
+        <Flex mb={"2px"} justifyContent={"space-between"}>
+          <Flex>
+            <UserDisplayName address={addres} />
+          </Flex>
+          <Flex fontSize={12} alignItems={"center"}>
+            {formatTime(Number(createdAt) * 1000)}
+          </Flex>
         </Flex>
-        <Flex fontSize={12} alignItems={"center"}>
-          {formatTime(Number(createdAt) * 1000)}
-        </Flex>
-      </Flex>
-      {subject && (
-        <Box
-          maxW={"100%"}
-          whiteSpace={"nowrap"}
-          overflow={"hidden"}
-          textOverflow={"ellipsis"}
-        >
-          <CustomSkeleton isLoading={isMailBoxLoading}>
-            <chakra.span
-              textOverflow={"ellipsis"}
-              overflow={"hidden"}
-              w={"100%"}
-              whiteSpace={"nowrap"}
-            >
-              {subject}
-            </chakra.span>
-          </CustomSkeleton>
+        {subject && (
+          <Box
+            maxW={"100%"}
+            whiteSpace={"nowrap"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+          >
+            <CustomSkeleton isLoading={isMailBoxLoading}>
+              <chakra.span
+                textOverflow={"ellipsis"}
+                overflow={"hidden"}
+                w={"100%"}
+                whiteSpace={"nowrap"}
+              >
+                {subject}
+              </chakra.span>
+            </CustomSkeleton>
+          </Box>
+        )}
+        <Box>
+          {context === MailBoxLabels.payment && <PaymentStatusBadge id={id} />}
         </Box>
-      )}
-      <Box>
-        {context === MailBoxLabels.payment && <PaymentStatusBadge id={id} />}
+        {context !== MailBoxLabels.payment && (
+          <Box fontSize={12}>
+            <CustomSkeleton isLoading={hasPendingState}>
+              <chakra.span
+                textOverflow={"ellipsis"}
+                overflow={"hidden"}
+                w={"100%"}
+                whiteSpace={"nowrap"}
+              >
+                {trim(
+                  textContent,
+                  hasSmartView ? 30 : 60,
+                  "...",
+                  "(No content)"
+                )}
+              </chakra.span>
+            </CustomSkeleton>
+          </Box>
+        )}
+        {hasSmartView && <SmartView id={id} />}
+        <LinkOverlay as={Link} to={`/u/solmail/${context}/${id.toString()}`} />
       </Box>
-      {context !== MailBoxLabels.payment && (
-        <Box fontSize={12}>
-          <CustomSkeleton isLoading={hasPendingState}>
-            <chakra.span
-              textOverflow={"ellipsis"}
-              overflow={"hidden"}
-              w={"100%"}
-              whiteSpace={"nowrap"}
-            >
-              {trim(textContent, hasSmartView ? 30 : 60, "...", "(No content)")}
-            </chakra.span>
-          </CustomSkeleton>
-        </Box>
-      )}
-      {hasSmartView && <SmartView id={id} />}
-      <LinkOverlay as={Link} to={`/u/solmail/${context}/${id.toString()}`} />
-    </Box>
+    </Flex>
   );
 };
 const MAX_ATTACHMENTS_TO_SHOW = 1;
