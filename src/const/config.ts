@@ -38,3 +38,6 @@ export const ENABLE_USERNAME_CLAIM =
   import.meta.env.VITE_SOLMAIL_ENABLE_USERNAME_CLAIM === "true";
 
 export const STORAGE_NAME = "auth:token";
+
+export const MAILS_PER_PAGE = 3;
+export const DEFAULT_MAILS_OFFSET = 0;

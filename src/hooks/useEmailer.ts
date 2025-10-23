@@ -37,8 +37,8 @@ export const useEmailer = () => {
     collpaseComposer,
     expandComposer,
   } = useComposer();
-  const { context } = useComposer();
-  const { attachmentRef } = useMailBody(ref, context);
+
+  const { attachmentRef } = useMailBody(ref);
   const { provider, program, mailAccountAddress } = useGetMailProgramInstance();
   const connection = useSolanaConnection();
   const { account } = useGetLinkedUsernameById(thread);

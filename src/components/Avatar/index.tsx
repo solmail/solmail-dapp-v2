@@ -30,7 +30,7 @@ export const Avatar: React.FC<
       justifyContent={"center"}
     >
       {!isInternalMail && (
-        <chakra.span opacity={0.8}>{displayName[0].toUpperCase()}</chakra.span>
+        <chakra.span opacity={0.8}>{displayName[0]?.toUpperCase()}</chakra.span>
       )}
 
       {isInternalMail && <Image src={Piegion} borderRadius={"inherit"} />}

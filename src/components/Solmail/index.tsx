@@ -5,13 +5,17 @@ import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 import { useComposer } from "@hooks/useComposer";
 
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
-import { useEffect, useRef, useState } from "react";
+import { MailListStatusState, MailListStatus } from "@state/inbox";
+import { useAtom } from "jotai";
+import { useEffect, useRef } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
 import { TbReload } from "react-icons/tb";
 export const Solmail: React.FC = () => {
   const { update } = useComposer();
   const { context, id } = useMailBoxContext();
-  const [isPending, setStatus] = useState<boolean>(!1);
+
+  const [{ status }] = useAtom(MailListStatusState);
+  const isPending = status === MailListStatus.updating;
   const inbox = useRef<InboxRef>(null);
 
   const onRefresh = () => {
@@ -106,7 +110,7 @@ export const Solmail: React.FC = () => {
             </Flex>
 
             <CustomScrollbarWrapper>
-              <Inbox ref={inbox} onStatusChange={setStatus} />
+              <Inbox ref={inbox} />
             </CustomScrollbarWrapper>
           </Flex>
         </Flex>
@@ -120,7 +124,6 @@ export const Solmail: React.FC = () => {
       >
         <MailPreview />
       </Flex>
-
       <Flex
         bg="solana"
         boxSize={"50px"}

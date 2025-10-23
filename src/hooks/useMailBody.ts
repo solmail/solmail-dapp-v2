@@ -1,10 +1,9 @@
 import { useEncryptionKey } from "@hooks/useEncryptionKey";
-import { useGetInbox } from "@hooks/useGetInbox";
+import { useGetInboxFromCache } from "@hooks/useGetInbox";
 
 import { useMemo } from "react";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import {
-  MailBoxLabels,
   QueryKeys,
   StorageVersion,
   type FormattedMailBox,
@@ -53,8 +52,7 @@ async function fetchContent(url: string): Promise<string> {
   }
 }
 export const useMailBody = (
-  id: string | undefined,
-  context: MailBoxLabels
+  id: string | undefined
 ): {
   content: string;
   attachments: Attachment[];
@@ -67,12 +65,7 @@ export const useMailBody = (
   attachmentRef: MailREsponseAttachment[];
   isInternalMail: boolean;
 } => {
-  const { mail: inbox } = useGetInbox(context);
-
-  const mail =
-    inbox && inbox.length > 0
-      ? inbox.find((item) => id && item.id?.toString() === id)
-      : null;
+  const mail = useGetInboxFromCache(id);
 
   const { data } = useEncryptionKey(mail?.encKey ?? "");
   const getMailContent = async (body: string, version: StorageVersion) => {
@@ -158,7 +151,6 @@ export const useMailBody = (
           });
         }
 
-        console.log(div);
         return [
           div.innerHTML,
           attachments,

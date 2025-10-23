@@ -42,6 +42,7 @@ export const useLabelIndexUpdate = (id: string) => {
       if (!program || !provider) {
         throw Error();
       }
+
       const trx = await program.methods
         .updatemaillabel(index)
         .accounts({

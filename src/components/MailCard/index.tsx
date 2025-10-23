@@ -22,12 +22,12 @@ import { Link } from "@tanstack/react-router";
 import { trim } from "@utils/string";
 import { formatTime } from "@utils/time";
 import { BiSolidUpArrowSquare, BiSolidDownArrowSquare } from "react-icons/bi";
+
 import { MailBoxLabels, type FormattedMailBox } from "src/types";
 
 const PaymentStatusBadge: React.FC<{ id: string }> = ({ id }) => {
-  const { context } = useMailBoxContext();
   const { address } = usePrivyWallet();
-  const { payments, mail } = useMailBody(id, context);
+  const { payments, mail } = useMailBody(id);
   const { data: isDone } = usePaymentStatus(id, payments[0] ?? {});
   const isPaymentRequesting = mail?.to?.toString() === address?.toString();
 
@@ -47,12 +47,8 @@ const PaymentStatusBadge: React.FC<{ id: string }> = ({ id }) => {
     </Badge>
   );
 };
-export const MailCard: React.FC<FormattedMailBox> = ({
-  from,
-  createdAt,
-  id,
-  to,
-}) => {
+export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
+  const { from, createdAt, id, to } = props;
   const { isRead } = useMailStatus(id, Number(createdAt) * 1000);
   const { context, id: contextId } = useMailBoxContext();
   const { address: myAddress } = usePrivyWallet();
@@ -62,7 +58,8 @@ export const MailCard: React.FC<FormattedMailBox> = ({
     isLoading: isMailBoxLoading,
     isInternalMail,
     subject,
-  } = useMailBody(id, context);
+  } = useMailBody(id);
+
   const addres =
     myAddress.toString() === to?.toString() ? from?.toString() : to?.toString();
   const isActive = contextId && contextId === id;
@@ -121,7 +118,6 @@ export const MailCard: React.FC<FormattedMailBox> = ({
           </CustomSkeleton>
         </Box>
       )}
-
       <Box>
         {context === MailBoxLabels.payment && <PaymentStatusBadge id={id} />}
       </Box>
@@ -147,7 +143,7 @@ export const MailCard: React.FC<FormattedMailBox> = ({
 const MAX_ATTACHMENTS_TO_SHOW = 1;
 const SmartView: React.FC<{ id: string }> = ({ id }) => {
   const { context } = useMailBoxContext();
-  const { attachments, payments, mail } = useMailBody(id, context);
+  const { attachments, payments, mail } = useMailBody(id);
   const { address } = usePrivyWallet();
   const isRequestingPayment = mail?.from?.toString() === address;
   return (

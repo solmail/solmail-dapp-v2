@@ -55,7 +55,15 @@ export type Bid = {
 
 
 export type BidEventsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type BidUserBidsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type BidResponse = {
@@ -78,6 +86,14 @@ export enum BidType {
   Sol = 'Sol'
 }
 
+export type BidsPaginatedResponse = {
+  __typename?: 'BidsPaginatedResponse';
+  bids: Array<Bid>;
+  count: Scalars['Int']['output'];
+  limit: Scalars['Int']['output'];
+  offset: Scalars['Int']['output'];
+};
+
 export type CentralState = {
   __typename?: 'CentralState';
   PK: Scalars['String']['output'];
@@ -90,6 +106,12 @@ export type CentralState = {
   tag: Scalars['Int']['output'];
   total_wrapped: Scalars['Float']['output'];
   wrappedUsernames: Array<Username>;
+};
+
+
+export type CentralStateWrappedUsernamesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Event = {
@@ -138,6 +160,14 @@ export type Event = {
   wrapper_account?: Maybe<Scalars['String']['output']>;
 };
 
+export type EventsPaginatedResponse = {
+  __typename?: 'EventsPaginatedResponse';
+  count: Scalars['Int']['output'];
+  events: Array<Event>;
+  limit: Scalars['Int']['output'];
+  offset: Scalars['Int']['output'];
+};
+
 export type Mail = {
   __typename?: 'Mail';
   PK: Scalars['String']['output'];
@@ -170,6 +200,13 @@ export type Mail = {
 
 export type MailEventsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type MailThreadArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type MailAccount = {
@@ -191,11 +228,19 @@ export type MailAccount = {
 
 export type MailAccountInboxArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type MailAccountLinkedUsernamesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type MailAccountSentMailsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export enum MailLabel {
@@ -213,11 +258,21 @@ export type MailResponse = {
   thread: Array<Mail>;
 };
 
+export enum MailType {
+  Inbox = 'inbox',
+  Outbox = 'outbox',
+  Payments = 'payments',
+  Spam = 'spam',
+  Trash = 'trash'
+}
+
 export type MailsResponse = {
   __typename?: 'MailsResponse';
   appliedFilters?: Maybe<AppliedFilters>;
   count: Scalars['Int']['output'];
+  limit: Scalars['Int']['output'];
   mails: Array<Mail>;
+  offset: Scalars['Int']['output'];
   wallet: Scalars['String']['output'];
 };
 
@@ -255,38 +310,41 @@ export type MarketplaceSettings = {
 
 export type Query = {
   __typename?: 'Query';
-  activeBids: Array<Bid>;
+  activeBids: BidsPaginatedResponse;
   bid?: Maybe<BidResponse>;
-  bidEvents: Array<Event>;
+  bidEvents: EventsPaginatedResponse;
   centralState?: Maybe<CentralState>;
-  events: Array<Event>;
-  eventsByTransaction: Array<Event>;
-  expiredBids: Array<Bid>;
-  lostBids: Array<UserBid>;
+  events: EventsPaginatedResponse;
+  eventsByTransaction: EventsPaginatedResponse;
+  expiredBids: BidsPaginatedResponse;
+  lostBids: UserBidsPaginatedResponse;
   mail?: Maybe<MailResponse>;
   mailAccount?: Maybe<MailAccount>;
   mailAccountByMailbox?: Maybe<MailAccount>;
-  mailEvents: Array<Event>;
+  mailEvents: EventsPaginatedResponse;
   mailsByLabel: MailsResponse;
+  mailsByType: MailsResponse;
   marketplaceSettings?: Maybe<MarketplaceSettings>;
-  recentTransactions: Array<Transaction>;
+  recentTransactions: TransactionsPaginatedResponse;
   transaction?: Maybe<Transaction>;
   user?: Maybe<User>;
   userBids: UserBidsResponse;
   userInbox: MailsResponse;
   userSentMails: MailsResponse;
   username?: Maybe<Username>;
-  usernameEvents: Array<Event>;
+  usernameEvents: EventsPaginatedResponse;
   usernames: UsernamesResponse;
   usernamesFiltered: UsernamesResponse;
-  wonBids: Array<UserBid>;
+  wonBids: UserBidsPaginatedResponse;
 };
 
 
 export type QueryActiveBidsArgs = {
   checkExpiration?: InputMaybe<Scalars['Boolean']['input']>;
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   isActive?: InputMaybe<Scalars['String']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -296,16 +354,20 @@ export type QueryBidArgs = {
 
 
 export type QueryBidEventsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   username: Scalars['String']['input'];
 };
 
 
 export type QueryEventsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   eventCategory?: InputMaybe<Scalars['String']['input']>;
   eventType?: InputMaybe<Scalars['String']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   mailId?: InputMaybe<Scalars['String']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   signature?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
   wallet?: InputMaybe<Scalars['String']['input']>;
@@ -313,18 +375,24 @@ export type QueryEventsArgs = {
 
 
 export type QueryEventsByTransactionArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   signature: Scalars['String']['input'];
 };
 
 
 export type QueryExpiredBidsArgs = {
   beforeTimestamp?: InputMaybe<Scalars['Float']['input']>;
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryLostBidsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   wallet: Scalars['String']['input'];
 };
 
@@ -345,8 +413,10 @@ export type QueryMailAccountByMailboxArgs = {
 
 
 export type QueryMailEventsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   mailId?: InputMaybe<Scalars['String']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   wallet?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -354,12 +424,23 @@ export type QueryMailEventsArgs = {
 export type QueryMailsByLabelArgs = {
   label: MailLabel;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  wallet: Scalars['String']['input'];
+};
+
+
+export type QueryMailsByTypeArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  type: MailType;
   wallet: Scalars['String']['input'];
 };
 
 
 export type QueryRecentTransactionsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -383,6 +464,7 @@ export type QueryUserInboxArgs = {
   includedLabels?: InputMaybe<Array<MailLabel>>;
   label?: InputMaybe<MailLabel>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   wallet: Scalars['String']['input'];
 };
 
@@ -392,6 +474,7 @@ export type QueryUserSentMailsArgs = {
   includedLabels?: InputMaybe<Array<MailLabel>>;
   label?: InputMaybe<MailLabel>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   wallet: Scalars['String']['input'];
 };
 
@@ -402,26 +485,34 @@ export type QueryUsernameArgs = {
 
 
 export type QueryUsernameEventsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   username: Scalars['String']['input'];
 };
 
 
 export type QueryUsernamesArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   wallet: Scalars['String']['input'];
 };
 
 
 export type QueryUsernamesFilteredArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   isWrapped?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   wallet: Scalars['String']['input'];
 };
 
 
 export type QueryWonBidsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   wallet: Scalars['String']['input'];
 };
 
@@ -453,6 +544,20 @@ export type Transaction = {
   ttl: Scalars['Float']['output'];
 };
 
+
+export type TransactionEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type TransactionsPaginatedResponse = {
+  __typename?: 'TransactionsPaginatedResponse';
+  count: Scalars['Int']['output'];
+  limit: Scalars['Int']['output'];
+  offset: Scalars['Int']['output'];
+  transactions: Array<Transaction>;
+};
+
 export type Treasury = {
   __typename?: 'Treasury';
   PK: Scalars['String']['output'];
@@ -480,6 +585,66 @@ export type User = {
   wallet: Scalars['String']['output'];
   wonBidAccounts: Array<UserBid>;
   wrappedUsernames: Array<Username>;
+};
+
+
+export type UserActiveBidAccountsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserLostBidAccountsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserReceivedMailsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserSentMailsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserUnwrappedUsernamesArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserUserBidsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserUsernamesArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserWonBidAccountsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserWrappedUsernamesArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UserBid = {
@@ -510,6 +675,14 @@ export type UserBid = {
   username: Scalars['String']['output'];
   usernameAccount?: Maybe<Username>;
   username_domain: Scalars['String']['output'];
+};
+
+export type UserBidsPaginatedResponse = {
+  __typename?: 'UserBidsPaginatedResponse';
+  bids: Array<UserBid>;
+  count: Scalars['Int']['output'];
+  limit: Scalars['Int']['output'];
+  offset: Scalars['Int']['output'];
 };
 
 export type UserBidsResponse = {
@@ -545,12 +718,16 @@ export type Username = {
 
 
 export type UsernameEventsArgs = {
+  desc?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UsernamesResponse = {
   __typename?: 'UsernamesResponse';
   count: Scalars['Int']['output'];
+  limit: Scalars['Int']['output'];
+  offset: Scalars['Int']['output'];
   usernames: Array<Username>;
   wallet: Scalars['String']['output'];
 };
@@ -577,14 +754,15 @@ export type Wrapper = {
   username_account: Scalars['String']['output'];
 };
 
-export type GetUserInboxQueryVariables = Exact<{
+export type GetUserMailsQueryVariables = Exact<{
   wallet: Scalars['String']['input'];
-  excludedLabels?: InputMaybe<Array<MailLabel> | MailLabel>;
+  type: MailType;
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type GetUserInboxQuery = { __typename?: 'Query', userInbox: { __typename?: 'MailsResponse', wallet: string, count: number, mails: Array<{ __typename?: 'Mail', id: string, from: string, to: string, subject: string, body: string, label: MailLabel, mark_as_read: boolean, created_at: number, senderMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null, linkedUsernames: Array<{ __typename?: 'Username', username: string, domain: string }> } | null, recipientMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null } | null }>, appliedFilters?: { __typename?: 'AppliedFilters', excludedLabels?: Array<MailLabel> | null, usedGSI: boolean } | null } };
+export type GetUserMailsQuery = { __typename?: 'Query', mailsByType: { __typename?: 'MailsResponse', wallet: string, count: number, mails: Array<{ __typename?: 'Mail', id: string, from: string, to: string, subject: string, body: string, label: MailLabel, mark_as_read: boolean, created_at: number, senderMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null, linkedUsernames: Array<{ __typename?: 'Username', username: string, domain: string }> } | null, recipientMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null } | null }>, appliedFilters?: { __typename?: 'AppliedFilters', excludedLabels?: Array<MailLabel> | null, usedGSI: boolean } | null } };
 
 
-export const GetUserInboxDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserInbox"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"excludedLabels"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MailLabel"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userInbox"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"wallet"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}}},{"kind":"Argument","name":{"kind":"Name","value":"excludedLabels"},"value":{"kind":"Variable","name":{"kind":"Name","value":"excludedLabels"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"wallet"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"mails"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"mark_as_read"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"senderMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}},{"kind":"Field","name":{"kind":"Name","value":"linkedUsernames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"recipientMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"appliedFilters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"excludedLabels"}},{"kind":"Field","name":{"kind":"Name","value":"usedGSI"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserInboxQuery, GetUserInboxQueryVariables>;
+export const GetUserMailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserMails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MailType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mailsByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"wallet"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"wallet"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"mails"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"mark_as_read"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"senderMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}},{"kind":"Field","name":{"kind":"Name","value":"linkedUsernames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"recipientMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"appliedFilters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"excludedLabels"}},{"kind":"Field","name":{"kind":"Name","value":"usedGSI"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserMailsQuery, GetUserMailsQueryVariables>;

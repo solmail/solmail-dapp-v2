@@ -19,9 +19,9 @@ import { MailBoxLabels } from "src/types";
 export const MailPreviewHeader: React.FC = () => {
   const { context, id } = useMailBoxContext();
   const { address: myAddress } = usePrivyWallet();
-  const { isInternalMail } = useMailBody(id, context);
+  const { isInternalMail } = useMailBody(id);
 
-  const { mail } = useMailBody(id, context);
+  const { mail } = useMailBody(id);
   const label =
     context === MailBoxLabels.payment
       ? myAddress === mail?.from?.toString()

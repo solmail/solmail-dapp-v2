@@ -13,10 +13,10 @@ import { useEffect } from "react";
 import { RiChatSmileFill } from "react-icons/ri";
 
 export const MailPreview: React.FC = () => {
-  const { id, context } = useMailBoxContext();
+  const { id } = useMailBoxContext();
   const { addItem } = useMailStatus(id as string);
   const { subject, content, textContent, attachments, isLoading, payments } =
-    useMailBody(id && id !== "all" ? id : undefined, context);
+    useMailBody(id && id !== "all" ? id : undefined);
 
   useEffect(() => {
     if (id) {

@@ -51,7 +51,7 @@ export const ComposerLegacy: React.FC = () => {
   const [sharedAttachments, setSharedAttachments] = useState<Attachment[]>([]);
   const [isComposerReady, setComposerState] = useState<boolean>(!1);
   const { mutateAsync } = useEmailer();
-  const { context } = useComposer();
+
   const { mutateAsync: resolveRecepient } = useEmailResolver();
 
   const {
@@ -59,7 +59,7 @@ export const ComposerLegacy: React.FC = () => {
     isLoading: isMailLoading,
     content,
     attachments,
-  } = useMailBody(ref, context);
+  } = useMailBody(ref);
   const {
     account: _account,
     displayName,

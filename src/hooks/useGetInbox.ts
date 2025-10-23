@@ -1,225 +1,111 @@
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { FormattedMailBox, MailBoxLabels, StorageVersion } from "src/types";
 
-import {
-  AnchorProvider,
-  Program,
-  type ProgramAccount,
-} from "@coral-xyz/anchor";
-import {
-  type FetchAllMailsResult,
-  type FormattedMailBox,
-  type SolMail,
-  type SolMailV2,
-  MailBoxLabels,
-  QueryKeys,
-} from "src/types";
-import { useMemo, useCallback, useEffect, useRef } from "react";
-import { useGetMailProgramInstance } from "@hooks/useMailProgramInstance";
-import type { Solmail } from "@integrations/idl/index";
-import { isOlderThan } from "@utils/time";
-import { usePrivyWallet } from "./usePrivyWallet";
+import { useMailBoxGraphql } from "./useMailGraphql";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PublicKey } from "@solana/web3.js";
+import { DEFAULT_MAILS_OFFSET, MAILS_PER_PAGE } from "@const/config";
 
-const fetchAllMails = async (
-  program: Program<Solmail>,
-  provider: AnchorProvider,
-  type: MailBoxLabels
-) => {
-  try {
-    const filter =
-      MailBoxLabels.payment === type
-        ? []
-        : MailBoxLabels.outbox === type
-          ? [
-              {
-                memcmp: {
-                  offset: 8,
-                  bytes: provider.publicKey.toBase58(),
-                },
-              },
-            ]
-          : [
-              {
-                memcmp: {
-                  offset: 40,
-                  bytes: provider.publicKey.toBase58(),
-                },
-              },
-            ];
-    const result: unknown = await Promise.all([
-      program.account.solMailV2.all(filter),
-      program.account.solMail.all(filter),
-    ]);
-
-    return Array.isArray(result) && result.length ? result.flat() : [];
-  } catch {
-    throw "Failed to fetch inbox";
-  }
-};
+import { useAtom } from "jotai";
+import {
+  MailListState,
+  MailListStatusState,
+  MailListStatus,
+} from "@state/inbox";
 
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
-  const { program, provider } = useGetMailProgramInstance();
-  const { address } = usePrivyWallet();
+  const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);
+  const [limit] = useState<number>(MAILS_PER_PAGE);
+  const [, set] = useAtom(MailListState);
+  const [, setStatus] = useAtom(MailListStatusState);
+  const { data, isLoading, refetch, isRefetching } = useMailBoxGraphql({
+    type,
+    offset: page * limit,
+    limit,
+  });
 
-  const { data, isLoading, refetch, isRefetching } =
-    useQuery<FetchAllMailsResult>({
-      queryKey: [QueryKeys.MAILBOX, type],
-      queryFn: program
-        ? () => fetchAllMails(program, provider, type)
-        : skipToken,
-      staleTime: 60 * 1000 * 30,
+  const formattedMails = useMemo(() => {
+    const mails = data?.mailsByType?.mails ?? [];
+    return mails.map((mail) => {
+      const [user0, user1] =
+        mail.from.toString() >= mail.to.toString()
+          ? [mail.from, mail.to]
+          : [mail.to, mail.from];
+      const encKey = `${user0.toString()}:${user1.toString()}`;
+
+      const formattedMail: FormattedMailBox = {
+        body: mail.body,
+        from: new PublicKey(mail.from),
+        id: mail.id,
+        iv: "",
+        salt: "",
+        subject: mail.subject,
+        to: new PublicKey(mail.to),
+        encKey,
+        version: StorageVersion.pinata,
+        createdAt: mail.created_at,
+        isV1: !1,
+        user0: new PublicKey(user0),
+        user1: new PublicKey(user1),
+        markAsRead: !1,
+        labelIdentifier: MailBoxLabels.inbox,
+      };
+
+      return formattedMail;
     });
+  }, [data?.mailsByType?.mails]);
+  const { pages, hasNext, hasPrev } = useMemo(() => {
+    const count = data?.mailsByType?.count ?? 0;
+    const pages = Math.ceil(count / limit);
+    const hasPrev = page > 0;
+    const hasNext = page + 1 < pages;
 
-  const getLabelIdentifier = (
-    item: ProgramAccount<SolMailV2> | ProgramAccount<SolMail>
-  ): MailBoxLabels => {
-    if (item && "label" in item.account) {
-      const label = Object.keys(item.account.label)[0];
-      if (label && label.trim()) {
-        switch (label.toLowerCase()) {
-          case MailBoxLabels.inbox:
-            return MailBoxLabels.inbox;
+    return { pages, hasNext, hasPrev };
+  }, [data?.mailsByType?.count, limit, page]);
 
-          case MailBoxLabels.spam:
-            return MailBoxLabels.spam;
-
-          case MailBoxLabels.outbox:
-            return MailBoxLabels.outbox;
-
-          case MailBoxLabels.trash:
-            return MailBoxLabels.trash;
-
-          case MailBoxLabels.payment:
-            return MailBoxLabels.payment;
-
-          default:
-            return MailBoxLabels.unknown;
-        }
-      }
+  const onPrev = useCallback(() => setPage((prev) => prev - 1), [setPage]);
+  const onNext = useCallback(() => setPage((prev) => prev + 1), [setPage]);
+  const [placeholder, setPlaceholder] = useState<FormattedMailBox[]>([]);
+  useEffect(() => {
+    if (!isLoading && !isRefetching && formattedMails) {
+      setPlaceholder(formattedMails);
+      set(formattedMails);
     }
-    return MailBoxLabels.unknown;
-  };
-  const merge = useCallback(
-    (current: FormattedMailBox[] = [], arr: FetchAllMailsResult) => {
-      if (arr && arr.length > 0) {
-        arr.forEach((item) => {
-          const account = item.account;
-          const [user0, user1] =
-            account.from.toString() >= account.to.toString()
-              ? [account.from, account.to]
-              : [account.to, account.from];
-          const encKey = `${user0.toString()}:${user1.toString()}`;
+  }, [formattedMails, isLoading, isRefetching, set]);
 
-          current[current.length] = {
-            ...account,
-            isV1: item && "label" in item,
-            user0: user0,
-            user1: user1,
-            encKey,
-            labelIdentifier: getLabelIdentifier(item),
-            id: item.publicKey.toString(),
-          };
-        });
-      }
-      return current;
-    },
-    []
-  );
-  const mail = useMemo(() => {
-    if (!data || !data.length) {
-      return [];
-    }
-
-    let formattedMailbox: FormattedMailBox[] = [];
-
-    formattedMailbox = merge(formattedMailbox, data);
-
-    formattedMailbox = formattedMailbox.sort(
-      (a, b) => Number(b.createdAt) - Number(a.createdAt)
-    );
-
-    if (
-      type &&
-      [MailBoxLabels.spam, MailBoxLabels.trash, MailBoxLabels.payment].indexOf(
-        type
-      ) > -1
-    ) {
-      if (type === MailBoxLabels.payment) {
-        formattedMailbox = formattedMailbox.filter((mail) => {
-          return (
-            mail.labelIdentifier === type &&
-            (mail.from.toString() === address || mail.to.toString() === address)
-          );
-        });
-      } else {
-        formattedMailbox = formattedMailbox.filter((mail) => {
-          return mail.labelIdentifier === type;
-        });
-      }
+  useEffect(() => {
+    if (!isLoading && !isRefetching) {
+      setStatus((prev) => ({
+        ...prev,
+        status: MailListStatus.reday,
+      }));
     } else {
-      formattedMailbox = formattedMailbox.filter((mail) => {
-        return (
-          [
-            MailBoxLabels.spam,
-            MailBoxLabels.trash,
-            MailBoxLabels.payment,
-          ].indexOf(mail.labelIdentifier) === -1
-        );
-      });
+      setStatus((prev) => ({
+        ...prev,
+        status: isRefetching ? MailListStatus.updating : MailListStatus.loading,
+      }));
     }
-
-    return formattedMailbox;
-  }, [data, merge, type]);
-
-  const updated = useRef<number>(new Date().getTime());
-
-  useEffect(() => {
-    const handleFocus = () => {
-      if (!updated.current || isOlderThan(updated.current))
-        if (!isLoading && !isRefetching) {
-          refetch();
-          updated.current = new Date().getTime();
-        }
-    };
-    window.addEventListener("focus", handleFocus);
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, [isLoading, isRefetching, refetch]);
-
-  useEffect(() => {
-    let listener: number;
-    if (program) {
-      listener = (program as any).addEventListener(
-        "mailV2SendEvent",
-        (event: {
-          from: PublicKey;
-          to: PublicKey;
-          id: string;
-          mailbox: PublicKey;
-        }) => {
-          if (
-            address &&
-            event.to &&
-            event.to?.toString() === address.toString()
-          ) {
-            refetch();
-          }
-        }
-      );
-    }
-    return () => {
-      if (program) {
-        program.removeEventListener(listener);
-      }
-    };
-  }, [address, program, refetch]);
+  }, [isLoading, isRefetching, setStatus]);
 
   return {
-    mail: mail as FormattedMailBox[],
-    data,
+    mail:
+      placeholder && placeholder.length && isLoading
+        ? placeholder
+        : formattedMails,
+    data: [],
     isLoading,
     refetch,
-    isPending: isRefetching,
+    isPending: isLoading && placeholder && placeholder.length > 0,
+    hasNext,
+    hasPrev,
+    pages,
+    page: page + 1,
+    onPrev,
+    onNext,
+    isUpdating: isRefetching,
   };
+};
+
+export const useGetInboxFromCache = (id: string | undefined) => {
+  const [mails] = useAtom(MailListState);
+  return mails.find((mail) => mail.id === id) ?? null;
 };

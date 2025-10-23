@@ -1,12 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_MAILBOX = gql`
-  query GetUserInbox(
+  query GetUserMails(
     $wallet: String!
-    $excludedLabels: [MailLabel!]
+    $type: MailType!
     $limit: Int
+    $offset: Int
   ) {
-    userInbox(wallet: $wallet, excludedLabels: $excludedLabels, limit: $limit) {
+    mailsByType(wallet: $wallet, type: $type, limit: $limit, offset: $offset) {
       wallet
       count
       mails {
