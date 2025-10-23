@@ -119,6 +119,7 @@ export const useGetInboxLegacy = (
             encKey,
             labelIdentifier: getLabelIdentifier(item),
             id: item.publicKey.toString(),
+            uid: "",
           };
         });
       }
