@@ -1,4 +1,4 @@
-import { FormattedMailBox, MailBoxLabels, StorageVersion } from "src/types";
+import { FormattedMailBox, MailBoxLabels } from "src/types";
 
 import { useMailBoxGraphql } from "./useMailGraphql";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -11,6 +11,12 @@ import {
   MailListStatusState,
   MailListStatus,
 } from "@state/inbox";
+import {
+  CustomEventType,
+  dispatchCustomEvent,
+  EVENT_NAME,
+  EventTypes,
+} from "@utils/event";
 
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);
@@ -36,13 +42,13 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
       const formattedMail: FormattedMailBox = {
         body: mail.body,
         from: new PublicKey(mail.from),
-        id: mail.id,
+        id: mail.public_key ?? mail.id,
         iv: "",
         salt: "",
         subject: mail.subject,
         to: new PublicKey(mail.to),
         encKey,
-        version: StorageVersion.pinata,
+        version: mail.version,
         createdAt: mail.created_at,
         isV1: !1,
         user0: new PublicKey(user0),
@@ -59,6 +65,21 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     if (!isLoading && !isRefetching) {
       setCount(data?.mailsByType?.count ?? 0);
     }
+    const customEventHandler = (event: Event) => {
+      const customEvent = event as CustomEvent<CustomEventType>;
+
+      if (
+        customEvent.detail &&
+        customEvent.detail.type === (EventTypes.status_update as unknown)
+      ) {
+        refetch();
+      }
+    };
+
+    window.addEventListener(EVENT_NAME, customEventHandler);
+    return () => {
+      window.removeEventListener(EVENT_NAME, customEventHandler);
+    };
   }, [data?.mailsByType?.count, isLoading, isRefetching]);
   const { pages, hasNext, hasPrev } = useMemo(() => {
     const pages = Math.ceil(count / limit);

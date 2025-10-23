@@ -9,11 +9,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useSolanaConnection } from "./useConnection";
 import { PublicKey } from "@solana/web3.js";
-import { useNavigate } from "@tanstack/react-router";
+
 import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import { awaitTransactionSignatureConfirmation } from "@utils/transaction";
 import { useToast } from "./useToast";
 import { getErrorMessage } from "@utils/error/getErrorMessage";
+import { dispatchCustomEvent, EventTypes } from "@utils/event";
 
 type Args = {
   index: MailLabelIndex;
@@ -24,7 +25,7 @@ export const useLabelIndexUpdate = (id: string) => {
   const connection = useSolanaConnection();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
-  const navigate = useNavigate({ from: "/u/solmail/inbox/$id" });
+
   const clear = () => {
     queryClient.setQueryData(
       [QueryKeys.MAILBOX, MailBoxLabels.inbox],
@@ -53,7 +54,9 @@ export const useLabelIndexUpdate = (id: string) => {
 
       await awaitTransactionSignatureConfirmation(trx, connection);
       clear();
-      navigate({ to: "/u/solmail/inbox/all" });
+      dispatchCustomEvent({
+        type: EventTypes.status_update,
+      });
     },
     onError: (e) => {
       showToast(getErrorMessage(e, "Failed to update"), {

@@ -1,4 +1,4 @@
-import { chakra, Flex } from "@chakra-ui/react";
+import { Button, chakra, Flex } from "@chakra-ui/react";
 import { Avatar } from "@components/Avatar";
 import { ClipboardText } from "@components/ClipboardText";
 import { MailActions } from "@components/MailActions";
@@ -10,6 +10,7 @@ import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 
 import { useGetLinkedUsernameById } from "@hooks/useUsernames";
+import { dispatchCustomEvent, EventTypes } from "@utils/event";
 
 import { shortenPrincipalId } from "@utils/string";
 import { format } from "@utils/time";
@@ -50,6 +51,7 @@ export const MailPreviewHeader: React.FC = () => {
           isInternalMail={isInternalMail}
         />
       </Flex>
+
       <Flex direction={"column"} flex={"auto"}>
         <Flex>
           <chakra.span mr={1}>{label}</chakra.span>

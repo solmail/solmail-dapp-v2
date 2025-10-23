@@ -18,6 +18,8 @@ export const GET_USER_MAILBOX = gql`
         body
         label
         mark_as_read
+        version
+        public_key
         created_at
         senderMailAccount {
           authority

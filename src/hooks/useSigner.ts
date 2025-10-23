@@ -118,8 +118,6 @@ export const useSigner = () => {
           onOpen();
           return;
         }
-      } else {
-        alert();
       }
     });
   };

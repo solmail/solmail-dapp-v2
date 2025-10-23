@@ -185,6 +185,7 @@ export type Mail = {
   mark_as_read: Scalars['Boolean']['output'];
   parentMail?: Maybe<Mail>;
   parent_id?: Maybe<Scalars['String']['output']>;
+  public_key?: Maybe<Scalars['String']['output']>;
   recipient?: Maybe<User>;
   recipientMailAccount?: Maybe<MailAccount>;
   salt: Scalars['String']['output'];
@@ -306,6 +307,17 @@ export type MarketplaceSettings = {
   sol_fee_lamports: Scalars['Float']['output'];
   treasury?: Maybe<Treasury>;
   updated_at: Scalars['Float']['output'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  updateMailReadStatus: UpdateMailReadStatusResponse;
+};
+
+
+export type MutationUpdateMailReadStatusArgs = {
+  mailId: Scalars['String']['input'];
+  markAsRead: Scalars['Boolean']['input'];
 };
 
 export type Query = {
@@ -571,6 +583,13 @@ export type Treasury = {
   updated_at: Scalars['Float']['output'];
 };
 
+export type UpdateMailReadStatusResponse = {
+  __typename?: 'UpdateMailReadStatusResponse';
+  mail?: Maybe<Mail>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type User = {
   __typename?: 'User';
   activeBidAccounts: Array<Bid>;
@@ -762,7 +781,7 @@ export type GetUserMailsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserMailsQuery = { __typename?: 'Query', mailsByType: { __typename?: 'MailsResponse', wallet: string, count: number, mails: Array<{ __typename?: 'Mail', id: string, from: string, to: string, subject: string, body: string, label: MailLabel, mark_as_read: boolean, created_at: number, senderMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null, linkedUsernames: Array<{ __typename?: 'Username', username: string, domain: string }> } | null, recipientMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null } | null }>, appliedFilters?: { __typename?: 'AppliedFilters', excludedLabels?: Array<MailLabel> | null, usedGSI: boolean } | null } };
+export type GetUserMailsQuery = { __typename?: 'Query', mailsByType: { __typename?: 'MailsResponse', wallet: string, count: number, mails: Array<{ __typename?: 'Mail', id: string, from: string, to: string, subject: string, body: string, label: MailLabel, mark_as_read: boolean, version: string, public_key?: string | null, created_at: number, senderMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null, linkedUsernames: Array<{ __typename?: 'Username', username: string, domain: string }> } | null, recipientMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null } | null }>, appliedFilters?: { __typename?: 'AppliedFilters', excludedLabels?: Array<MailLabel> | null, usedGSI: boolean } | null } };
 
 
-export const GetUserMailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserMails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MailType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mailsByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"wallet"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"wallet"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"mails"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"mark_as_read"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"senderMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}},{"kind":"Field","name":{"kind":"Name","value":"linkedUsernames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"recipientMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"appliedFilters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"excludedLabels"}},{"kind":"Field","name":{"kind":"Name","value":"usedGSI"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserMailsQuery, GetUserMailsQueryVariables>;
+export const GetUserMailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserMails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MailType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mailsByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"wallet"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"wallet"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"mails"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"mark_as_read"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"public_key"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"senderMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}},{"kind":"Field","name":{"kind":"Name","value":"linkedUsernames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"recipientMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"appliedFilters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"excludedLabels"}},{"kind":"Field","name":{"kind":"Name","value":"usedGSI"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserMailsQuery, GetUserMailsQueryVariables>;
