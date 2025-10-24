@@ -1,6 +1,6 @@
 import { Scrollbar } from "react-scrollbars-custom";
 import { useEffect, useRef, type ReactNode } from "react";
-import { Button, useDisclosure } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import { CustomEventType, EVENT_NAME, EventTypes } from "@utils/event";
 
 export const CustomScrollbarWrapper: React.FC<{ children: ReactNode }> = ({
