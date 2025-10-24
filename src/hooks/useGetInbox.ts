@@ -21,7 +21,7 @@ import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import { usePrivyWallet } from "./usePrivyWallet";
 import { isOlderThan } from "@utils/time";
 import { useMailBoxContext } from "./useMailBoxContext";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);
@@ -54,7 +54,8 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const goToMainInbox = useCallback(() => {
     setPage(() => 0);
     clearInboxInfo();
-  }, [clearInboxInfo]);
+    setTimeout(() => refetch());
+  }, [clearInboxInfo, refetch]);
 
   const formattedMails = useMemo(() => {
     const mails = data?.mailsByType?.mails ?? [];
@@ -120,6 +121,17 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     refetch,
   ]);
 
+  const router = useRouter();
+  useEffect(() => {
+    const unsubscribe = router.subscribe("onResolved", (event) => {
+      if (event.toLocation.pathname !== event?.fromLocation?.pathname) {
+        clearInboxInfo();
+      }
+    });
+
+    return unsubscribe;
+  }, [clearInboxInfo, router]);
+
   const { pages, hasNext, hasPrev } = useMemo(() => {
     const pages = Math.ceil(count / limit);
     const hasPrev = page > 0;
@@ -176,12 +188,16 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
           id: string;
           mailbox: PublicKey;
         }) => {
+          console.log(event);
           if (
             address &&
             event.to &&
             event.to?.toString() === address.toString()
           ) {
-            if (context === MailBoxLabels.inbox && page > 0) {
+            if (
+              context !== MailBoxLabels.inbox ||
+              (context === MailBoxLabels.inbox && page > 0)
+            ) {
               setStatus((prev) => ({
                 ...prev,
                 hasInboxUpdates: !0,
