@@ -11,11 +11,17 @@ import {
   MailListStatusState,
   MailListStatus,
 } from "@state/inbox";
-import { CustomEventType, EVENT_NAME, EventTypes } from "@utils/event";
+import {
+  CustomEventType,
+  dispatchCustomEvent,
+  EVENT_NAME,
+  EventTypes,
+} from "@utils/event";
 import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import { usePrivyWallet } from "./usePrivyWallet";
 import { isOlderThan } from "@utils/time";
 import { useMailBoxContext } from "./useMailBoxContext";
+import { useNavigate } from "@tanstack/react-router";
 
 export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const [page, setPage] = useState<number>(DEFAULT_MAILS_OFFSET);
@@ -26,6 +32,12 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const { program } = useGetMailProgramInstance();
   const { address } = usePrivyWallet();
   const { context } = useMailBoxContext();
+
+  const navigate = useNavigate({ from: `/u/solmail/${context}/$id` });
+
+  const redirect = useCallback(() => {
+    navigate({ to: `/u/solmail/${context}/all` });
+  }, [context, navigate]);
   const { data, isLoading, refetch, isRefetching } = useMailBoxGraphql({
     type,
     offset: page * limit,
@@ -119,18 +131,23 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const onPrev = useCallback(() => {
     setPage((prev) => prev - 1);
     clearInboxInfo();
-  }, [clearInboxInfo]);
+    redirect();
+  }, [clearInboxInfo, redirect]);
 
   const onNext = useCallback(() => {
     setPage((prev) => prev + 1);
     clearInboxInfo();
-  }, [clearInboxInfo]);
+    redirect();
+  }, [clearInboxInfo, redirect]);
   const [placeholder, setPlaceholder] = useState<FormattedMailBox[]>([]);
 
   useEffect(() => {
     if (!isLoading && !isRefetching && formattedMails) {
       setPlaceholder(formattedMails);
       set(formattedMails);
+      dispatchCustomEvent({
+        type: EventTypes.inbox_reset_scroll,
+      });
     }
   }, [formattedMails, isLoading, isRefetching, set]);
 
