@@ -35,7 +35,9 @@ export const useMailBoxGraphql = (config: ApiConfig = {}) => {
     },
   });
 
-  const isRefetching = networkStatus === NetworkStatus.refetch;
+  const isRefetching =
+    networkStatus === NetworkStatus.refetch ||
+    networkStatus === NetworkStatus.setVariables;
 
   return {
     isLoading: loading,
