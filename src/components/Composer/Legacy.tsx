@@ -128,7 +128,7 @@ export const ComposerLegacy: React.FC = () => {
   const [id, set] = useState(0);
   const { hasEnoughBalance } = useBalance(undefined, 0.01021728);
 
-  const { composerCollapsed, update } = useComposer();
+  const { composerCollapsed, composerMinimised, update } = useComposer();
 
   const { onOpen, isOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
@@ -203,7 +203,7 @@ export const ComposerLegacy: React.FC = () => {
   };
 
   methods.watch(["to"]);
-  if (composerCollapsed) {
+  if (composerCollapsed || composerMinimised) {
     return null;
   }
 

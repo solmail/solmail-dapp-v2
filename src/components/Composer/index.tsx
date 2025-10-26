@@ -1,15 +1,18 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Icon } from "@chakra-ui/react";
 import { ComposerLegacy } from "@components/Composer/Legacy";
 import { MultiMailLoader } from "@components/MultiMailLoader";
 import { useComposer } from "@hooks/useComposer";
+import { AiOutlineExpandAlt } from "react-icons/ai";
 
 export const Composer: React.FC = () => {
-  const { isOpen, composerCollapsed, onClose } = useComposer();
+  const { isOpen, composerCollapsed, minimize, composerMinimised, expand } =
+    useComposer();
+
   return (
     <>
       {isOpen && (
         <>
-          {!composerCollapsed && (
+          {!composerCollapsed && !composerMinimised && (
             <>
               <Flex
                 position={"absolute"}
@@ -17,7 +20,7 @@ export const Composer: React.FC = () => {
                 backdropFilter={"blur(2px)"}
                 inset={0}
                 zIndex={100}
-                onClick={onClose}
+                onClick={minimize}
               ></Flex>
             </>
           )}
@@ -36,6 +39,34 @@ export const Composer: React.FC = () => {
             w="full"
             alignItems={"flex-end"}
           >
+            {composerMinimised && (
+              <Flex
+                p={5}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                w="100%"
+                cursor={"pointer"}
+                transition={"all ease .2s"}
+                data-group
+                onClick={expand}
+                _hover={{
+                  pb: 8,
+                }}
+              >
+                <Flex fontWeight={"bold"} color={"red.500"}>
+                  Draft
+                </Flex>
+                <Flex>
+                  <Icon
+                    _groupHover={{
+                      opacity: 0.5,
+                    }}
+                    fontSize={20}
+                    as={AiOutlineExpandAlt}
+                  />
+                </Flex>
+              </Flex>
+            )}
             <ComposerLegacy />
             {composerCollapsed && <MultiMailLoader />}
           </Flex>

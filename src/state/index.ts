@@ -5,12 +5,14 @@ export type AtomType = {
   isComposerOpen: boolean;
   composerState: string;
   composerCollapsed: boolean;
+  hasFormChanges: boolean;
   thread: string;
   ref: string;
   updatingUsername: boolean;
   action: MailShareTypes;
   context: MailBoxLabels;
   composerProgress: { total: number; current: number };
+  composerMinimised: boolean;
 };
 
 export enum MailShareTypes {
@@ -22,13 +24,15 @@ export enum MailShareTypes {
 export const appState = atom<AtomType>({
   isComposerOpen: !1,
   composerCollapsed: !1,
-  composerState: "Here we go",
+  composerMinimised: !1,
+  composerState: "",
   thread: "",
   ref: "",
   action: MailShareTypes.none,
   updatingUsername: !1,
   context: MailBoxLabels.inbox,
   composerProgress: { total: 0, current: 0 },
+  hasFormChanges: !1,
 });
 
 appState.debugLabel = "AppState";
