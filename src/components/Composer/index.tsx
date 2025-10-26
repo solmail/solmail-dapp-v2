@@ -90,8 +90,24 @@ export const Composer: React.FC = () => {
                   pb: 8,
                 }}
               >
-                <Flex fontWeight={"bold"} color={"red.500"}>
-                  Draft
+                <Flex direction={"column"} w="100%">
+                  <Flex fontWeight={"bold"} color={"red.500"}>
+                    Draft
+                  </Flex>
+                  {methods.getValues().subject && (
+                    <Flex
+                      opacity={0.6}
+                      maxW={"70%"}
+                      whiteSpace={"nowrap"}
+                      overflow={"hidden"}
+                      textOverflow={"ellipsis"}
+                      display={"inline-block"}
+                      fontSize={13}
+                      w="100%"
+                    >
+                      {methods.getValues().subject}
+                    </Flex>
+                  )}
                 </Flex>
                 <Flex>
                   <Icon

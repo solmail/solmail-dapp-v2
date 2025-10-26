@@ -3,6 +3,7 @@ import {
   Button,
   chakra,
   Flex,
+  IconButton,
   Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -38,9 +39,17 @@ import { useEmailer } from "@hooks/useEmailer";
 import { ChipInput } from "@components/ChipInput";
 import { useEmailResolver } from "@hooks/useEmailResolver";
 import { useQueryClient } from "@tanstack/react-query";
+import { FiMinimize2 } from "react-icons/fi";
+import { CgClose } from "react-icons/cg";
 
 export const ComposerLegacy: React.FC = () => {
-  const { thread, action, ref, onClose: closeComposer } = useComposer();
+  const {
+    thread,
+    action,
+    ref,
+    onClose: closeComposer,
+    minimize,
+  } = useComposer();
   const [sharedAttachments, setSharedAttachments] = useState<Attachment[]>([]);
   const [isComposerReady, setComposerState] = useState<boolean>(!1);
   const { mutateAsync } = useEmailer();
@@ -230,17 +239,19 @@ export const ComposerLegacy: React.FC = () => {
               </chakra.span>
             </Flex>
             <Flex gap={3}>
-              <Button
-                onClick={closeComposer}
+              <IconButton
                 size={"sm"}
-                variant={"outlined"}
-                colorScheme="red"
-                _hover={{
-                  opacity: 0.6,
-                }}
-              >
-                Close
-              </Button>
+                aria-label="Minimise"
+                onClick={minimize}
+                icon={<FiMinimize2 />}
+              ></IconButton>
+              <IconButton
+                size={"sm"}
+                aria-label="Close"
+                onClick={closeComposer}
+                icon={<CgClose />}
+              ></IconButton>
+
               <Button
                 {...(!isPending ? { rightIcon: <IoSend /> } : {})}
                 size={"sm"}
