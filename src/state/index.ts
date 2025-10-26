@@ -5,7 +5,6 @@ export type AtomType = {
   isComposerOpen: boolean;
   composerState: string;
   composerCollapsed: boolean;
-  hasFormChanges: boolean;
   thread: string;
   ref: string;
   updatingUsername: boolean;
@@ -32,7 +31,6 @@ export const appState = atom<AtomType>({
   updatingUsername: !1,
   context: MailBoxLabels.inbox,
   composerProgress: { total: 0, current: 0 },
-  hasFormChanges: !1,
 });
 
 appState.debugLabel = "AppState";

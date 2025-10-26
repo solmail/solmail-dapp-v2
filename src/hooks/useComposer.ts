@@ -2,8 +2,7 @@ import { appState, type AtomType } from "@state/index";
 import { useAtom } from "jotai";
 
 export const useComposer = () => {
-  const [{ isComposerOpen, hasFormChanges, ...other }, update] =
-    useAtom(appState);
+  const [{ isComposerOpen, ...other }, update] = useAtom(appState);
   const onOpen = (config: Partial<AtomType> = {}) => {
     update((prev) => {
       return {
@@ -15,16 +14,12 @@ export const useComposer = () => {
   };
 
   const minimize = () => {
-    if (hasFormChanges) {
-      update((prev) => {
-        return {
-          ...prev,
-          composerMinimised: !0,
-        };
-      });
-    } else {
-      onClose();
-    }
+    update((prev) => {
+      return {
+        ...prev,
+        composerMinimised: !0,
+      };
+    });
   };
 
   const expand = () => {

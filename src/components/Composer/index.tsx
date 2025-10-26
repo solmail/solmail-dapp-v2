@@ -2,14 +2,51 @@ import { Flex, Icon } from "@chakra-ui/react";
 import { ComposerLegacy } from "@components/Composer/Legacy";
 import { MultiMailLoader } from "@components/MultiMailLoader";
 import { useComposer } from "@hooks/useComposer";
+import { FormProvider, useForm } from "react-hook-form";
 import { AiOutlineExpandAlt } from "react-icons/ai";
+import { ComposerFormInputs } from "src/types";
+
+const initialValues = {
+  to: [],
+  subject: "",
+  body: "",
+  files: [],
+};
 
 export const Composer: React.FC = () => {
-  const { isOpen, composerCollapsed, minimize, composerMinimised, expand } =
-    useComposer();
+  const {
+    isOpen,
+    composerCollapsed,
+    minimize,
+    composerMinimised,
+    expand,
+    onClose,
+  } = useComposer();
+  const methods = useForm<ComposerFormInputs>({
+    mode: "all",
+    reValidateMode: "onSubmit",
+    shouldFocusError: true,
+    defaultValues: {
+      ...initialValues,
+      to: [],
+    },
+  });
 
+  const clickAwayHandler = () => {
+    if (
+      methods.getValues().body?.trim() ||
+      methods.getValues().subject?.trim() ||
+      methods.getValues().to?.length > 0 ||
+      methods.getValues().files?.length > 0 ||
+      methods.getValues().solanaPay
+    ) {
+      minimize();
+    } else {
+      onClose();
+    }
+  };
   return (
-    <>
+    <FormProvider {...methods}>
       {isOpen && (
         <>
           {!composerCollapsed && !composerMinimised && (
@@ -20,7 +57,7 @@ export const Composer: React.FC = () => {
                 backdropFilter={"blur(2px)"}
                 inset={0}
                 zIndex={100}
-                onClick={minimize}
+                onClick={clickAwayHandler}
               ></Flex>
             </>
           )}
@@ -72,6 +109,6 @@ export const Composer: React.FC = () => {
           </Flex>
         </>
       )}
-    </>
+    </FormProvider>
   );
 };

@@ -12,7 +12,7 @@ import {
   type ComposerFormInputs,
   type SolanaPayPayload,
 } from "src/types";
-import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
+import { type SubmitHandler, useFormContext } from "react-hook-form";
 import { Subject } from "./Subject";
 import { FieldWrapper } from "@components/Field";
 import { trim } from "@utils/index";
@@ -39,13 +39,6 @@ import { ChipInput } from "@components/ChipInput";
 import { useEmailResolver } from "@hooks/useEmailResolver";
 import { useQueryClient } from "@tanstack/react-query";
 
-const initialValues = {
-  to: [],
-  subject: "",
-  body: "",
-  files: [],
-};
-
 export const ComposerLegacy: React.FC = () => {
   const { thread, action, ref, onClose: closeComposer } = useComposer();
   const [sharedAttachments, setSharedAttachments] = useState<Attachment[]>([]);
@@ -66,15 +59,7 @@ export const ComposerLegacy: React.FC = () => {
     isLoading,
   } = useGetLinkedUsernameById(thread);
 
-  const methods = useForm<ComposerFormInputs>({
-    mode: "all",
-    reValidateMode: "onSubmit",
-    shouldFocusError: true,
-    defaultValues: {
-      ...initialValues,
-      to: [],
-    },
-  });
+  const methods = useFormContext<ComposerFormInputs>();
 
   useEffect(() => {
     if (isComposerReady) {
@@ -214,7 +199,7 @@ export const ComposerLegacy: React.FC = () => {
   };
 
   return (
-    <FormProvider {...methods}>
+    <>
       <Flex
         direction={"column"}
         px="5"
@@ -307,6 +292,6 @@ export const ComposerLegacy: React.FC = () => {
         isOpen={isOpen}
         onClose={onClose}
       />
-    </FormProvider>
+    </>
   );
 };
