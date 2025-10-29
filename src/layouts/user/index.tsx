@@ -24,10 +24,13 @@ import { useAtom } from "jotai";
 import { AuthState } from "@state/auth";
 import { ENABLE_USERNAME_CLAIM } from "@const/config";
 import { useFCMNotifications } from "@hooks/useFCMNotifications";
+import { useComposer } from "@hooks/useComposer";
 
 export const UserLayout: React.FC = () => {
   const { address } = usePrivyWallet();
   const STORAGE_NAME = `_u_${address}`;
+
+  const { isOpen: isComposerOpen } = useComposer();
   const setStatus = (s: boolean) => {
     sessionStorage.setItem(STORAGE_NAME, s.toString());
   };
@@ -189,7 +192,7 @@ export const UserLayout: React.FC = () => {
             <>
               {hasAccount && (
                 <>
-                  <Composer />
+                  {isComposerOpen && <Composer />}
                   <Outlet />
                 </>
               )}

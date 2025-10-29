@@ -8,7 +8,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import {
-  QueryKeys,
+  MailBoxLabels,
   ResolveEmail,
   type ComposerFormInputs,
   type SolanaPayPayload,
@@ -38,9 +38,10 @@ import { MAXIMUM_MAIL_SUBJECT_LENGTH, NO_BALANCE_LABEL } from "@const/config";
 import { useEmailer } from "@hooks/useEmailer";
 import { ChipInput } from "@components/ChipInput";
 import { useEmailResolver } from "@hooks/useEmailResolver";
-import { useQueryClient } from "@tanstack/react-query";
+
 import { FiMinimize2 } from "react-icons/fi";
 import { CgClose } from "react-icons/cg";
+import { dispatchCustomEvent } from "@utils/event";
 
 export const ComposerLegacy: React.FC = () => {
   const {
@@ -62,6 +63,7 @@ export const ComposerLegacy: React.FC = () => {
     content,
     attachments,
   } = useMailBody(ref);
+
   const {
     account: _account,
     displayName,
@@ -125,7 +127,6 @@ export const ComposerLegacy: React.FC = () => {
   const { composerCollapsed, composerMinimised, update } = useComposer();
 
   const { onOpen, isOpen, onClose } = useDisclosure();
-  const queryClient = useQueryClient();
 
   const _resolveRecipients = async (to: string[]) => {
     const address: ResolveEmail[] = [];
@@ -182,7 +183,9 @@ export const ComposerLegacy: React.FC = () => {
           continue;
         }
       }
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
+      dispatchCustomEvent({
+        contextRefresher: MailBoxLabels.outbox,
+      });
       closeComposer();
     });
   };

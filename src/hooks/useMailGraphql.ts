@@ -27,6 +27,7 @@ export const useMailBoxGraphql = (config: ApiConfig = {}) => {
     GetUserMailsQueryVariables
   >(GET_USER_MAILBOX, {
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
     variables: {
       wallet: address,
       limit,

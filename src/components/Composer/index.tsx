@@ -1,17 +1,11 @@
 import { Flex, Icon } from "@chakra-ui/react";
 import { ComposerLegacy } from "@components/Composer/Legacy";
 import { MultiMailLoader } from "@components/MultiMailLoader";
+import { initialValues } from "@const/composer";
 import { useComposer } from "@hooks/useComposer";
 import { FormProvider, useForm } from "react-hook-form";
 import { AiOutlineExpandAlt } from "react-icons/ai";
 import { ComposerFormInputs } from "src/types";
-
-const initialValues = {
-  to: [],
-  subject: "",
-  body: "",
-  files: [],
-};
 
 export const Composer: React.FC = () => {
   const {

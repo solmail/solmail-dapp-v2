@@ -94,10 +94,14 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
       setCount(data?.mailsByType?.count ?? 0);
     }
     const customEventHandler = (event: Event) => {
-      const customEvent = event as CustomEvent<CustomEventType>;
+      const customEvent = event as CustomEventType;
 
       if (customEvent.detail) {
-        if (customEvent.detail.type === (EventTypes.status_update as unknown)) {
+        if (
+          customEvent.detail.type === (EventTypes.status_update as unknown) ||
+          (customEvent.detail.contextRefresher &&
+            customEvent.detail.contextRefresher === context)
+        ) {
           refetch();
         }
 
@@ -114,6 +118,7 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
       window.removeEventListener(EVENT_NAME, customEventHandler);
     };
   }, [
+    context,
     data?.mailsByType?.count,
     goToMainInbox,
     isLoading,
@@ -188,7 +193,6 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
           id: string;
           mailbox: PublicKey;
         }) => {
-          console.log(event);
           if (
             address &&
             event.to &&
