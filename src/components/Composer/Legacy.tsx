@@ -183,8 +183,10 @@ export const ComposerLegacy: React.FC = () => {
           continue;
         }
       }
-      dispatchCustomEvent({
-        contextRefresher: MailBoxLabels.outbox,
+      setTimeout(() => {
+        dispatchCustomEvent({
+          contextRefresher: MailBoxLabels.outbox,
+        });
       });
       closeComposer();
     });
