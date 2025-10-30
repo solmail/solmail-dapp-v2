@@ -52,10 +52,10 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   }, [setStatus]);
 
   const goToMainInbox = useCallback(() => {
-    setPage(() => 0);
-    clearInboxInfo();
-    setTimeout(() => refetch());
-  }, [clearInboxInfo, refetch]);
+    if (context === MailBoxLabels.inbox) {
+      setPage(() => 0);
+    }
+  }, [context]);
 
   const formattedMails = useMemo(() => {
     const mails = data?.mailsByType?.mails ?? [];

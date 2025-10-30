@@ -17,6 +17,7 @@ import { useComposer } from "@hooks/useComposer";
 
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { MailListStatusState, MailListStatus } from "@state/inbox";
+import { useNavigate } from "@tanstack/react-router";
 import { dispatchCustomEvent, EventTypes } from "@utils/event";
 import { useAtom } from "jotai";
 import { useEffect, useRef } from "react";
@@ -44,11 +45,14 @@ export const Solmail: React.FC = () => {
   }, [context, update]);
 
   const { onOpen, isOpen } = useComposer();
+  const navigate = useNavigate();
 
   const onClickForceUpdate = () => {
+    navigate({ to: `/u/solmail/inbox/all` });
     dispatchCustomEvent({
       type: EventTypes.inbox_force_update,
     });
+    onClose();
   };
 
   const onClose = () => {
