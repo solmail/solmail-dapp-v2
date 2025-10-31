@@ -13,9 +13,10 @@ import { useUpdateMailStatus } from "@hooks/useUpdateMailStatus";
 
 import { useEffect } from "react";
 import { RiChatSmileFill } from "react-icons/ri";
+import { MailBoxLabels } from "src/types";
 
 export const MailPreview: React.FC = () => {
-  const { id } = useMailBoxContext();
+  const { id, context } = useMailBoxContext();
 
   const {
     subject,
@@ -29,10 +30,10 @@ export const MailPreview: React.FC = () => {
   const { onUpdate } = useUpdateMailStatus(mail?.uid);
 
   useEffect(() => {
-    if (mail && !mail.markAsRead) {
+    if (context !== MailBoxLabels.outbox && mail && !mail.markAsRead) {
       onUpdate();
     }
-  }, [mail, onUpdate]);
+  }, [context, mail, onUpdate]);
   return (
     <Flex w="full" direction={"column"}>
       {id && !isLoading && (

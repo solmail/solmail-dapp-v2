@@ -5,6 +5,7 @@ import { messaging } from "@integrations/firebase";
 import { getToken } from "firebase/messaging";
 import { useFCMTokenHandler } from "@hooks/useFcmTokenHandler";
 import { usePrivyWallet } from "./usePrivyWallet";
+import { FCM_STORAGE_KEY } from "@const/config";
 
 export const useFCMNotifications = (autoRequest: boolean = !1) => {
   const [{ hasPermisson, isRegistered, ...rest }, set] =
@@ -33,7 +34,7 @@ export const useFCMNotifications = (autoRequest: boolean = !1) => {
         userPubKey: address,
       });
 
-      localStorage.setItem("_i_", token);
+      localStorage.setItem(FCM_STORAGE_KEY, token);
       set((prev) => ({
         ...prev,
         isRegistered: !0,
@@ -68,7 +69,7 @@ export const useFCMNotifications = (autoRequest: boolean = !1) => {
 
   const unregister = async () => {
     try {
-      const token = localStorage.getItem("_i_")?.trim() ?? "";
+      const token = localStorage.getItem(FCM_STORAGE_KEY)?.trim() ?? "";
       if (token) {
         set((prev) => ({
           ...prev,
@@ -86,7 +87,7 @@ export const useFCMNotifications = (autoRequest: boolean = !1) => {
                     fcmId: token,
                     userPubKey: address,
                   });
-                  localStorage.removeItem("_i_");
+                  localStorage.removeItem(FCM_STORAGE_KEY);
                   set((prev) => ({
                     ...prev,
                     isRegistered: !1,

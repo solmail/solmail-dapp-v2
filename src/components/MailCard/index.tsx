@@ -49,9 +49,10 @@ const PaymentStatusBadge: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
-  const { from, createdAt, id, to, markAsRead: isRead } = props;
+  const { from, createdAt, id, to, markAsRead } = props;
 
   const { context, id: contextId } = useMailBoxContext();
+  const isRead = markAsRead || context === MailBoxLabels.outbox;
   const { address: myAddress } = usePrivyWallet();
   const {
     textContent,
