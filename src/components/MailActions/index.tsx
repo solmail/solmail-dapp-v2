@@ -80,7 +80,6 @@ export const MailActions: React.FC = () => {
       <MailOptionRenderer
         renderWhen={[
           MailBoxLabels.inbox,
-          MailBoxLabels.outbox,
           MailBoxLabels.spam,
           MailBoxLabels.payment,
         ]}
