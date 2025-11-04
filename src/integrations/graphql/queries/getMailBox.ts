@@ -21,6 +21,8 @@ export const GET_USER_MAILBOX = gql`
         version
         public_key
         created_at
+        is_inbox_favorite
+        is_outbox_favorite
         senderMailAccount {
           authority
           mailbox

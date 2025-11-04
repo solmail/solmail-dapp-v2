@@ -21,6 +21,7 @@ export type Scalars = {
 export type AppliedFilters = {
   __typename?: 'AppliedFilters';
   excludedLabels?: Maybe<Array<MailLabel>>;
+  favorite?: Maybe<Scalars['Boolean']['output']>;
   includedLabels?: Maybe<Array<MailLabel>>;
   usedGSI: Scalars['Boolean']['output'];
 };
@@ -178,6 +179,9 @@ export type Mail = {
   events: Array<Event>;
   from: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  is_favorite: Scalars['Boolean']['output'];
+  is_inbox_favorite: Scalars['Boolean']['output'];
+  is_outbox_favorite: Scalars['Boolean']['output'];
   iv: Scalars['String']['output'];
   label: MailLabel;
   mailbox: Scalars['String']['output'];
@@ -244,6 +248,11 @@ export type MailAccountSentMailsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export enum MailFavoriteType {
+  Inbox = 'inbox',
+  Outbox = 'outbox'
+}
+
 export enum MailLabel {
   Inbox = 'Inbox',
   Outbox = 'Outbox',
@@ -252,6 +261,13 @@ export enum MailLabel {
   Spam = 'Spam',
   Trash = 'Trash'
 }
+
+export type MailMutationResponse = {
+  __typename?: 'MailMutationResponse';
+  mail?: Maybe<Mail>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
 
 export type MailResponse = {
   __typename?: 'MailResponse';
@@ -311,7 +327,16 @@ export type MarketplaceSettings = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  updateMailReadStatus: UpdateMailReadStatusResponse;
+  updateMailFavoriteStatus: MailMutationResponse;
+  updateMailReadStatus: MailMutationResponse;
+};
+
+
+export type MutationUpdateMailFavoriteStatusArgs = {
+  isFavorite: Scalars['Boolean']['input'];
+  mailId: Scalars['String']['input'];
+  type: MailFavoriteType;
+  wallet: Scalars['String']['input'];
 };
 
 
@@ -335,12 +360,14 @@ export type Query = {
   mailAccountByMailbox?: Maybe<MailAccount>;
   mailEvents: EventsPaginatedResponse;
   mailsByLabel: MailsResponse;
+  mailsBySenderUsername: MailsResponse;
   mailsByType: MailsResponse;
   marketplaceSettings?: Maybe<MarketplaceSettings>;
   recentTransactions: TransactionsPaginatedResponse;
   transaction?: Maybe<Transaction>;
   user?: Maybe<User>;
   userBids: UserBidsResponse;
+  userFavorites: MailsResponse;
   userInbox: MailsResponse;
   userSentMails: MailsResponse;
   username?: Maybe<Username>;
@@ -441,9 +468,18 @@ export type QueryMailsByLabelArgs = {
 };
 
 
+export type QueryMailsBySenderUsernameArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  recipientWallet?: InputMaybe<Scalars['String']['input']>;
+  username: Scalars['String']['input'];
+};
+
+
 export type QueryMailsByTypeArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
   type: MailType;
   wallet: Scalars['String']['input'];
 };
@@ -467,6 +503,14 @@ export type QueryUserArgs = {
 
 
 export type QueryUserBidsArgs = {
+  wallet: Scalars['String']['input'];
+};
+
+
+export type QueryUserFavoritesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
   wallet: Scalars['String']['input'];
 };
 
@@ -722,6 +766,7 @@ export type Username = {
   activeBid?: Maybe<Bid>;
   authority: Scalars['String']['output'];
   authorityUser?: Maybe<User>;
+  bidAccount?: Maybe<Bid>;
   bump?: Maybe<Scalars['Int']['output']>;
   created_at: Scalars['Float']['output'];
   creation_method?: Maybe<Scalars['String']['output']>;
@@ -773,13 +818,23 @@ export type Wrapper = {
   username_account: Scalars['String']['output'];
 };
 
+export type MarkMailAsFavoriteMutationVariables = Exact<{
+  mailId: Scalars['String']['input'];
+  isFavorite: Scalars['Boolean']['input'];
+  type: MailFavoriteType;
+  wallet: Scalars['String']['input'];
+}>;
+
+
+export type MarkMailAsFavoriteMutation = { __typename?: 'Mutation', updateMailFavoriteStatus: { __typename?: 'MailMutationResponse', success: boolean, message: string, mail?: { __typename?: 'Mail', id: string, is_inbox_favorite: boolean, is_outbox_favorite: boolean } | null } };
+
 export type UpdateMailReadStatusMutationVariables = Exact<{
   mailId: Scalars['String']['input'];
   markAsRead: Scalars['Boolean']['input'];
 }>;
 
 
-export type UpdateMailReadStatusMutation = { __typename?: 'Mutation', updateMailReadStatus: { __typename?: 'UpdateMailReadStatusResponse', success: boolean, message: string, mail?: { __typename?: 'Mail', id: string, subject: string, mark_as_read: boolean, from: string, to: string } | null } };
+export type UpdateMailReadStatusMutation = { __typename?: 'Mutation', updateMailReadStatus: { __typename?: 'MailMutationResponse', success: boolean, message: string, mail?: { __typename?: 'Mail', id: string, subject: string, mark_as_read: boolean, from: string, to: string } | null } };
 
 export type GetUserMailsQueryVariables = Exact<{
   wallet: Scalars['String']['input'];
@@ -789,8 +844,9 @@ export type GetUserMailsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserMailsQuery = { __typename?: 'Query', mailsByType: { __typename?: 'MailsResponse', wallet: string, count: number, mails: Array<{ __typename?: 'Mail', id: string, from: string, to: string, subject: string, body: string, label: MailLabel, mark_as_read: boolean, version: string, public_key?: string | null, created_at: number, senderMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null, linkedUsernames: Array<{ __typename?: 'Username', username: string, domain: string }> } | null, recipientMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null } | null }>, appliedFilters?: { __typename?: 'AppliedFilters', excludedLabels?: Array<MailLabel> | null, usedGSI: boolean } | null } };
+export type GetUserMailsQuery = { __typename?: 'Query', mailsByType: { __typename?: 'MailsResponse', wallet: string, count: number, mails: Array<{ __typename?: 'Mail', id: string, from: string, to: string, subject: string, body: string, label: MailLabel, mark_as_read: boolean, version: string, public_key?: string | null, created_at: number, is_inbox_favorite: boolean, is_outbox_favorite: boolean, senderMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null, linkedUsernames: Array<{ __typename?: 'Username', username: string, domain: string }> } | null, recipientMailAccount?: { __typename?: 'MailAccount', authority: string, mailbox?: string | null } | null }>, appliedFilters?: { __typename?: 'AppliedFilters', excludedLabels?: Array<MailLabel> | null, usedGSI: boolean } | null } };
 
 
+export const MarkMailAsFavoriteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"MarkMailAsFavorite"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mailId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isFavorite"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MailFavoriteType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMailFavoriteStatus"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"mailId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mailId"}}},{"kind":"Argument","name":{"kind":"Name","value":"isFavorite"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isFavorite"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"wallet"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"mail"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"is_inbox_favorite"}},{"kind":"Field","name":{"kind":"Name","value":"is_outbox_favorite"}}]}}]}}]}}]} as unknown as DocumentNode<MarkMailAsFavoriteMutation, MarkMailAsFavoriteMutationVariables>;
 export const UpdateMailReadStatusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateMailReadStatus"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mailId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"markAsRead"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMailReadStatus"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"mailId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mailId"}}},{"kind":"Argument","name":{"kind":"Name","value":"markAsRead"},"value":{"kind":"Variable","name":{"kind":"Name","value":"markAsRead"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"mail"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"mark_as_read"}},{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateMailReadStatusMutation, UpdateMailReadStatusMutationVariables>;
-export const GetUserMailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserMails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MailType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mailsByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"wallet"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"wallet"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"mails"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"mark_as_read"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"public_key"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"senderMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}},{"kind":"Field","name":{"kind":"Name","value":"linkedUsernames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"recipientMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"appliedFilters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"excludedLabels"}},{"kind":"Field","name":{"kind":"Name","value":"usedGSI"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserMailsQuery, GetUserMailsQueryVariables>;
+export const GetUserMailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserMails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MailType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mailsByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"wallet"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallet"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"wallet"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"mails"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"mark_as_read"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"public_key"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"is_inbox_favorite"}},{"kind":"Field","name":{"kind":"Name","value":"is_outbox_favorite"}},{"kind":"Field","name":{"kind":"Name","value":"senderMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}},{"kind":"Field","name":{"kind":"Name","value":"linkedUsernames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"recipientMailAccount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authority"}},{"kind":"Field","name":{"kind":"Name","value":"mailbox"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"appliedFilters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"excludedLabels"}},{"kind":"Field","name":{"kind":"Name","value":"usedGSI"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserMailsQuery, GetUserMailsQueryVariables>;

@@ -120,6 +120,7 @@ export const useGetInboxLegacy = (
             labelIdentifier: getLabelIdentifier(item),
             id: item.publicKey.toString(),
             uid: "",
+            isFav: !1,
           };
         });
       }

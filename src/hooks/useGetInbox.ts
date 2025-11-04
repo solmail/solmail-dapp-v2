@@ -65,6 +65,10 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
           ? [mail.from, mail.to]
           : [mail.to, mail.from];
       const encKey = `${user0.toString()}:${user1.toString()}`;
+      const isFav =
+        context !== MailBoxLabels.outbox
+          ? mail.is_inbox_favorite
+          : mail.is_outbox_favorite;
 
       const formattedMail: FormattedMailBox = {
         body: mail.body,
@@ -83,11 +87,12 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
         markAsRead: mail.mark_as_read ?? !1,
         labelIdentifier: MailBoxLabels.inbox,
         uid: mail.id ?? "",
+        isFav,
       };
 
       return formattedMail;
     });
-  }, [data?.mailsByType?.mails]);
+  }, [context, data?.mailsByType?.mails]);
 
   useEffect(() => {
     if (!isLoading && !isRefetching) {

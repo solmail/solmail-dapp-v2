@@ -5,6 +5,7 @@ import {
   Fade,
   Flex,
   Icon,
+  IconButton,
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/react";
@@ -16,6 +17,7 @@ import { UserDisplayName } from "@components/UserDisplayName";
 
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
+import { useUpdateMailFavStatus } from "@hooks/useMailFavStatus";
 
 import { usePaymentStatus } from "@hooks/usePaymentStatus";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
@@ -23,6 +25,7 @@ import { Link } from "@tanstack/react-router";
 import { trim } from "@utils/string";
 import { formatTime } from "@utils/time";
 import { BiSolidUpArrowSquare, BiSolidDownArrowSquare } from "react-icons/bi";
+import { BsFillStarFill } from "react-icons/bs";
 
 import { MailBoxLabels, type FormattedMailBox } from "src/types";
 
@@ -49,7 +52,7 @@ const PaymentStatusBadge: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
-  const { from, createdAt, id, to, markAsRead } = props;
+  const { from, createdAt, id, to, markAsRead, isFav, uid } = props;
 
   const { context, id: contextId } = useMailBoxContext();
   const isRead = markAsRead || context === MailBoxLabels.outbox;
@@ -62,11 +65,19 @@ export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
     subject,
   } = useMailBody(id);
 
+  const { onUpdate } = useUpdateMailFavStatus();
+
   const addres =
     myAddress.toString() === to?.toString() ? from?.toString() : to?.toString();
   const isActive = contextId && contextId === id;
 
   const hasPendingState = isMailBoxLoading;
+
+  const onClickFavHandler = () => {
+    if (uid) {
+      onUpdate(uid, !isFav);
+    }
+  };
 
   return (
     <Flex as={Fade} in delay={0.1} w="100%">
@@ -88,6 +99,21 @@ export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
           bg: "surface.800",
         }}
       >
+        {uid && (
+          <IconButton
+            icon={<BsFillStarFill />}
+            size={"sm"}
+            aria-label="Mark as Favourate"
+            position={"absolute"}
+            zIndex={1}
+            right={3}
+            bottom={3}
+            bg="transparent"
+            onClick={onClickFavHandler}
+            color={isFav ? "#ffcf76" : ""}
+            opacity={isFav ? 1 : 0.3}
+          />
+        )}
         <Avatar
           top={2}
           left={"10px"}
@@ -108,6 +134,7 @@ export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
             whiteSpace={"nowrap"}
             overflow={"hidden"}
             textOverflow={"ellipsis"}
+            pr={30}
           >
             <CustomSkeleton isLoading={isMailBoxLoading}>
               <chakra.span
@@ -125,7 +152,7 @@ export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
           {context === MailBoxLabels.payment && <PaymentStatusBadge id={id} />}
         </Box>
         {context !== MailBoxLabels.payment && (
-          <Box fontSize={12}>
+          <Box fontSize={12} pr={30}>
             <CustomSkeleton isLoading={hasPendingState}>
               <chakra.span
                 textOverflow={"ellipsis"}
