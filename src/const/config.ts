@@ -6,7 +6,7 @@ export const config = {
 
 export const PINATA_GATEWAY_URL = import.meta.env.VITE_SOLMAIL_PINATA_BASE_URL;
 
-export const MAXIMUM_MAIL_SUBJECT_LENGTH = 80;
+export const MAXIMUM_MAIL_SUBJECT_LENGTH = 40;
 
 export const RPC_ENDPOINT = `${import.meta.env.VITE_SOLMAIL_RPC_ENDPOINT}?api-key=${import.meta.env.VITE_SOLMAIL_RPC_API_KEY}`;
 

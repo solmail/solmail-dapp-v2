@@ -16,7 +16,7 @@ export const Subject: React.FC = () => {
         pr={"55px"}
         position={"relative"}
         zIndex={1}
-        maxLength={80}
+        maxLength={MAXIMUM_MAIL_SUBJECT_LENGTH}
         placeholder={"Subject"}
         bg="transparent !important"
         variant={"secondary"}
