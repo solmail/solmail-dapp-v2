@@ -1,4 +1,4 @@
-import { Box, chakra, Flex, IconButton } from "@chakra-ui/react";
+import { Box, chakra, Flex } from "@chakra-ui/react";
 import { TokenSwapInput } from "@components/TokenSwapInput";
 import { IoSwapVertical } from "react-icons/io5";
 
@@ -11,7 +11,12 @@ export const SwapPage: React.FC = () => {
         </chakra.span>
       </Box>
       <Box mb={2} w="100%" position={"relative"}>
-        <TokenSwapInput label="You Pay" placeholder="0.00" />
+        <TokenSwapInput
+          label="You Pay"
+          placeholder="0.00"
+          logo="https://next.icpex.org/assets/FPL-BW2qFooM.png"
+          symbol="TEST"
+        />
         <Flex
           position={"absolute"}
           left={0}
@@ -36,7 +41,12 @@ export const SwapPage: React.FC = () => {
         </Flex>
       </Box>
       <Box w="100%" position={"relative"}>
-        <TokenSwapInput label="You Receive" placeholder="0.00" />
+        <TokenSwapInput
+          label="You Receive"
+          placeholder="0.00"
+          symbol="SOL"
+          logo="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+        />
       </Box>
     </Box>
   );

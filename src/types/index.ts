@@ -15,6 +15,7 @@ export type MenuConfig = {
 };
 
 export enum QueryKeys {
+  "JUPITER_TOKENS" = "JUPITER_TOKENS",
   "ENCRYPTION_KEY" = "ENCRYPTION_KEY",
   "MAIL_BODY" = "MAIL_BODY",
   "MAILBOX" = "MAILBOX",
