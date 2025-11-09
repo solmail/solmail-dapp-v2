@@ -67,3 +67,12 @@ export type Token = {
   smartCtLikes?: number;
   updatedAt?: string;
 };
+
+export enum JupiterSwapFormKeys {
+  "in" = "in",
+  "out" = "out",
+}
+
+export type JupiterSwapForm = {
+  [K in JupiterSwapFormKeys]: string;
+};

@@ -14,7 +14,7 @@ export const useJupiterPrice = (
         ids: [BASE_TOKEN.mint, ...ids].join(","),
       }).toString();
       const res = await fetch(
-        `${import.meta.env.VITE_SOLMAIL_JUPITER_PRICE_API}?${query}`
+        `${import.meta.env.VITE_SOLMAIL_JUPITER_ENDPOINT}price/v3?${query}`
       );
       if (!res.ok) {
         throw new Error(`Error fetching prices: ${res.statusText}`);

@@ -9,7 +9,7 @@ export function useSolanaConnection(alwaysUseMainnet: boolean = !1) {
     ? RPC_ENDPOINT.replace("devnet", "mainnet")
     : RPC_ENDPOINT;
   const connection = useMemo(() => {
-    if (alwaysUseMainnet) {
+    if (alwaysUseMainnet && import.meta.env.VITE_SOLMAIL_CLUSTER === "devnet") {
       return new Connection(RPC, {
         commitment: "confirmed",
       });

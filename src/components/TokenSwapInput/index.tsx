@@ -3,18 +3,23 @@ import { useEffect, useId, useRef } from "react";
 
 import { TokenSelector } from "./TokenSelector";
 import { JupiterTokens } from "@components/JupiterTokens";
-
+import { useNavigate } from "@tanstack/react-router";
+import { Route as WalletSwapRoute } from "@routes/u/_layout/wallet/_layout/swap/index";
+import { JupiterSwapFormKeys } from "src/types/jupiter";
+import { TokenInputContext } from "./TokenInputContext";
+import { TokenInputOptions } from "./TokenInputOptions";
+import { useFormContext } from "react-hook-form";
 type TokenSwapInputProps = InputProps & {
   label: string;
-  symbol: string;
-  logo: string;
+  name: JupiterSwapFormKeys;
+  isPrimaryInput?: boolean;
 };
 
 export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
   label,
   id,
-  symbol,
-  logo,
+  isPrimaryInput = !1,
+
   ...props
 }) => {
   const uid = useId();
@@ -39,50 +44,71 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
       }
     };
   }, [onClose, onOpen]);
+  const navigate = useNavigate({ from: WalletSwapRoute.path });
+  const { register } = useFormContext();
+
+  const onSelect = (id: string) => {
+    onCloseTokens();
+    navigate({
+      search: (prev: any) => ({
+        ...prev,
+        [props.name as string]: id,
+      }),
+    });
+  };
   return (
-    <Box
-      w="full"
-      bg={isFocused ? "surface.700" : "surface.800"}
-      p={5}
-      borderRadius={15}
-      border="solid 1px"
-      borderColor={!isFocused ? "#1b212e" : "#191d27"}
-      transition={"all ease .2s"}
+    <TokenInputContext.Provider
+      value={{
+        name: props.name,
+      }}
     >
-      {label && (
-        <Box>
-          <Box fontWeight={"bold"} as="label" htmlFor={fieldId}>
-            {label}
+      <Box
+        w="full"
+        bg={isFocused ? "surface.700" : "surface.800"}
+        p={5}
+        borderRadius={15}
+        border="solid 1px"
+        borderColor={!isFocused ? "#1b212e" : "#191d27"}
+        transition={"all ease .2s"}
+      >
+        {label && (
+          <Box>
+            <Box fontWeight={"bold"} as="label" htmlFor={fieldId}>
+              {label}
+            </Box>
           </Box>
-        </Box>
-      )}
-      <Box position={"relative"}>
-        <Input
-          ref={inputRef}
-          fontWeight={"medium"}
-          px={0}
-          fontSize={20}
-          bg="transparent"
-          id={fieldId}
-          pr={210}
-          {...props}
-        />
-        <Flex
-          position={"absolute"}
-          right={0}
-          top={0}
-          bottom={0}
-          w={200}
-          alignItems={"center"}
-        >
-          <TokenSelector symbol={symbol} logo={logo} onOpen={onOpenTokens} />
-          <JupiterTokens
-            isOpen={showTokenSelector}
-            onClose={onCloseTokens}
-            name={props.name}
+        )}
+        <Box position={"relative"}>
+          <Input
+            fontWeight={"medium"}
+            px={0}
+            fontSize={20}
+            bg="transparent"
+            id={fieldId}
+            pr={210}
+            {...props}
+            {...register(JupiterSwapFormKeys.in, {
+              required: { value: !0, message: "input amount is required" },
+            })}
           />
-        </Flex>
+          <Flex
+            position={"absolute"}
+            right={0}
+            top={0}
+            bottom={0}
+            w={200}
+            alignItems={"center"}
+          >
+            <TokenSelector onOpen={onOpenTokens} />
+            <JupiterTokens
+              isOpen={showTokenSelector}
+              onClose={onCloseTokens}
+              onSelect={onSelect}
+            />
+          </Flex>
+        </Box>
+        {isPrimaryInput && <TokenInputOptions />}
       </Box>
-    </Box>
+    </TokenInputContext.Provider>
   );
 };

@@ -15,10 +15,14 @@ import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 import { useJupiterTokens } from "@hooks/useJupiterTokens";
 import { JupiterTokenCard } from "./TokenCard";
 import { useRef, useState } from "react";
+import { useTokenInputContext } from "@hooks/useTokenInputContext";
 
 export const JupiterTokens: React.FC<
-  Omit<ModalProps, "children"> & { name?: string }
-> = ({ name, ...props }) => {
+  Omit<ModalProps, "children"> & {
+    onSelect: (id: string) => void;
+  }
+> = ({ onSelect, ...props }) => {
+  const { name } = useTokenInputContext();
   const [query, setQuery] = useState<string>("");
   const { data } = useJupiterTokens(query, name);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -55,6 +59,7 @@ export const JupiterTokens: React.FC<
                         <JupiterTokenCard
                           {...token}
                           key={token.id?.toString()}
+                          onSelect={onSelect}
                         />
                       );
                     })}

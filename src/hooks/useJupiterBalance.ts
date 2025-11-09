@@ -4,7 +4,11 @@ import { usePrivyWallet } from "./usePrivyWallet";
 import { useQuery } from "@tanstack/react-query";
 import { PublicKey } from "@solana/web3.js";
 import { getAssociatedTokenAddress, NATIVE_MINT } from "@solana/spl-token";
+import { useGetJupiterTokenById } from "./useGetJupTokenById";
+import { useMemo } from "react";
+import { formatTokenBalance } from "@utils/formating";
 export const useJupiterBalance = (tokenMint?: string) => {
+  const { token } = useGetJupiterTokenById(tokenMint);
   const { wallet } = usePrivyWallet();
   const connection = useSolanaConnection(!0);
 
@@ -35,5 +39,15 @@ export const useJupiterBalance = (tokenMint?: string) => {
     enabled,
     refetchOnWindowFocus: true,
   });
-  return query;
+  const formatted = useMemo(
+    () =>
+      formatTokenBalance({
+        rawAmount: query.data ?? 0,
+        decimals: token?.decimals ?? 9,
+        compact: !0,
+        suffix: token?.symbol ?? "",
+      }),
+    [query.data, token?.decimals, token?.symbol]
+  );
+  return { formatted, ...query };
 };

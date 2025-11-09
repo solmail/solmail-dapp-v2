@@ -1,12 +1,16 @@
 import { chakra, Flex, Icon, Image } from "@chakra-ui/react";
+import { useGetJupiterTokenById } from "@hooks/useGetJupTokenById";
+import { useGetJupiterSwapParams } from "@hooks/useJupiterSeacrhParams";
+import { useTokenInputContext } from "@hooks/useTokenInputContext";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
-type TokenSelectorProps = { symbol: string; logo: string; onOpen: () => void };
-export const TokenSelector: React.FC<TokenSelectorProps> = ({
-  symbol,
-  logo,
-  onOpen,
-}) => {
+type TokenSelectorProps = {
+  onOpen: () => void;
+};
+export const TokenSelector: React.FC<TokenSelectorProps> = ({ onOpen }) => {
+  const { name } = useTokenInputContext();
+  const { selected } = useGetJupiterSwapParams(name);
+  const { token } = useGetJupiterTokenById(selected);
   return (
     <Flex
       direction={"row"}
@@ -24,7 +28,13 @@ export const TokenSelector: React.FC<TokenSelectorProps> = ({
       onClick={onOpen}
     >
       <Flex w="30px" minW={"30px"}>
-        <Image borderRadius={"full"} boxSize={"30px"} src={logo} />
+        {token?.icon && (
+          <Image
+            borderRadius={"full"}
+            boxSize={"30px"}
+            src={token?.icon ?? ""}
+          />
+        )}
       </Flex>
       <Flex position={"relative"} h="100%" flex={"auto"} mr="10px" w="100%">
         <chakra.span
@@ -34,7 +44,7 @@ export const TokenSelector: React.FC<TokenSelectorProps> = ({
           maxW={140}
           fontSize={13}
         >
-          {symbol}
+          {token?.symbol}
         </chakra.span>
       </Flex>
       <Flex
