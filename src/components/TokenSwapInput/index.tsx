@@ -87,7 +87,7 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
             id={fieldId}
             pr={210}
             {...props}
-            {...register(JupiterSwapFormKeys.in, {
+            {...register(props.name, {
               required: { value: !0, message: "input amount is required" },
             })}
           />

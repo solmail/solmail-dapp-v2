@@ -76,3 +76,57 @@ export enum JupiterSwapFormKeys {
 export type JupiterSwapForm = {
   [K in JupiterSwapFormKeys]: string;
 };
+
+export type JupiterQuoteParams = JupiterSwapForm & {
+  amount: string;
+};
+
+export type JupiterQuoteResponse = {
+  swapType: string;
+  router: string;
+  requestId: string;
+  inAmount: string;
+  outAmount: string;
+  otherAmountThreshold: string;
+  swapMode: "ExactIn" | "ExactOut" | string;
+  slippageBps: number;
+  priceImpactPct: string;
+  routePlan: {
+    swapInfo: {
+      ammKey: string;
+      label: string;
+      inputMint: string;
+      outputMint: string;
+      inAmount: string;
+      outAmount: string;
+      feeAmount: string;
+      feeMint: string;
+      marketIncurredSlippageBpsF64: string;
+    };
+    percent: number;
+    bps: number;
+    usdValue: number;
+  }[];
+  inputMint: string;
+  outputMint: string;
+  feeMint: string;
+  feeBps: number;
+  platformFee: {
+    feeBps: number;
+  };
+  taker: string;
+  gasless: boolean;
+  signatureFeeLamports: number;
+  signatureFeePayer: string;
+  prioritizationFeeLamports: number;
+  prioritizationFeePayer: string;
+  rentFeeLamports: number;
+  rentFeePayer: string;
+  transaction: string;
+  inUsdValue: number;
+  outUsdValue: number;
+  swapUsdValue: number;
+  priceImpact: number;
+  mode: string;
+  totalTime: number;
+};
