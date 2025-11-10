@@ -12,8 +12,16 @@ export const useJupiterQuote = (options: JupiterQuoteParams) => {
   return useQuery<JupiterQuoteResponse>({
     queryKey: [QueryKeys.JUPITER_QUOTE, options],
     refetchInterval: 3000,
+    retryDelay: 3500,
     queryFn: async () => {
       const params = new URLSearchParams({
+        inputMint: options.in,
+        outputMint: options.out,
+        taker: address,
+        amount: options.amount ?? 0,
+      });
+
+      console.log({
         inputMint: options.in,
         outputMint: options.out,
         taker: address,

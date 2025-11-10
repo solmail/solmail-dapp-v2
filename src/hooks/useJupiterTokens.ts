@@ -13,7 +13,7 @@ export const useJupiterTokens = (
   const query = useQuery<TokenList>({
     queryKey: [QueryKeys.JUPITER_TOKENS, name, q],
     refetchOnWindowFocus: !1,
-    refetchInterval: refetch ? 5000 : !1,
+    refetchInterval: refetch ? 10000 : !1,
     queryFn: async () => {
       const response = await fetch(
         `${JUPITER_ENDPOINT}tokens/v2/search?query=${encodeURIComponent(q)}`

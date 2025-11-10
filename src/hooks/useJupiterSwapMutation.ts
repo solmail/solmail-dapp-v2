@@ -34,8 +34,13 @@ export const useJupiterSwapMutation = () => {
       update({
         isSwapping: !1,
       });
-      showToast(getErrorMessage(e, "Failed to create profile"), {
+      showToast(getErrorMessage(e, "Failed to swap tokens"), {
         type: "error",
+      });
+    },
+    onSuccess: () => {
+      showToast(`Swap successful!`, {
+        type: "success",
       });
     },
   });

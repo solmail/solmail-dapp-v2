@@ -13,16 +13,18 @@ import { useSignTransaction } from "@privy-io/react-auth/solana";
 import { useSolanaConnection } from "@hooks/useConnection";
 import { useJupiterSwapMutation } from "@hooks/useJupiterSwapMutation";
 
+const DEFAULTS = {
+  in: "",
+  out: "",
+  tx: "",
+  order: "",
+};
 export const SwapPage: React.FC = () => {
   const methods = useForm<JupiterSwapForm>({
     mode: "all",
     reValidateMode: "onSubmit",
     shouldFocusError: true,
-    defaultValues: {
-      in: "",
-      out: "",
-      tx: "",
-    },
+    defaultValues: DEFAULTS,
   });
 
   const { signTransaction } = useSignTransaction();
@@ -30,6 +32,14 @@ export const SwapPage: React.FC = () => {
   const { token_in, token_out } = useGetJupiterSwapParams();
   const navigate = useNavigate();
   const connection = useSolanaConnection(!0);
+
+  const reset = () => {
+    methods.reset(DEFAULTS, {});
+    navigate({
+      to: WalletSwapRoute.to,
+    });
+  };
+
   const onSubmitHandler: SubmitHandler<JupiterSwapForm> = async ({
     tx,
     order,
@@ -55,6 +65,7 @@ export const SwapPage: React.FC = () => {
     };
 
     await mutateAsync(request);
+    reset();
   };
   const onToggle = () => {
     navigate({

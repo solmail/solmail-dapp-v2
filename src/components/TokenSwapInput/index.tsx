@@ -23,6 +23,7 @@ type TokenSwapInputProps = InputProps & {
   name: JupiterSwapFormKeys;
   isPrimaryInput?: boolean;
   showSpinner?: boolean;
+  isLoading?: boolean;
 };
 
 export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
@@ -30,6 +31,7 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
   id,
   isPrimaryInput = !1,
   showSpinner = !1,
+  isLoading = !1,
 
   ...props
 }) => {

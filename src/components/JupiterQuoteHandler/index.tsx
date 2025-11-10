@@ -161,7 +161,7 @@ export const JupiterQuoteHandler: React.FC = () => {
           bg="green.500"
           size={"lg"}
           w="full"
-          isDisabled={!!(data && data?.error)}
+          isDisabled={!!(!data || (data && data?.error))}
         >
           {!isSwapping && <>Swap</>}
           {isSwapping && <Spinner />}

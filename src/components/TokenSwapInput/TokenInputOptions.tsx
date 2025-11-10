@@ -24,20 +24,18 @@ export const TokenInputOptions: React.FC = () => {
       .integerValue(BigNumber.ROUND_DOWN);
 
     if (selected === BASE_TOKEN.address) {
-      lamportsToUse = lamportsToUse.minus(toRawAmount(0.01, 9));
+      if (lamportsToUse.minus(toRawAmount(0.01, 9)).isGreaterThan(0)) {
+        lamportsToUse = lamportsToUse.minus(toRawAmount(0.01, 9));
+      }
     }
 
-    if (lamportsToUse.isLessThan(0)) {
-      setValue(JupiterSwapFormKeys.in, "0");
-    } else {
-      setValue(
-        JupiterSwapFormKeys.in,
-        formatTokenBalance({
-          rawAmount: lamportsToUse.toString(),
-          mintDecimals: token?.decimals ?? 0,
-        })
-      );
-    }
+    setValue(
+      JupiterSwapFormKeys.in,
+      formatTokenBalance({
+        rawAmount: lamportsToUse.toString(),
+        mintDecimals: token?.decimals ?? 0,
+      })
+    );
   };
   return (
     <Flex
