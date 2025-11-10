@@ -43,3 +43,5 @@ export const MAILS_PER_PAGE = 13;
 export const DEFAULT_MAILS_OFFSET = 0;
 
 export const FCM_STORAGE_KEY = "_i_";
+
+export const JUPITER_ENDPOINT = import.meta.env.VITE_SOLMAIL_JUPITER_ENDPOINT;

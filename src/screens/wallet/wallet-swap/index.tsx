@@ -1,4 +1,4 @@
-import { Box, Button, chakra, Flex, Icon } from "@chakra-ui/react";
+import { Box, chakra, Flex, Icon } from "@chakra-ui/react";
 import { JupiterQuoteHandler } from "@components/JupiterQuoteHandler";
 import { TokenSwapInput } from "@components/TokenSwapInput";
 import { useGetJupiterSwapParams } from "@hooks/useJupiterSeacrhParams";
@@ -8,6 +8,11 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { IoSwapVertical } from "react-icons/io5";
 import { JupiterSwapForm, JupiterSwapFormKeys } from "src/types/jupiter";
 import { Route as WalletSwapRoute } from "@routes/u/_layout/wallet/_layout/swap/index";
+import { deserializeTxFromBase64 } from "@utils/string/deserializeTransaction";
+import { useSignTransaction } from "@privy-io/react-auth/solana";
+import { useSolanaConnection } from "@hooks/useConnection";
+import { useJupiterSwapMutation } from "@hooks/useJupiterSwapMutation";
+
 export const SwapPage: React.FC = () => {
   const methods = useForm<JupiterSwapForm>({
     mode: "all",
@@ -16,13 +21,41 @@ export const SwapPage: React.FC = () => {
     defaultValues: {
       in: "",
       out: "",
+      tx: "",
     },
   });
 
+  const { signTransaction } = useSignTransaction();
+  const { mutateAsync } = useJupiterSwapMutation();
   const { token_in, token_out } = useGetJupiterSwapParams();
   const navigate = useNavigate();
+  const connection = useSolanaConnection(!0);
+  const onSubmitHandler: SubmitHandler<JupiterSwapForm> = async ({
+    tx,
+    order,
+  }) => {
+    const txn = deserializeTxFromBase64(tx);
 
-  const onSubmitHandler: SubmitHandler<JupiterSwapForm> = () => {};
+    const signedTransaction = await signTransaction({
+      transaction: txn,
+      connection: connection,
+      uiOptions: {
+        showWalletUIs: !1,
+      },
+    });
+
+    const serializedSignedTransaction = signedTransaction.serialize();
+    const transaction = Buffer.from(serializedSignedTransaction).toString(
+      "base64"
+    );
+
+    const request = {
+      requestId: order,
+      signedTransaction: transaction,
+    };
+
+    await mutateAsync(request);
+  };
   const onToggle = () => {
     navigate({
       to: WalletSwapRoute.to,
@@ -94,12 +127,8 @@ export const SwapPage: React.FC = () => {
             tabIndex={2}
           />
         </Box>
-        <Box mt={15}>
-          <Button type="submit" bg="green.500" size={"lg"} w="full">
-            Swap
-          </Button>
-        </Box>
-        <Box>
+
+        <Box w="full">
           <JupiterQuoteHandler />
         </Box>
       </Box>

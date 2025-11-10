@@ -1,3 +1,4 @@
+import { JUPITER_ENDPOINT } from "@const/config";
 import { BASE_TOKEN } from "@const/tokens";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { QueryKeys } from "src/types";
@@ -13,9 +14,7 @@ export const useJupiterPrice = (
       const query = new URLSearchParams({
         ids: [BASE_TOKEN.mint, ...ids].join(","),
       }).toString();
-      const res = await fetch(
-        `${import.meta.env.VITE_SOLMAIL_JUPITER_ENDPOINT}price/v3?${query}`
-      );
+      const res = await fetch(`${JUPITER_ENDPOINT}price/v3?${query}`);
       if (!res.ok) {
         throw new Error(`Error fetching prices: ${res.statusText}`);
       }

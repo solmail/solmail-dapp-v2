@@ -31,6 +31,7 @@ export const useJupiterBalance = (tokenMint?: string) => {
         const mint = new PublicKey(tokenMint);
         const ata = await getAssociatedTokenAddress(mint, owner);
         const tokenAccount = await connection.getTokenAccountBalance(ata);
+
         return parseFloat(tokenAccount.value.amount);
       } catch {
         return 0;
@@ -39,11 +40,12 @@ export const useJupiterBalance = (tokenMint?: string) => {
     enabled,
     refetchOnWindowFocus: true,
   });
+
   const formatted = useMemo(
     () =>
       formatTokenBalance({
         rawAmount: query.data ?? 0,
-        decimals: token?.decimals ?? 9,
+        mintDecimals: token?.decimals ?? 9,
         compact: !0,
         suffix: token?.symbol ?? "",
       }),

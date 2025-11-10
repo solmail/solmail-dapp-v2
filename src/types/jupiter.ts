@@ -75,9 +75,12 @@ export enum JupiterSwapFormKeys {
 
 export type JupiterSwapForm = {
   [K in JupiterSwapFormKeys]: string;
+} & {
+  tx: string;
+  order: string;
 };
 
-export type JupiterQuoteParams = JupiterSwapForm & {
+export type JupiterQuoteParams = Omit<JupiterSwapForm, "tx" | "order"> & {
   amount: string;
 };
 

@@ -27,13 +27,17 @@ export const TokenInputOptions: React.FC = () => {
       lamportsToUse = lamportsToUse.minus(toRawAmount(0.01, 9));
     }
 
-    setValue(
-      JupiterSwapFormKeys.in,
-      formatTokenBalance({
-        rawAmount: lamportsToUse.toString(),
-        decimals: token?.decimals ?? 0,
-      })
-    );
+    if (lamportsToUse.isLessThan(0)) {
+      setValue(JupiterSwapFormKeys.in, "0");
+    } else {
+      setValue(
+        JupiterSwapFormKeys.in,
+        formatTokenBalance({
+          rawAmount: lamportsToUse.toString(),
+          mintDecimals: token?.decimals ?? 0,
+        })
+      );
+    }
   };
   return (
     <Flex

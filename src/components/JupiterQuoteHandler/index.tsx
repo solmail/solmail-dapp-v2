@@ -1,7 +1,8 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { useGetJupiterTokenById } from "@hooks/useGetJupTokenById";
 import { useJupiterQuote } from "@hooks/useJupiterQuote";
 import { useGetJupiterSwapParams } from "@hooks/useJupiterSeacrhParams";
+import { useJupiterState } from "@hooks/useJupiterState";
 import { fromRawAmount, toRawAmount } from "@utils/formating";
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useFormContext } from "react-hook-form";
@@ -23,11 +24,10 @@ export const JupiterQuoteHandler: React.FC = () => {
   const { token_in, token_out } = useGetJupiterSwapParams();
   const { token } = useGetJupiterTokenById(token_in);
   const { token: tokenout } = useGetJupiterTokenById(token_out);
-
+  const { update, isUpdatingOrder } = useJupiterState();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const getQuote = useCallback(async () => {
-    if (!token) return;
-
+    if (!token || !token_in || !token_out) return;
     setQuery({
       in: token_in,
       out: token_out,
@@ -36,12 +36,40 @@ export const JupiterQuoteHandler: React.FC = () => {
   }, [token, tokenIn, token_in, token_out]);
 
   useEffect(() => {
+    if (isLoading && !isUpdatingOrder) {
+      update({
+        isUpdatingOrder: !0,
+      });
+    } else {
+      if (isUpdatingOrder && !isLoading) {
+        update({
+          isUpdatingOrder: !1,
+        });
+      }
+    }
+  }, [isLoading, isUpdatingOrder, update]);
+
+  useEffect(() => {
+    const fieldConfig = {
+      shouldDirty: !0,
+      shouldValidate: !0,
+      shouldTouch: !0,
+    };
     if (!isLoading && data) {
-      if (data && data.outAmount && tokenout) {
-        setValue(
-          JupiterSwapFormKeys.out,
-          fromRawAmount(data.outAmount, tokenout.decimals).toString()
-        );
+      if (data && data.outAmount) {
+        if (tokenout) {
+          setValue(
+            JupiterSwapFormKeys.out,
+            fromRawAmount(data.outAmount, tokenout.decimals).toString(),
+            fieldConfig
+          );
+        }
+        if (data.transaction) {
+          setValue("tx", data.transaction, fieldConfig);
+        }
+        if (data.requestId) {
+          setValue("order", data.requestId, fieldConfig);
+        }
       }
     }
   }, [data, isLoading, setValue, tokenout]);
@@ -57,5 +85,29 @@ export const JupiterQuoteHandler: React.FC = () => {
     };
   }, [getQuote, tokenIn]);
 
-  return <Flex> </Flex>;
+  return (
+    <Box mt={15}>
+      <Box w="full">
+        <Button
+          type="submit"
+          colorScheme="green"
+          bg="green.500"
+          size={"lg"}
+          w="full"
+        >
+          Swap
+        </Button>
+      </Box>
+      <Flex w="100%" mt={2} direction={"column"} fontSize={13}>
+        <Flex direction={"row"} w="full" gap={5}>
+          <Flex>Price Impact</Flex>
+          <Flex>{data?.priceImpact}</Flex>
+        </Flex>
+        <Flex direction={"row"} w="full" gap={5}>
+          <Flex>Slippaget</Flex>
+          <Flex>{data?.slippageBps}</Flex>
+        </Flex>
+      </Flex>
+    </Box>
+  );
 };

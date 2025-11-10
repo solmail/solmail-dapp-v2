@@ -1,3 +1,4 @@
+import { JUPITER_ENDPOINT } from "@const/config";
 import { useQuery } from "@tanstack/react-query";
 import { QueryKeys } from "src/types";
 import { Token } from "src/types/jupiter";
@@ -15,7 +16,7 @@ export const useJupiterTokens = (
     refetchInterval: refetch ? 5000 : !1,
     queryFn: async () => {
       const response = await fetch(
-        `${import.meta.env.VITE_SOLMAIL_JUPITER_ENDPOINT}tokens/v2/search?query=${encodeURIComponent(q)}`
+        `${JUPITER_ENDPOINT}tokens/v2/search?query=${encodeURIComponent(q)}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch Jupiter tokens");
