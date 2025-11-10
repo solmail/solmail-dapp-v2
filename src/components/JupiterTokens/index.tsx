@@ -17,13 +17,12 @@ import { JupiterTokenCard } from "./TokenCard";
 import { useRef, useState } from "react";
 import { useTokenInputContext } from "@hooks/useTokenInputContext";
 import { useGetJupiterSwapParams } from "@hooks/useJupiterSeacrhParams";
-import { useGetJupiterTokenById } from "@hooks/useGetJupTokenById";
+
 import { JupiterSwapFormKeys } from "src/types/jupiter";
 
 export const JupiterTokens: React.FC<
   Omit<ModalProps, "children"> & {
     onSelect: (id: string) => void;
-    active: string;
   }
 > = ({ onSelect, ...props }) => {
   const { name } = useTokenInputContext();
