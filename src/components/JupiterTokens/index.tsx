@@ -16,16 +16,25 @@ import { useJupiterTokens } from "@hooks/useJupiterTokens";
 import { JupiterTokenCard } from "./TokenCard";
 import { useRef, useState } from "react";
 import { useTokenInputContext } from "@hooks/useTokenInputContext";
+import { useGetJupiterSwapParams } from "@hooks/useJupiterSeacrhParams";
+import { useGetJupiterTokenById } from "@hooks/useGetJupTokenById";
+import { JupiterSwapFormKeys } from "src/types/jupiter";
 
 export const JupiterTokens: React.FC<
   Omit<ModalProps, "children"> & {
     onSelect: (id: string) => void;
+    active: string;
   }
 > = ({ onSelect, ...props }) => {
   const { name } = useTokenInputContext();
   const [query, setQuery] = useState<string>("");
   const { data } = useJupiterTokens(query, name);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const { selected } = useGetJupiterSwapParams(name);
+  const { token_in, token_out } = useGetJupiterSwapParams();
+  const disable = name === JupiterSwapFormKeys.in ? token_out : token_in;
+
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (timer.current) {
       clearTimeout(timer.current);
@@ -60,6 +69,8 @@ export const JupiterTokens: React.FC<
                           {...token}
                           key={token.id?.toString()}
                           onSelect={onSelect}
+                          isActive={!!(token.id?.toString() === selected)}
+                          shouldDisable={disable === token.id?.toString()}
                         />
                       );
                     })}

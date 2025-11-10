@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Flex,
+  Spinner,
 } from "@chakra-ui/react";
 import { useGetJupiterTokenById } from "@hooks/useGetJupTokenById";
 import { useJupiterQuote } from "@hooks/useJupiterQuote";
@@ -45,7 +46,7 @@ export const JupiterQuoteHandler: React.FC = () => {
   const { token_in, token_out } = useGetJupiterSwapParams();
   const { token } = useGetJupiterTokenById(token_in);
   const { token: tokenout } = useGetJupiterTokenById(token_out);
-  const { update, isUpdatingOrder } = useJupiterState();
+  const { update, isUpdatingOrder, isSwapping } = useJupiterState();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isLoading = useMemo(() => loading || isFetching, [isFetching, loading]);
@@ -107,7 +108,8 @@ export const JupiterQuoteHandler: React.FC = () => {
         }
       }
     }
-  }, [data, isLoading, setValue, tokenout]);
+  }, [data, fieldConfig, isLoading, setValue, tokenout]);
+
   useEffect(() => {
     if (timer.current) {
       clearTimeout(timer.current);
@@ -161,7 +163,8 @@ export const JupiterQuoteHandler: React.FC = () => {
           w="full"
           isDisabled={!!(data && data?.error)}
         >
-          Swap
+          {!isSwapping && <>Swap</>}
+          {isSwapping && <Spinner />}
         </Button>
       </Box>
       {data && data.requestId && (

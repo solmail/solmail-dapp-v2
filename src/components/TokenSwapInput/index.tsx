@@ -17,6 +17,7 @@ import { TokenInputContext } from "./TokenInputContext";
 import { TokenInputOptions } from "./TokenInputOptions";
 import { useFormContext } from "react-hook-form";
 import { useJupiterState } from "@hooks/useJupiterState";
+import { useGetJupiterSwapParams } from "@hooks/useJupiterSeacrhParams";
 type TokenSwapInputProps = InputProps & {
   label: string;
   name: JupiterSwapFormKeys;
@@ -36,13 +37,15 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
   const fieldId = id || uid;
   const inputRef = useRef<HTMLInputElement>(null);
   const { isOpen: isFocused, onOpen, onClose } = useDisclosure();
+
   const {
     isOpen: showTokenSelector,
     onOpen: onOpenTokens,
     onClose: onCloseTokens,
   } = useDisclosure();
   useEffect(() => {
-    const input = inputRef.current;
+    const input = inputRef.current?.getElementsByTagName("input")[0];
+
     if (input) {
       input.addEventListener("focus", onOpen);
       input.addEventListener("blur", onClose);
@@ -83,6 +86,7 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
         borderColor={!isFocused ? "#1b212e" : "#191d27"}
         transition={"all ease .2s"}
         position={"relative"}
+        boxShadow={isFocused ? `0px 0px 8px -2px rgb(56 161 105)` : ""}
       >
         {showSpinner && isUpdatingOrder && (
           <Flex
@@ -103,7 +107,10 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
             </Box>
           </Box>
         )}
-        <Box position={"relative"}>
+        <Box position={"relative"} ref={inputRef}>
+          {props.isReadOnly && (
+            <Box position={"absolute"} zIndex={1} inset={0} />
+          )}
           <Input
             fontWeight={"medium"}
             px={0}
@@ -111,6 +118,7 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
             bg="transparent"
             id={fieldId}
             pr={210}
+            autoComplete="off"
             {...props}
             {...register(props.name, {
               required: { value: !0, message: "input amount is required" },
@@ -123,6 +131,7 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
             bottom={0}
             w={200}
             alignItems={"center"}
+            zIndex={2}
           >
             <TokenSelector onOpen={onOpenTokens} />
             <JupiterTokens

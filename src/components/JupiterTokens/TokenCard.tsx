@@ -7,11 +7,22 @@ import { Token } from "src/types/jupiter";
 export const JupiterTokenCard: React.FC<
   Token & {
     onSelect: (id: string) => void;
+    isActive: boolean;
+    shouldDisable: boolean;
   }
-> = ({ icon, symbol, name, usdPrice, id, onSelect }) => {
+> = ({
+  shouldDisable,
+  isActive,
+  icon,
+  symbol,
+  name,
+  usdPrice,
+  id,
+  onSelect,
+}) => {
   const { formatted } = useJupiterBalance(id);
   const onClickHandler = () => {
-    if (isFunction(onSelect)) {
+    if (!shouldDisable && isFunction(onSelect)) {
       onSelect(id);
     }
   };
@@ -23,10 +34,12 @@ export const JupiterTokenCard: React.FC<
       alignItems={"center"}
       transition={"all ease .2s"}
       borderRadius={5}
-      cursor={"pointer"}
+      cursor={shouldDisable ? "not-allowed" : "pointer"}
+      bg={isActive ? "surface.100" : ""}
       _hover={{
-        bg: "surface.500",
+        bg: !isActive && !shouldDisable ? "surface.500" : "",
       }}
+      opacity={shouldDisable ? 0.2 : 1}
       onClick={onClickHandler}
     >
       <Flex>
