@@ -125,6 +125,7 @@ export const SwapPage: React.FC = () => {
             name={JupiterSwapFormKeys.out}
             isReadOnly
             tabIndex={2}
+            showSpinner
           />
         </Box>
 

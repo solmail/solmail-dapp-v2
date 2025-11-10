@@ -1,4 +1,11 @@
-import { Box, Flex, Input, InputProps, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Input,
+  InputProps,
+  Spinner,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useEffect, useId, useRef } from "react";
 
 import { TokenSelector } from "./TokenSelector";
@@ -9,16 +16,19 @@ import { JupiterSwapFormKeys } from "src/types/jupiter";
 import { TokenInputContext } from "./TokenInputContext";
 import { TokenInputOptions } from "./TokenInputOptions";
 import { useFormContext } from "react-hook-form";
+import { useJupiterState } from "@hooks/useJupiterState";
 type TokenSwapInputProps = InputProps & {
   label: string;
   name: JupiterSwapFormKeys;
   isPrimaryInput?: boolean;
+  showSpinner?: boolean;
 };
 
 export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
   label,
   id,
   isPrimaryInput = !1,
+  showSpinner = !1,
 
   ...props
 }) => {
@@ -56,6 +66,8 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
       }),
     });
   };
+
+  const { isUpdatingOrder } = useJupiterState();
   return (
     <TokenInputContext.Provider
       value={{
@@ -70,7 +82,20 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
         border="solid 1px"
         borderColor={!isFocused ? "#1b212e" : "#191d27"}
         transition={"all ease .2s"}
+        position={"relative"}
       >
+        {showSpinner && isUpdatingOrder && (
+          <Flex
+            boxSize={"20px"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            position={"absolute"}
+            right={5}
+            top={3}
+          >
+            <Spinner size={"sm"} />
+          </Flex>
+        )}
         {label && (
           <Box>
             <Box fontWeight={"bold"} as="label" htmlFor={fieldId}>

@@ -85,6 +85,8 @@ export type JupiterQuoteParams = Omit<JupiterSwapForm, "tx" | "order"> & {
 };
 
 export type JupiterQuoteResponse = {
+  error?: string;
+  errorCode?: number;
   swapType: string;
   router: string;
   requestId: string;
