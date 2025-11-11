@@ -15,7 +15,7 @@ export const useJupiterBalance = (tokenMint?: string) => {
   const enabled = !!wallet?.address;
 
   const query = useQuery({
-    queryKey: [QueryKeys.SOL_BALANCE, wallet?.address, tokenMint],
+    queryKey: [QueryKeys.JUPITER_SOL_BALANCE, wallet?.address, tokenMint],
     queryFn: async () => {
       if (!connection) {
         return 0;

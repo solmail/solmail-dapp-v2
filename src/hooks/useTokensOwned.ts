@@ -39,7 +39,7 @@ export const useTokensOwned = () => {
       method: "getTokenAccounts",
     },
     {
-      staleTime: 60 * 1000,
+      refetchOnMount: !0,
     }
   );
 

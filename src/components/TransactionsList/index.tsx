@@ -4,6 +4,7 @@ import { useGetTransactions } from "@hooks/useGetTransactions";
 
 export const TransactionsList: React.FC = () => {
   const { data, isLoading } = useGetTransactions();
+
   return (
     <VStack w="100%">
       {isLoading && (

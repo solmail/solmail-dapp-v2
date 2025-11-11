@@ -12,6 +12,9 @@ import { deserializeTxFromBase64 } from "@utils/string/deserializeTransaction";
 import { useSignTransaction } from "@privy-io/react-auth/solana";
 import { useSolanaConnection } from "@hooks/useConnection";
 import { useJupiterSwapMutation } from "@hooks/useJupiterSwapMutation";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePrivyWallet } from "@hooks/usePrivyWallet";
+import { QueryKeys } from "src/types";
 
 const DEFAULTS = {
   in: "",
@@ -28,12 +31,19 @@ export const SwapPage: React.FC = () => {
   });
 
   const { signTransaction } = useSignTransaction();
+  const { address } = usePrivyWallet();
   const { mutateAsync } = useJupiterSwapMutation();
   const { token_in, token_out } = useGetJupiterSwapParams();
   const navigate = useNavigate();
   const connection = useSolanaConnection(!0);
-
+  const queryClient = useQueryClient();
   const reset = () => {
+    queryClient.invalidateQueries({
+      queryKey: [QueryKeys.JUPITER_SOL_BALANCE, address, token_in],
+    });
+    queryClient.invalidateQueries({
+      queryKey: [QueryKeys.JUPITER_SOL_BALANCE, address, token_out],
+    });
     methods.reset(DEFAULTS, {});
     navigate({
       to: WalletSwapRoute.to,
