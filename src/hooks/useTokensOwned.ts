@@ -39,7 +39,7 @@ export const useTokensOwned = () => {
       method: "getTokenAccounts",
     },
     {
-      refetchOnMount: !0,
+      refetchOnMount: "always",
     }
   );
 

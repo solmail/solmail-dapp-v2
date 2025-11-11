@@ -11,7 +11,7 @@ export const useHeliusAssetsBatch = (assets: string[] = []) => {
     },
     {
       enabled: assets && assets.length > 0,
-      refetchOnMount: !0,
+      refetchOnMount: "always",
     }
   );
 
