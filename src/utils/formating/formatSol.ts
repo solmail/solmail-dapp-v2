@@ -113,7 +113,9 @@ export function toRawAmount(
 
 export const fromRawAmount = (
   rawAmount: string | number,
-  decimals: number
+  decimals: number | undefined
 ): BigNumber => {
-  return new BigNumber(rawAmount).dividedBy(new BigNumber(10).pow(decimals));
+  return new BigNumber(rawAmount).dividedBy(
+    new BigNumber(10).pow(decimals ?? 9)
+  );
 };

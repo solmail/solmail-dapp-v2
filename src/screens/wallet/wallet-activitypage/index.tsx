@@ -15,13 +15,17 @@ import { WalletContainerSmall } from "@components/WalletContainerSmall";
 
 import { useTokensOwned } from "@hooks/useTokensOwned";
 import { Link, useParams } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 export const ActivityPage: React.FC = () => {
   const { formattedTokens, isLoading } = useTokensOwned();
   const { id } = useParams({
     from: "/u/_layout/wallet/_layout/activity/$id",
   });
-  const index = ["assets", "transactions"].indexOf(id) || 0;
+  const index = useMemo(
+    () => ["assets", "transactions"].indexOf(id) || 0,
+    [id]
+  );
 
   return (
     <Box w="100%" borderRadius={5}>
@@ -70,16 +74,18 @@ export const ActivityPage: React.FC = () => {
               </VStack>
             </TabPanel>
 
-            <TabPanel>
-              <Flex
-                minH={100}
-                alignItems={"center"}
-                justifyContent={"center"}
-                userSelect={"none"}
-              >
-                <TransactionsList />
-              </Flex>
-            </TabPanel>
+            {index === 1 && (
+              <TabPanel>
+                <Flex
+                  minH={100}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  userSelect={"none"}
+                >
+                  <TransactionsList />
+                </Flex>
+              </TabPanel>
+            )}
           </TabPanels>
         </Tabs>
       </WalletContainerSmall>

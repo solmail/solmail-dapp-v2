@@ -11,6 +11,7 @@ export type AtomType = {
   action: MailShareTypes;
   context: MailBoxLabels;
   composerProgress: { total: number; current: number };
+  composerMinimised: boolean;
 };
 
 export enum MailShareTypes {
@@ -22,7 +23,8 @@ export enum MailShareTypes {
 export const appState = atom<AtomType>({
   isComposerOpen: !1,
   composerCollapsed: !1,
-  composerState: "Here we go",
+  composerMinimised: !1,
+  composerState: "",
   thread: "",
   ref: "",
   action: MailShareTypes.none,

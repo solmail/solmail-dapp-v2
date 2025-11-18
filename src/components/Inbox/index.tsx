@@ -1,38 +1,32 @@
-import { forwardRef, useEffect, useImperativeHandle } from "react";
-import { Box, Flex, Spinner, VStack } from "@chakra-ui/react";
+import { forwardRef, useImperativeHandle } from "react";
+import { Box, Button, Flex, Spinner, VStack } from "@chakra-ui/react";
 import { MailCard } from "@components/MailCard";
 import { useGetInbox } from "@hooks/useGetInbox";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
-import isFunction from "lodash/isFunction";
-import { LazyView } from "@components/LazyView";
 
-const PendingCard: React.FC = () => {
-  return <Flex w="100%" minH={79}></Flex>;
-};
 export interface InboxRef {
   refresh: () => void;
 }
 
-export const Inbox = forwardRef<
-  InboxRef,
-  {
-    onStatusChange?: (s: boolean) => void;
-  }
->(({ onStatusChange }, ref) => {
+export const Inbox = forwardRef<InboxRef>((_, ref) => {
   const { context } = useMailBoxContext();
-  const { mail, isLoading, refetch, isPending } = useGetInbox(context);
+  const {
+    mail,
+    isLoading,
+    refetch,
+    page,
+    pages,
+    onPrev,
+    hasPrev,
+    hasNext,
+    onNext,
+  } = useGetInbox(context);
 
   useImperativeHandle(ref, () => ({
     refresh: () => {
       refetch();
     },
   }));
-
-  useEffect(() => {
-    if (isFunction(onStatusChange)) {
-      onStatusChange(isPending);
-    }
-  }, [isPending, onStatusChange]);
 
   return (
     <Box w="100%">
@@ -46,14 +40,33 @@ export const Inbox = forwardRef<
         {mail && mail.length > 0 && (
           <VStack w="100%" overflow={"hidden"} h="100%" px={2} gap={2}>
             {mail.map((item) => (
-              <LazyView
-                key={`${context}_${item.id?.toString()}`}
-                pendingComponent={<PendingCard />}
-              >
-                <MailCard {...item} />
-              </LazyView>
+              <MailCard key={`${context}_${item.id?.toString()}`} {...item} />
             ))}
           </VStack>
+        )}
+
+        {pages > 1 && (
+          <Flex
+            direction={"column"}
+            px={5}
+            alignItems={"center"}
+            pt={3}
+            borderTop={"solid 1px"}
+            borderTopColor={"surface.900"}
+          >
+            <Flex gap={1}>
+              <Button onClick={onPrev} isDisabled={!hasPrev} size={"sm"}>
+                Prev
+              </Button>
+
+              <Button onClick={onNext} isDisabled={!hasNext} size={"sm"}>
+                Next
+              </Button>
+            </Flex>
+            <Flex fontSize={12} mt={1} mb={1} opacity={0.6}>
+              Page {page} of {pages}
+            </Flex>
+          </Flex>
         )}
 
         {!isLoading && (!mail || !mail.length) && (

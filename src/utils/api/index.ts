@@ -7,6 +7,7 @@ import type {
 } from "axios";
 import * as Sentry from "@sentry/react";
 import { getConnectedUser, getToken } from "@utils/jotai/getUser";
+import { clearStorage } from "@utils/storage/clear";
 
 /**
  * Axios api config to use to call api calls
@@ -89,7 +90,7 @@ export const apiConfig = async <T>(
         tags: { type: "backend-api" },
         extra: { payload, headers },
       });
-      localStorage.clear();
+      clearStorage();
       window.location.reload();
 
       return Promise.reject(errorMessage);

@@ -8,21 +8,32 @@ import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
-import { useMailStatus } from "@hooks/useMailStatus";
+
+import { useUpdateMailStatus } from "@hooks/useUpdateMailStatus";
+
 import { useEffect } from "react";
 import { RiChatSmileFill } from "react-icons/ri";
+import { MailBoxLabels } from "src/types";
 
 export const MailPreview: React.FC = () => {
   const { id, context } = useMailBoxContext();
-  const { addItem } = useMailStatus(id as string);
-  const { subject, content, textContent, attachments, isLoading, payments } =
-    useMailBody(id && id !== "all" ? id : undefined, context);
+
+  const {
+    subject,
+    content,
+    textContent,
+    attachments,
+    isLoading,
+    payments,
+    mail,
+  } = useMailBody(id && id !== "all" ? id : undefined);
+  const { onUpdate } = useUpdateMailStatus(mail?.uid);
 
   useEffect(() => {
-    if (id) {
-      addItem(id);
+    if (context !== MailBoxLabels.outbox && mail && !mail.markAsRead) {
+      onUpdate();
     }
-  }, [addItem, id]);
+  }, [context, mail, onUpdate]);
   return (
     <Flex w="full" direction={"column"}>
       {id && !isLoading && (

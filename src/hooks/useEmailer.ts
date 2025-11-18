@@ -37,8 +37,8 @@ export const useEmailer = () => {
     collpaseComposer,
     expandComposer,
   } = useComposer();
-  const { context } = useComposer();
-  const { attachmentRef } = useMailBody(ref, context);
+
+  const { attachmentRef } = useMailBody(ref);
   const { provider, program, mailAccountAddress } = useGetMailProgramInstance();
   const connection = useSolanaConnection();
   const { account } = useGetLinkedUsernameById(thread);
@@ -153,7 +153,7 @@ export const useEmailer = () => {
       const userPublicKey = provider.publicKey;
 
       const createMailInstruction = await program.methods
-        .createmail(
+        .createmailV3(
           encryptData(values.subject, cData.iv, key),
           userPublicKey,
           new PublicKey(to),
@@ -170,7 +170,7 @@ export const useEmailer = () => {
         .instruction();
 
       const updateEmailInstruction = await program.methods
-        .updatemail(id as string)
+        .updatemailV3(id as string)
         .accounts({
           mail: mailAccount.publicKey,
           authority: userPublicKey,
@@ -184,7 +184,7 @@ export const useEmailer = () => {
 
       if (values.solanaPay?.amount && values.solanaPay.tokenaddress) {
         const paymentsStatusTransaction = await program.methods
-          .markMailAsPayment()
+          .markMailV3AsPayment()
           .accounts({
             mail: mailAccount.publicKey,
             authority: userPublicKey,

@@ -21,7 +21,7 @@ import { queryclient } from "@integrations/tanstack";
 import { ToastContainerWrapper } from "@components/ToastContainerWrapper";
 
 Sentry.init({
-  dsn: import.meta.env.VITE_SOLMAIL_SENTRY_DSN,
+  dsn: `${import.meta.env.VITE_SOLMAIL_SENTRY_DSN}${import.meta.env.MODE === "development" ? "skip" : ""}`,
   sendDefaultPii: true,
 });
 

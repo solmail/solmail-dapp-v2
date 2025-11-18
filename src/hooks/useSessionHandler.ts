@@ -1,5 +1,6 @@
 import { useSigner } from "@hooks/useSigner";
 import { usePrivy } from "@privy-io/react-auth";
+import { clearStorage } from "@utils/storage/clear";
 import { useTransition } from "react";
 
 export const useSessionHandler = () => {
@@ -14,7 +15,7 @@ export const useSessionHandler = () => {
         clearToken();
         window.location.reload();
       } catch {
-        localStorage.clear();
+        clearStorage();
         window.location.reload();
       }
     });

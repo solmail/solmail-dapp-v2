@@ -1,17 +1,34 @@
-import { Flex, IconButton, Spinner, SlideFade, Icon } from "@chakra-ui/react";
+import {
+  Flex,
+  IconButton,
+  Spinner,
+  SlideFade,
+  Icon,
+  Alert,
+  Box,
+  AlertTitle,
+  CloseButton,
+  chakra,
+} from "@chakra-ui/react";
 import { Inbox, type InboxRef } from "@components/Inbox";
 import { MailPreview } from "@components/MailPreview";
 import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 import { useComposer } from "@hooks/useComposer";
 
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
-import { useEffect, useRef, useState } from "react";
+import { MailListStatusState, MailListStatus } from "@state/inbox";
+import { useNavigate } from "@tanstack/react-router";
+import { dispatchCustomEvent, EventTypes } from "@utils/event";
+import { useAtom } from "jotai";
+import { useEffect, useRef } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
 import { TbReload } from "react-icons/tb";
 export const Solmail: React.FC = () => {
   const { update } = useComposer();
   const { context, id } = useMailBoxContext();
-  const [isPending, setStatus] = useState<boolean>(!1);
+
+  const [{ status, hasInboxUpdates }, set] = useAtom(MailListStatusState);
+  const isPending = status === MailListStatus.updating;
   const inbox = useRef<InboxRef>(null);
 
   const onRefresh = () => {
@@ -28,6 +45,23 @@ export const Solmail: React.FC = () => {
   }, [context, update]);
 
   const { onOpen, isOpen } = useComposer();
+  const navigate = useNavigate();
+
+  const onClickForceUpdate = () => {
+    navigate({ to: `/u/solmail/inbox/all` });
+    dispatchCustomEvent({
+      type: EventTypes.inbox_force_update,
+    });
+    onClose();
+  };
+
+  const onClose = () => {
+    set((prev) => ({
+      ...prev,
+      hasInboxUpdates: !1,
+    }));
+  };
+
   return (
     <Flex w="100%" direction={"row"}>
       <Flex
@@ -70,6 +104,36 @@ export const Solmail: React.FC = () => {
             />
           </Flex>
         </Flex>
+        {hasInboxUpdates && (
+          <Flex>
+            <Alert status="success">
+              <Box>
+                <AlertTitle>New Mail</AlertTitle>
+                <Box fontSize={13}>
+                  You’ve got new messages —
+                  <chakra.span
+                    onClick={onClickForceUpdate}
+                    _hover={{
+                      opacity: 0.8,
+                    }}
+                    ml={1}
+                    textDecoration={"underline"}
+                    cursor={"pointer"}
+                  >
+                    click here to view them.
+                  </chakra.span>
+                </Box>
+              </Box>
+              <CloseButton
+                alignSelf="flex-start"
+                position="relative"
+                right={-1}
+                top={-1}
+                onClick={onClose}
+              />
+            </Alert>
+          </Flex>
+        )}
         <Flex flex={"auto"} position={"relative"}>
           <Flex position={"absolute"} inset={0}>
             <Flex
@@ -106,7 +170,7 @@ export const Solmail: React.FC = () => {
             </Flex>
 
             <CustomScrollbarWrapper>
-              <Inbox ref={inbox} onStatusChange={setStatus} />
+              <Inbox ref={inbox} />
             </CustomScrollbarWrapper>
           </Flex>
         </Flex>
@@ -120,7 +184,6 @@ export const Solmail: React.FC = () => {
       >
         <MailPreview />
       </Flex>
-
       <Flex
         bg="solana"
         boxSize={"50px"}

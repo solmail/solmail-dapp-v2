@@ -4,8 +4,8 @@ import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 
 export const MailPreviewAttachments: React.FC = () => {
-  const { id, context } = useMailBoxContext();
-  const { attachments } = useMailBody(id, context);
+  const { id } = useMailBoxContext();
+  const { attachments } = useMailBody(id);
   return (
     <Flex direction={"row"} flexWrap={"wrap"} gap={3} mt={5}>
       {attachments.map((attachment, index) => {

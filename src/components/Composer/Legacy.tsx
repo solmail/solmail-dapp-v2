@@ -3,21 +3,22 @@ import {
   Button,
   chakra,
   Flex,
+  IconButton,
   Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
 import {
-  QueryKeys,
+  MailBoxLabels,
   ResolveEmail,
   type ComposerFormInputs,
   type SolanaPayPayload,
 } from "src/types";
-import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
+import { type SubmitHandler, useFormContext } from "react-hook-form";
 import { Subject } from "./Subject";
 import { FieldWrapper } from "@components/Field";
-import { trim } from "@utils/index";
+import { isGreaterThanMB, trim } from "@utils/index";
 
-import { useMailBody, Attachment, useBalance } from "@hooks/index";
+import { useMailBody, Attachment, useBalance, useToast } from "@hooks/index";
 
 import "react-quill/dist/quill.snow.css";
 import QuillEditor from "./Quill";
@@ -33,25 +34,33 @@ import { RequestSolanaPay } from "@components/RequestSolanaPay";
 
 import { useGetLinkedUsernameById } from "@hooks/useUsernames";
 import { MailShareTypes } from "@state/index";
-import { MAXIMUM_MAIL_SUBJECT_LENGTH, NO_BALANCE_LABEL } from "@const/config";
+import {
+  MAIL_BODY_MAX_SIZE_MB,
+  MAXIMUM_MAIL_SUBJECT_LENGTH,
+  NO_BALANCE_LABEL,
+} from "@const/config";
 import { useEmailer } from "@hooks/useEmailer";
 import { ChipInput } from "@components/ChipInput";
 import { useEmailResolver } from "@hooks/useEmailResolver";
-import { useQueryClient } from "@tanstack/react-query";
 
-const initialValues = {
-  to: [],
-  subject: "",
-  body: "",
-  files: [],
-};
+import { FiMinimize2 } from "react-icons/fi";
+import { CgClose } from "react-icons/cg";
+import { dispatchCustomEvent } from "@utils/event";
+
+import { getByteSize } from "@utils/string/getByteSize";
 
 export const ComposerLegacy: React.FC = () => {
-  const { thread, action, ref, onClose: closeComposer } = useComposer();
+  const {
+    thread,
+    action,
+    ref,
+    onClose: closeComposer,
+    minimize,
+  } = useComposer();
   const [sharedAttachments, setSharedAttachments] = useState<Attachment[]>([]);
   const [isComposerReady, setComposerState] = useState<boolean>(!1);
   const { mutateAsync } = useEmailer();
-  const { context } = useComposer();
+
   const { mutateAsync: resolveRecepient } = useEmailResolver();
 
   const {
@@ -59,22 +68,15 @@ export const ComposerLegacy: React.FC = () => {
     isLoading: isMailLoading,
     content,
     attachments,
-  } = useMailBody(ref, context);
+  } = useMailBody(ref);
+
   const {
     account: _account,
     displayName,
     isLoading,
   } = useGetLinkedUsernameById(thread);
 
-  const methods = useForm<ComposerFormInputs>({
-    mode: "all",
-    reValidateMode: "onSubmit",
-    shouldFocusError: true,
-    defaultValues: {
-      ...initialValues,
-      to: [],
-    },
-  });
+  const methods = useFormContext<ComposerFormInputs>();
 
   useEffect(() => {
     if (isComposerReady) {
@@ -128,11 +130,10 @@ export const ComposerLegacy: React.FC = () => {
   const [id, set] = useState(0);
   const { hasEnoughBalance } = useBalance(undefined, 0.01021728);
 
-  const { composerCollapsed, update } = useComposer();
+  const { composerCollapsed, composerMinimised, update } = useComposer();
 
   const { onOpen, isOpen, onClose } = useDisclosure();
-  const queryClient = useQueryClient();
-
+  const { showToast } = useToast();
   const _resolveRecipients = async (to: string[]) => {
     const address: ResolveEmail[] = [];
     let status = !0;
@@ -159,6 +160,17 @@ export const ComposerLegacy: React.FC = () => {
     to,
     ...values
   }) => {
+    if (values.body && values.body.trim()) {
+      const bytes = getByteSize(values.body?.trim() ?? "");
+      if (isGreaterThanMB(bytes, MAIL_BODY_MAX_SIZE_MB)) {
+        return showToast(
+          `Mail body size exceeds the maximum allowed limit of ${MAIL_BODY_MAX_SIZE_MB} MB.`,
+          {
+            type: "error",
+          }
+        );
+      }
+    }
     startTranstion(async () => {
       const { address, status, count } = await _resolveRecipients(to);
       if (!status) {
@@ -188,7 +200,11 @@ export const ComposerLegacy: React.FC = () => {
           continue;
         }
       }
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.MAILBOX] });
+      setTimeout(() => {
+        dispatchCustomEvent({
+          contextRefresher: MailBoxLabels.outbox,
+        });
+      });
       closeComposer();
     });
   };
@@ -203,7 +219,7 @@ export const ComposerLegacy: React.FC = () => {
   };
 
   methods.watch(["to"]);
-  if (composerCollapsed) {
+  if (composerCollapsed || composerMinimised) {
     return null;
   }
 
@@ -214,7 +230,7 @@ export const ComposerLegacy: React.FC = () => {
   };
 
   return (
-    <FormProvider {...methods}>
+    <>
       <Flex
         direction={"column"}
         px="5"
@@ -245,17 +261,19 @@ export const ComposerLegacy: React.FC = () => {
               </chakra.span>
             </Flex>
             <Flex gap={3}>
-              <Button
-                onClick={closeComposer}
+              <IconButton
                 size={"sm"}
-                variant={"outlined"}
-                colorScheme="red"
-                _hover={{
-                  opacity: 0.6,
-                }}
-              >
-                Close
-              </Button>
+                aria-label="Minimise"
+                onClick={minimize}
+                icon={<FiMinimize2 />}
+              ></IconButton>
+              <IconButton
+                size={"sm"}
+                aria-label="Close"
+                onClick={closeComposer}
+                icon={<CgClose />}
+              ></IconButton>
+
               <Button
                 {...(!isPending ? { rightIcon: <IoSend /> } : {})}
                 size={"sm"}
@@ -298,7 +316,7 @@ export const ComposerLegacy: React.FC = () => {
             </CustomScrollbarWrapper>
           </Flex>
         </Flex>
-        <Flex alignItems={"center"}>
+        <Flex alignItems={"center"} w="100%">
           <Attachments onOpenSolanaPay={onOpen} />
         </Flex>
       </Flex>
@@ -307,6 +325,6 @@ export const ComposerLegacy: React.FC = () => {
         isOpen={isOpen}
         onClose={onClose}
       />
-    </FormProvider>
+    </>
   );
 };

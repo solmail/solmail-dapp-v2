@@ -4,7 +4,7 @@ import { MailContext } from "src/context";
 import { MailBoxLabels } from "src/types";
 
 export const SolmailPayments: React.FC = () => {
-  const { id } = useParams({ from: "/u/_layout/solmail/payment/$id" });
+  const { id } = useParams({ from: "/u/_layout/solmail/payments/$id" });
   return (
     <MailContext.Provider
       value={{
