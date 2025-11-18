@@ -11,10 +11,10 @@ import { RiReplyFill, RiSpam3Fill } from "react-icons/ri";
 import { MailBoxLabels, MailLabelIndex } from "src/types";
 
 export const MailActions: React.FC = () => {
-  const { context, id } = useMailBoxContext();
+  const { id } = useMailBoxContext();
   const { onOpen } = useComposer();
   const { isPending, mutateAsync } = useLabelIndexUpdate(id ?? "");
-  const { mail } = useMailBody(id, context);
+  const { mail } = useMailBody(id);
   const mailConfig = () => {
     return {
       thread: mail?.from?.toString() ?? "",
@@ -80,7 +80,6 @@ export const MailActions: React.FC = () => {
       <MailOptionRenderer
         renderWhen={[
           MailBoxLabels.inbox,
-          MailBoxLabels.outbox,
           MailBoxLabels.spam,
           MailBoxLabels.payment,
         ]}

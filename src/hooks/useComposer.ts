@@ -13,6 +13,24 @@ export const useComposer = () => {
     });
   };
 
+  const minimize = () => {
+    update((prev) => {
+      return {
+        ...prev,
+        composerMinimised: !0,
+      };
+    });
+  };
+
+  const expand = () => {
+    update((prev) => {
+      return {
+        ...prev,
+        composerMinimised: !1,
+      };
+    });
+  };
+
   const onClose = () => {
     update((prev) => {
       return {
@@ -60,5 +78,7 @@ export const useComposer = () => {
     collpaseComposer,
     expandComposer,
     updateStatus,
+    minimize,
+    expand,
   };
 };

@@ -29,8 +29,11 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ value, onChange }) => {
         if (onChange) {
           const html =
             editorRef.current!.querySelector(".ql-editor")?.innerHTML;
+          const text = editorRef
+            .current!.querySelector(".ql-editor")
+            ?.textContent?.trim();
 
-          onChange(html || "");
+          onChange(text ? (html ?? "") : "");
         }
       });
 

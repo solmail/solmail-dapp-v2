@@ -6,6 +6,7 @@ import { QueryKeys } from "src/types";
 import { AuthTokenResponse } from "src/types/token";
 import { useAuthStatus } from "./useAuthState";
 import { STORAGE_NAME } from "@const/config";
+import { clearStorage } from "@utils/storage/clear";
 
 export const useTokenRefresher = (enabled: boolean = !0) => {
   const { update } = useAuthStatus();
@@ -46,7 +47,7 @@ export const useTokenRefresher = (enabled: boolean = !0) => {
             isAuthenticated: !0,
           });
         } else {
-          localStorage.clear();
+          clearStorage();
           window.location.reload();
         }
       }

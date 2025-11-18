@@ -1,3 +1,4 @@
+import { FCM_STORAGE_KEY } from "@const/config";
 import { atom } from "jotai";
 
 type NotificationType = {
@@ -6,7 +7,7 @@ type NotificationType = {
   isRegistering: boolean;
 };
 
-const id = localStorage.getItem("_i_")?.trim() ?? !1;
+const id = localStorage.getItem(FCM_STORAGE_KEY)?.trim() ?? !1;
 export const notificationAtom = atom<NotificationType>({
   hasPermisson: Notification.permission === "granted",
   isRegistered: !!id,

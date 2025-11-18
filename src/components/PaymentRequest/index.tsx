@@ -19,8 +19,8 @@ import { useSolanaPayLogo } from "@hooks/useSolanaPayLogo";
 import { usePaymentStatus } from "@hooks/usePaymentStatus";
 const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
   const SolanaPayLogo = useSolanaPayLogo();
-  const { id, context } = useMailBoxContext();
-  const { mail } = useMailBody(id, context);
+  const { id } = useMailBoxContext();
+  const { mail } = useMailBody(id);
   const { amount, tokenaddress } = props;
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: !1 });
   const { wallet, address } = usePrivyWallet();
@@ -72,8 +72,8 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
   );
 };
 export const PaymentRequests: React.FC = () => {
-  const { id, context } = useMailBoxContext();
-  const { payments } = useMailBody(id, context);
+  const { id } = useMailBoxContext();
+  const { payments } = useMailBody(id);
 
   return (
     <Flex direction={"row"} flexWrap={"wrap"} my={2}>

@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import type { IconType } from "react-icons/lib";
-import { MailsResponse } from "src/gql/graphql";
+
 export * from "./mail";
 export * from "./referrals";
 export type MenuConfig = {
@@ -15,6 +15,8 @@ export type MenuConfig = {
 };
 
 export enum QueryKeys {
+  "JUPITER_QUOTE" = "JUPITER_QUOTE",
+  "JUPITER_TOKENS" = "JUPITER_TOKENS",
   "ENCRYPTION_KEY" = "ENCRYPTION_KEY",
   "MAIL_BODY" = "MAIL_BODY",
   "MAILBOX" = "MAILBOX",
@@ -23,6 +25,7 @@ export enum QueryKeys {
   "CREATE_MAILBOX" = "CREATE_MAILBOX",
   "CREATE_CREDENTIALS" = "CREATE_CREDENTIALS",
   "SOL_BALANCE" = "SOL_BALANCE",
+  "JUPITER_SOL_BALANCE" = "JUPITER_SOL_BALANCE",
   "USER_PROFILE" = "USER_PROFILE",
   "CREATE_USER_PROFILE" = "CREATE_USER_PROFILE",
   "REWARDS_LIST" = "REWARDS_LIST",
@@ -52,6 +55,7 @@ export enum QueryKeys {
   "MUTATION_V2_MAIL_REGISTER" = "MUTATION_V2_MAIL_REGISTER",
   "MUTATION_MAIL_TOKEN_CLAIM" = "MUTATION_MAIL_TOKEN_CLAIM",
   "MUTATION_REF_CODE_VALIDATOR" = "MUTATION_REF_CODE_VALIDATOR",
+  "MUTATION_JUPITER_SWAP" = "MUTATION_JUPITER_SWAP",
   "JUPITER_PRICE" = "JUPITER_PRICE",
   "HELIUS_GNERIC" = "HELIUS_GNERIC",
   "WEB_2_MAIL" = "WEB_2_MAIL",
@@ -77,8 +81,4 @@ export type SolanaPayPayload = {
   amount: string;
   message: string;
   tokenaddress: string;
-};
-
-export type GetUserInboxResponse = {
-  userInbox: MailsResponse;
 };

@@ -28,7 +28,10 @@ export const TransferCard: React.FC<TransferCard> = ({ transaction }) => {
   const isCredit = address && address !== transaction?.feePayer;
   const amount = IS_TOKEN_TRANSFER
     ? transaction.tokenTransfers[0].tokenAmount
-    : transaction?.nativeTransfers?.[0].amount;
+    : formatTokenBalance({
+        rawAmount: transaction?.nativeTransfers?.[0].amount ?? 0,
+        mintDecimals: token?.decimals ?? 9,
+      });
 
   return (
     <Flex
@@ -64,10 +67,7 @@ export const TransferCard: React.FC<TransferCard> = ({ transaction }) => {
             fontSize={16}
             fontWeight={"medium"}
           >
-            {formatTokenBalance({
-              rawAmount: amount,
-              mintDecimals: token?.decimals ?? 9,
-            })}
+            {amount}
           </Flex>
         </Flex>
         <Flex justifyContent={"space-between"}>

@@ -61,7 +61,9 @@ export type FormattedMailBox = Pick<
   isV1: boolean;
   encKey: string;
   labelIdentifier: MailBoxLabels;
-} & Partial<Pick<SolMailV2, "label">>;
+  uid: string | undefined;
+  isFav: boolean;
+};
 
 export type Attachment = {
   name: string;
@@ -83,7 +85,7 @@ export enum MailBoxLabels {
   "trash" = "trash",
   "spam" = "spam",
   "unknown" = "unknown",
-  "payment" = "payment",
+  "payment" = "payments",
 }
 
 export enum MailLabelIndex {

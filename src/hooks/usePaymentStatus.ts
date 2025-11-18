@@ -19,9 +19,10 @@ export const usePaymentStatus = (
   const query = useQuery({
     queryKey: [QueryKeys.PAYMENT_STATUS, reference?.toString()],
     queryFn: async () => {
-      if (!reference) {
+      if (!reference || !recipient) {
         return !1;
       }
+
       try {
         const amountBigint = new BigNumber(amount);
         const signatureInfo = await findReference(connection, reference, {
@@ -45,7 +46,7 @@ export const usePaymentStatus = (
         return !1;
       }
     },
-    enabled: !!(id && isOpen),
+    enabled: !!(id && isOpen && recipient && reference),
     refetchInterval: 10000,
   });
 
