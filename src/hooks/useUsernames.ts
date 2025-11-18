@@ -111,7 +111,7 @@ export const useGetLinkedUsernameById = (address: string | undefined) => {
     [account]
   );
   const fullUsername = useMemo(
-    () => (username && domain ? `${username}@${domain}` : null),
+    () => (username && domain ? `${username}@${domain}` : !1),
     [domain, username]
   );
 

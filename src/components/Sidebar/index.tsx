@@ -40,62 +40,6 @@ import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { useUsernamePopup } from "@hooks/useUsernamePopup";
 import { SocialShare } from "@components/SocialShare";
 
-export const AppSwitch: React.FC = () => {
-  return (
-    <Box w="100%">
-      <Menu>
-        <Flex as={MenuButton} w="100%" data-group>
-          <Flex
-            px={2}
-            py={2}
-            direction={"row"}
-            border={"solid 1px"}
-            w="100%"
-            borderRadius={"15px"}
-            alignItems={"center"}
-            borderColor={"surface.400"}
-            cursor={"pointer"}
-            position={"relative"}
-            pr="30px"
-            bg="surface.100"
-            transition={"all ease .2s"}
-            _groupHover={{
-              bg: "surface.300",
-            }}
-          >
-            <Flex>
-              <Image boxSize={"30px"} src={config.logo} alt="Solmail" />
-            </Flex>
-            <Flex px={3} bg="solana" bgClip={"text"} fontWeight={"bold"}>
-              Solmail
-            </Flex>
-            <Flex
-              justifyContent={"center"}
-              alignItems={"center"}
-              position={"absolute"}
-              right={0}
-              top={0}
-              bottom={0}
-              w="30px"
-            >
-              <Icon as={MdKeyboardArrowDown} />
-            </Flex>
-          </Flex>
-        </Flex>
-        <MenuList
-          backdropFilter={"blur(2px)"}
-          w="full"
-          borderColor={"surface.300"}
-          bg="rgba(28, 28, 28, 0.9)"
-          p={5}
-        >
-          <Box w="215px">Menu for switching apps</Box>
-        </MenuList>
-      </Menu>
-    </Box>
-  );
-};
-
 export const Sidebar: React.FC = () => {
   const { onOpen } = useUsernamePopup();
   const router = useRouter();
@@ -132,7 +76,8 @@ export const Sidebar: React.FC = () => {
   useEffect(() => {
     const unsubscribe = router.subscribe(
       "onBeforeNavigate",
-      ({ fromLocation, toLocation }: any) => {
+      ({ fromLocation, toLocation }) => {
+        if (!fromLocation) return;
         const fromUrl =
           fromLocation.pathname + fromLocation.search + fromLocation.hash;
         const toUrl = toLocation.pathname + toLocation.search + toLocation.hash;
