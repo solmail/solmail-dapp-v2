@@ -9,6 +9,7 @@ import { useToast } from "@hooks/useToast";
 
 import React from "react";
 import { SolanaPayButton } from "@components/SolanaPayButton";
+import { MailSizeInfo } from "./MailSizeInfo";
 
 export const Attachments: React.FC<{
   onOpenSolanaPay: () => void;
@@ -58,7 +59,7 @@ export const Attachments: React.FC<{
   );
 
   return (
-    <Flex direction="column" w="full">
+    <Flex direction="row" w="full">
       <Flex gap={2} pb={3} alignItems={"center"}>
         <Input id={id} type="file" multiple hidden onChange={onChangeHandler} />
 
@@ -94,6 +95,7 @@ export const Attachments: React.FC<{
           </Flex>
         )}
       </Flex>
+      <MailSizeInfo />
     </Flex>
   );
 };

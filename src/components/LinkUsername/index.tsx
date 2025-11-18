@@ -15,6 +15,7 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
+import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 import { USERNAME_SWITCH_INFO } from "@const/info";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import {
@@ -156,24 +157,30 @@ export const UsernameLinkBox: React.FC<{ onUpdate?: () => void }> = ({
     }
   };
   return (
-    <VStack w="100%">
-      {usernames &&
-        usernames.map(({ account, publicKey }) => {
-          return (
-            <LinkableMail
-              key={publicKey?.toString()}
-              username={account.username}
-              domain={account.domain}
-              mailbox={account.mailbox}
-              account={publicKey}
-              onUpdate={onUpdateHandler}
-              updateStatus={setIsUpdating}
-              updatePending={isUpdating}
-            />
-          );
-        })}
-
+    <Flex direction={"column"} w="100%">
+      {usernames && (
+        <VStack w="100%" minH={"50vh"}>
+          <CustomScrollbarWrapper>
+            <VStack w="100%" gap={2}>
+              {usernames.map(({ account, publicKey }) => {
+                return (
+                  <LinkableMail
+                    key={publicKey?.toString()}
+                    username={account.username}
+                    domain={account.domain}
+                    mailbox={account.mailbox}
+                    account={publicKey}
+                    onUpdate={onUpdateHandler}
+                    updateStatus={setIsUpdating}
+                    updatePending={isUpdating}
+                  />
+                );
+              })}
+            </VStack>
+          </CustomScrollbarWrapper>
+        </VStack>
+      )}
       {(!usernames || !usernames.length) && <Flex>No usernames avalable</Flex>}
-    </VStack>
+    </Flex>
   );
 };

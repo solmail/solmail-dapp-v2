@@ -45,3 +45,5 @@ export const DEFAULT_MAILS_OFFSET = 0;
 export const FCM_STORAGE_KEY = "_i_";
 
 export const JUPITER_ENDPOINT = import.meta.env.VITE_SOLMAIL_JUPITER_ENDPOINT;
+
+export const MAIL_BODY_MAX_SIZE_MB = 2;

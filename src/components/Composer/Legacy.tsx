@@ -16,9 +16,9 @@ import {
 import { type SubmitHandler, useFormContext } from "react-hook-form";
 import { Subject } from "./Subject";
 import { FieldWrapper } from "@components/Field";
-import { trim } from "@utils/index";
+import { isGreaterThanMB, trim } from "@utils/index";
 
-import { useMailBody, Attachment, useBalance } from "@hooks/index";
+import { useMailBody, Attachment, useBalance, useToast } from "@hooks/index";
 
 import "react-quill/dist/quill.snow.css";
 import QuillEditor from "./Quill";
@@ -34,7 +34,11 @@ import { RequestSolanaPay } from "@components/RequestSolanaPay";
 
 import { useGetLinkedUsernameById } from "@hooks/useUsernames";
 import { MailShareTypes } from "@state/index";
-import { MAXIMUM_MAIL_SUBJECT_LENGTH, NO_BALANCE_LABEL } from "@const/config";
+import {
+  MAIL_BODY_MAX_SIZE_MB,
+  MAXIMUM_MAIL_SUBJECT_LENGTH,
+  NO_BALANCE_LABEL,
+} from "@const/config";
 import { useEmailer } from "@hooks/useEmailer";
 import { ChipInput } from "@components/ChipInput";
 import { useEmailResolver } from "@hooks/useEmailResolver";
@@ -42,6 +46,8 @@ import { useEmailResolver } from "@hooks/useEmailResolver";
 import { FiMinimize2 } from "react-icons/fi";
 import { CgClose } from "react-icons/cg";
 import { dispatchCustomEvent } from "@utils/event";
+
+import { getByteSize } from "@utils/string/getByteSize";
 
 export const ComposerLegacy: React.FC = () => {
   const {
@@ -127,7 +133,7 @@ export const ComposerLegacy: React.FC = () => {
   const { composerCollapsed, composerMinimised, update } = useComposer();
 
   const { onOpen, isOpen, onClose } = useDisclosure();
-
+  const { showToast } = useToast();
   const _resolveRecipients = async (to: string[]) => {
     const address: ResolveEmail[] = [];
     let status = !0;
@@ -154,6 +160,17 @@ export const ComposerLegacy: React.FC = () => {
     to,
     ...values
   }) => {
+    if (values.body && values.body.trim()) {
+      const bytes = getByteSize(values.body?.trim() ?? "");
+      if (isGreaterThanMB(bytes, MAIL_BODY_MAX_SIZE_MB)) {
+        return showToast(
+          `Mail body size exceeds the maximum allowed limit of ${MAIL_BODY_MAX_SIZE_MB} MB.`,
+          {
+            type: "error",
+          }
+        );
+      }
+    }
     startTranstion(async () => {
       const { address, status, count } = await _resolveRecipients(to);
       if (!status) {
@@ -299,7 +316,7 @@ export const ComposerLegacy: React.FC = () => {
             </CustomScrollbarWrapper>
           </Flex>
         </Flex>
-        <Flex alignItems={"center"}>
+        <Flex alignItems={"center"} w="100%">
           <Attachments onOpenSolanaPay={onOpen} />
         </Flex>
       </Flex>
