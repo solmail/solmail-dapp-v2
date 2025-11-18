@@ -147,6 +147,7 @@ export default defineConfig(({ mode }) => {
         "@hooks": path.resolve(__dirname, "src/hooks"),
         "@theme": path.resolve(__dirname, "src/theme/"),
         "@integrations": path.resolve(__dirname, "src/integrations/"),
+        "@routes": path.resolve(__dirname, "src/routes/"),
       },
     },
   };

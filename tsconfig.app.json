@@ -34,7 +34,8 @@
       "@state/*": ["src/state/*"],
       "@hooks/*": ["src/hooks/*"],
       "@theme/*": ["src/theme/*"],
-      "@integrations/*": ["src/integrations/*"]
+      "@integrations/*": ["src/integrations/*"],
+      "@routes/*": ["src/routes/*"]
     }
   },
   "include": ["src"],

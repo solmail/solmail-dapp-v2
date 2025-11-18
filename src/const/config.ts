@@ -9,8 +9,8 @@ export const PINATA_GATEWAY_URL = import.meta.env.VITE_SOLMAIL_PINATA_BASE_URL;
 export const MAXIMUM_MAIL_SUBJECT_LENGTH = 50;
 
 export const RPC_ENDPOINT = `${import.meta.env.VITE_SOLMAIL_RPC_ENDPOINT}?api-key=${import.meta.env.VITE_SOLMAIL_RPC_API_KEY}`;
-
-export const HELIUS_API_ENDPOINT = `https://api-devnet.helius.xyz/v0/`;
+export const HELIUS_API_ENDPOINT = import.meta.env
+  .VITE_SOLMAIL_HELIUS_API_ENDPOINT;
 
 export const NO_BALANCE_LABEL = `Insufficient Balance`;
 
@@ -43,3 +43,7 @@ export const MAILS_PER_PAGE = 13;
 export const DEFAULT_MAILS_OFFSET = 0;
 
 export const FCM_STORAGE_KEY = "_i_";
+
+export const JUPITER_ENDPOINT = import.meta.env.VITE_SOLMAIL_JUPITER_ENDPOINT;
+
+export const MAIL_BODY_MAX_SIZE_MB = 2;
