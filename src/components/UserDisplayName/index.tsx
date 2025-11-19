@@ -8,7 +8,7 @@ import { ReactElement } from "react";
 type UserDisplayNameProps = {
   address: string;
   origin: string;
-  children: (displayName: string, originalName: string) => ReactElement;
+  children?: (displayName: string, originalName: string) => ReactElement;
 };
 export const UserDisplayName: React.FC<UserDisplayNameProps> = ({
   address,

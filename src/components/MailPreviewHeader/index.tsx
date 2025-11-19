@@ -10,8 +10,6 @@ import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 
-import { useGetLinkedUsernameById } from "@hooks/useUsernames";
-
 import { shortenPrincipalId } from "@utils/string";
 import { format } from "@utils/time";
 
@@ -39,7 +37,6 @@ export const MailPreviewHeader: React.FC = () => {
       : context !== MailBoxLabels.outbox
         ? mail?.from?.toString()
         : mail?.to?.toString();
-  const { displayName } = useGetLinkedUsernameById(address);
 
   return (
     <Flex px={5} py={"7px"} w="full" direction={"row"} gap={3}>
