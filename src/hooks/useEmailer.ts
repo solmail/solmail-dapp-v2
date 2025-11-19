@@ -29,19 +29,14 @@ export const useEmailer = () => {
   const { mutateAsync: uploadToPinata } = usePinataUploader();
   const { sendTransaction } = useSendTransaction();
   const { refetch } = useBalance();
-  const {
-    thread,
-    action,
-    ref,
-    updateStatus,
-    collpaseComposer,
-    expandComposer,
-  } = useComposer();
+  const { action, ref, updateStatus, collpaseComposer, expandComposer } =
+    useComposer();
 
   const { attachmentRef } = useMailBody(ref);
   const { provider, program, mailAccountAddress } = useGetMailProgramInstance();
   const connection = useSolanaConnection();
-  const { account } = useGetLinkedUsernameById(thread);
+  const { displayName } = useGetLinkedUsernameById(from);
+
   const queryClient = useQueryClient();
 
   const IS_FORWARDING = action === MailShareTypes.forward;
@@ -101,7 +96,7 @@ export const useEmailer = () => {
       const body = `${values.body}`;
       const json: Record<string, any> = {
         body,
-        origin: account?.publicKey?.toString() ?? "",
+        origin: displayName ?? "",
       };
 
       if (attachmentHash && attachmentFiles.length > 0) {

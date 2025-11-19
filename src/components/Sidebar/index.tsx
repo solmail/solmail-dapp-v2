@@ -6,9 +6,6 @@ import {
   LinkOverlay,
   Image,
   VStack,
-  Menu,
-  MenuList,
-  MenuButton,
   chakra,
   Link as ChakraLink,
   Tooltip,
@@ -21,7 +18,6 @@ import { MENU } from "@const/menu";
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import { BsPlusCircleFill } from "react-icons/bs";
 
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { isActive } from "@utils/index";
 import type { MenuConfig } from "src/types";
 
