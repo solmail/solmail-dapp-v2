@@ -1,16 +1,31 @@
 import { CustomSkeleton } from "@components/CustomSkeleton";
-import { useGetLinkedUsernameById } from "@hooks/useUsernames";
-import { shortenPrincipalId } from "@utils/string";
 
-export const UserDisplayName: React.FC<{ address: string }> = ({ address }) => {
-  const {
-    username,
-    address: addr,
-    isLoading,
-  } = useGetLinkedUsernameById(address);
+import { useVerifyUsername } from "@hooks/useVerifyUsername";
+import { shortenPrincipalId } from "@utils/string";
+import isFunction from "lodash/isFunction";
+import { ReactElement } from "react";
+
+type UserDisplayNameProps = {
+  address: string;
+  origin: string;
+  children: (displayName: string, originalName: string) => ReactElement;
+};
+export const UserDisplayName: React.FC<UserDisplayNameProps> = ({
+  address,
+  origin,
+  children,
+}) => {
+  const { isLoading, displayName, originalName } = useVerifyUsername(
+    address,
+    origin
+  );
   return (
-    <CustomSkeleton isLoading={isLoading}>
-      <>{username || shortenPrincipalId(addr ?? "")}</>
+    <CustomSkeleton isLoading={!displayName || isLoading}>
+      <>
+        {isFunction(children)
+          ? children(displayName, originalName)
+          : shortenPrincipalId(displayName ?? "")}
+      </>
     </CustomSkeleton>
   );
 };

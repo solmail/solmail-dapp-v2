@@ -2,6 +2,7 @@ import { chakra, Flex } from "@chakra-ui/react";
 import { Avatar } from "@components/Avatar";
 import { ClipboardText } from "@components/ClipboardText";
 import { MailActions } from "@components/MailActions";
+import { UserDisplayName } from "@components/UserDisplayName";
 
 import { DOMAINS } from "@const/domain";
 
@@ -19,7 +20,7 @@ import { MailBoxLabels } from "src/types";
 export const MailPreviewHeader: React.FC = () => {
   const { context, id } = useMailBoxContext();
   const { address: myAddress } = usePrivyWallet();
-  const { isInternalMail } = useMailBody(id);
+  const { isInternalMail, origin } = useMailBody(id);
 
   const { mail } = useMailBody(id);
   const label =
@@ -54,11 +55,19 @@ export const MailPreviewHeader: React.FC = () => {
       <Flex direction={"column"} flex={"auto"}>
         <Flex>
           <chakra.span mr={1}>{label}</chakra.span>
-
-          <ClipboardText
-            textToCopy={displayName}
-            trim={!1}
-          >{`<${shortenPrincipalId(displayName, 4, DOMAINS.DEFAULT.length)}>`}</ClipboardText>
+          <UserDisplayName
+            address={address ?? ""}
+            origin={label.toLowerCase() === "from" ? origin : ""}
+          >
+            {(_, displayName) => {
+              return (
+                <ClipboardText
+                  textToCopy={displayName}
+                  trim={!1}
+                >{`<${shortenPrincipalId(displayName, 4, DOMAINS.DEFAULT.length)}>`}</ClipboardText>
+              );
+            }}
+          </UserDisplayName>
         </Flex>
         <Flex opacity={0.6} fontSize={13}>
           {format(Number(mail?.createdAt ?? 0) * 1000)}
