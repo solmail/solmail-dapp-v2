@@ -21,6 +21,7 @@ import { getErrorMessage } from "@utils/error/getErrorMessage";
 
 type FormPayload = Omit<ComposerFormInputs, "to"> & {
   to: string;
+  originalRecipient: string;
 };
 export const useEmailer = () => {
   const { showToast } = useToast();
@@ -97,6 +98,10 @@ export const useEmailer = () => {
       const json: Record<string, any> = {
         body,
         origin: displayName ?? "",
+        recipient:
+          values.originalRecipient && values.originalRecipient.indexOf("@") > -1
+            ? values.originalRecipient
+            : "",
       };
 
       if (attachmentHash && attachmentFiles.length > 0) {

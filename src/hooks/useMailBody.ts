@@ -33,6 +33,7 @@ type MailBodyResponse = {
   attachments?: MailREsponseAttachment[];
   solanaPay?: PaymentConfig[];
   origin: string;
+  recipient: string;
 };
 
 export type Attachment = {
@@ -66,6 +67,7 @@ export const useMailBody = (
   isInternalMail: boolean;
   id: string | undefined;
   origin: string;
+  recipient: string;
 } => {
   const mail = useGetInboxFromCache(id);
 
@@ -105,6 +107,7 @@ export const useMailBody = (
     payments,
     attachmentRef,
     origin,
+    recipient,
   ] = useMemo((): [
     string,
     Attachment[],
@@ -112,11 +115,12 @@ export const useMailBody = (
     PaymentConfig[],
     MailREsponseAttachment[],
     string,
+    string,
   ] => {
     if (isInternalMail(mail?.version as StorageVersion)) {
       const div = document.createElement("div");
       div.innerHTML = content ?? "";
-      return [content ?? "", [], div.textContent ?? "", [], [], ""];
+      return [content ?? "", [], div.textContent ?? "", [], [], "", ""];
     }
 
     if (!content || !content) {
@@ -129,6 +133,7 @@ export const useMailBody = (
         [],
         [],
         "",
+        "",
       ];
     }
 
@@ -137,7 +142,7 @@ export const useMailBody = (
         decryptData(content ?? "", mail?.iv, data)
       ) as unknown as MailBodyResponse;
 
-      if (!decryptedContent) return ["", [], "", [], [], ""];
+      if (!decryptedContent) return ["", [], "", [], [], "", ""];
 
       const div = document.createElement("div");
       div.innerHTML = decryptedContent.body;
@@ -168,9 +173,10 @@ export const useMailBody = (
         payments,
         decryptedContent.attachments ?? [],
         decryptedContent?.origin ?? "",
+        decryptedContent?.recipient ?? "",
       ];
     } catch {
-      return ["", [], "", [], [], ""];
+      return ["", [], "", [], [], "", ""];
     }
   }, [content, mail, data]);
 
@@ -199,5 +205,6 @@ export const useMailBody = (
     attachmentRef,
     isInternalMail: isInternalMail(mail?.version as StorageVersion),
     id,
+    recipient,
   };
 };

@@ -47,6 +47,7 @@ export const useLabelIndexUpdate = (id: string) => {
   return useMutation({
     mutationKey: [QueryKeys.LABEL_INDEX_UPDATE, id],
     mutationFn: async ({ index }: Args) => {
+      alert(id);
       if (!program || !provider) {
         throw Error();
       }

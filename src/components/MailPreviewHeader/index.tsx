@@ -18,7 +18,7 @@ import { MailBoxLabels } from "src/types";
 export const MailPreviewHeader: React.FC = () => {
   const { context, id } = useMailBoxContext();
   const { address: myAddress } = usePrivyWallet();
-  const { isInternalMail, origin } = useMailBody(id);
+  const { isInternalMail, origin, recipient } = useMailBody(id);
 
   const { mail } = useMailBody(id);
   const label =
@@ -54,7 +54,7 @@ export const MailPreviewHeader: React.FC = () => {
           <chakra.span mr={1}>{label}</chakra.span>
           <UserDisplayName
             address={address ?? ""}
-            origin={label.toLowerCase() === "from" ? origin : ""}
+            origin={label.toLowerCase() === "from" ? origin : recipient}
           >
             {(_, displayName) => {
               return (

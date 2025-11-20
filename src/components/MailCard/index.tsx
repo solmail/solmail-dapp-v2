@@ -64,10 +64,13 @@ export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
     isInternalMail,
     subject,
     origin,
+    recipient,
   } = useMailBody(id);
 
   const { onUpdate } = useUpdateMailFavStatus();
 
+  const mailDisplayAddress =
+    myAddress.toString() === to?.toString() ? origin : recipient;
   const addres =
     myAddress.toString() === to?.toString() ? from?.toString() : to?.toString();
   const isActive = contextId && contextId === id;
@@ -123,7 +126,7 @@ export const MailCard: React.FC<FormattedMailBox> = ({ ...props }) => {
         />
         <Flex mb={"2px"} justifyContent={"space-between"}>
           <Flex>
-            <UserDisplayName origin={origin} address={addres} />
+            <UserDisplayName origin={mailDisplayAddress} address={addres} />
           </Flex>
           <Flex fontSize={12} alignItems={"center"}>
             {formatTime(Number(createdAt) * 1000)}
