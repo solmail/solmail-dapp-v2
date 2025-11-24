@@ -47,12 +47,13 @@ export const useLabelIndexUpdate = (id: string) => {
   return useMutation({
     mutationKey: [QueryKeys.LABEL_INDEX_UPDATE, id],
     mutationFn: async ({ index }: Args) => {
+      console.log(id);
       if (!program || !provider) {
         throw Error();
       }
 
       const trx = await program.methods
-        .updatemaillabel(index)
+        .updatemailV3Label(index)
         .accounts({
           mail: new PublicKey(id),
           authority: provider.publicKey,

@@ -195,7 +195,11 @@ export const ComposerLegacy: React.FC = () => {
         }));
 
         try {
-          await mutateAsync({ ...values, to: address[i].resolvedAddress });
+          await mutateAsync({
+            ...values,
+            to: address[i].resolvedAddress,
+            originalRecipient: address[i].username ?? "",
+          });
         } catch {
           continue;
         }

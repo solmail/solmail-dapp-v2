@@ -7,7 +7,7 @@ import { ComposerFormInputs } from "src/types";
 export const MailSizeInfo: React.FC = () => {
   const { watch } = useFormContext<ComposerFormInputs>();
   const body = watch("body");
-  console.log(body);
+
   return (
     <Flex
       fontSize={12}

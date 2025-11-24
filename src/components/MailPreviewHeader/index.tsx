@@ -2,14 +2,13 @@ import { chakra, Flex } from "@chakra-ui/react";
 import { Avatar } from "@components/Avatar";
 import { ClipboardText } from "@components/ClipboardText";
 import { MailActions } from "@components/MailActions";
+import { UserDisplayName } from "@components/UserDisplayName";
 
 import { DOMAINS } from "@const/domain";
 
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
-
-import { useGetLinkedUsernameById } from "@hooks/useUsernames";
 
 import { shortenPrincipalId } from "@utils/string";
 import { format } from "@utils/time";
@@ -19,7 +18,7 @@ import { MailBoxLabels } from "src/types";
 export const MailPreviewHeader: React.FC = () => {
   const { context, id } = useMailBoxContext();
   const { address: myAddress } = usePrivyWallet();
-  const { isInternalMail } = useMailBody(id);
+  const { isInternalMail, origin, recipient } = useMailBody(id);
 
   const { mail } = useMailBody(id);
   const label =
@@ -38,7 +37,6 @@ export const MailPreviewHeader: React.FC = () => {
       : context !== MailBoxLabels.outbox
         ? mail?.from?.toString()
         : mail?.to?.toString();
-  const { displayName } = useGetLinkedUsernameById(address);
 
   return (
     <Flex px={5} py={"7px"} w="full" direction={"row"} gap={3}>
@@ -54,11 +52,19 @@ export const MailPreviewHeader: React.FC = () => {
       <Flex direction={"column"} flex={"auto"}>
         <Flex>
           <chakra.span mr={1}>{label}</chakra.span>
-
-          <ClipboardText
-            textToCopy={displayName}
-            trim={!1}
-          >{`<${shortenPrincipalId(displayName, 4, DOMAINS.DEFAULT.length)}>`}</ClipboardText>
+          <UserDisplayName
+            address={address ?? ""}
+            origin={label.toLowerCase() === "from" ? origin : recipient}
+          >
+            {(_, displayName) => {
+              return (
+                <ClipboardText
+                  textToCopy={displayName}
+                  trim={!1}
+                >{`<${shortenPrincipalId(displayName, 4, DOMAINS.DEFAULT.length)}>`}</ClipboardText>
+              );
+            }}
+          </UserDisplayName>
         </Flex>
         <Flex opacity={0.6} fontSize={13}>
           {format(Number(mail?.createdAt ?? 0) * 1000)}

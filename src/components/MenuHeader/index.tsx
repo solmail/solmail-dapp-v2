@@ -10,10 +10,18 @@ import { Link } from "@tanstack/react-router";
 
 export const MenuHeader: React.FC<MenuConfig> = ({ name, header }) => {
   const { wallet } = usePrivyWallet();
-  const { username, displayName } = useGetLinkedUsernameById(wallet?.address);
+  const { username, displayName, hasUserNames } = useGetLinkedUsernameById(
+    wallet?.address
+  );
   const { onUpdate } = useUsernamePopup();
   const logo = useColorModeValue(SomailLogoTextDark, SolmailLogoText);
   const color = useColorModeValue("green.600", "green.200");
+
+  const onLinkUsername = () => {
+    onUpdate({
+      requestUsernameLink: !0,
+    });
+  };
   return (
     <Flex direction={"column"} mb={3}>
       <Flex fontWeight={"bold"} fontSize={18} px={1}>
@@ -29,16 +37,7 @@ export const MenuHeader: React.FC<MenuConfig> = ({ name, header }) => {
         </Link>
       </Flex>
       {username && displayName && (
-        <Flex
-          mt={1}
-          onClick={() =>
-            onUpdate({
-              requestUsernameLink: !0,
-            })
-          }
-          w="100%"
-          overflow={"hidden"}
-        >
+        <Flex mt={1} onClick={onLinkUsername} w="100%" overflow={"hidden"}>
           <chakra.span
             fontSize={13}
             display={"inline-flex"}
@@ -67,6 +66,38 @@ export const MenuHeader: React.FC<MenuConfig> = ({ name, header }) => {
               </chakra.span>
             </chakra.span>
           </chakra.span>
+        </Flex>
+      )}
+
+      {hasUserNames && !username && (
+        <Flex
+          color={color}
+          mt={1}
+          onClick={onLinkUsername}
+          cursor={"pointer"}
+          transition={"all ease .2s"}
+          _hover={{
+            opacity: 0.8,
+          }}
+        >
+          Link username
+        </Flex>
+      )}
+
+      {!hasUserNames && !username && (
+        <Flex
+          color={color}
+          mt={1}
+          onClick={onLinkUsername}
+          cursor={"pointer"}
+          transition={"all ease .2s"}
+          _hover={{
+            opacity: 0.8,
+          }}
+        >
+          <Link to={import.meta.env.VITE_SOLMAIL_MAIL_DOT_FUN} target="_blank">
+            Get your username
+          </Link>
         </Flex>
       )}
       {header && (

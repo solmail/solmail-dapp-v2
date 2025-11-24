@@ -33,6 +33,7 @@ type MailBodyResponse = {
   attachments?: MailREsponseAttachment[];
   solanaPay?: PaymentConfig[];
   origin: string;
+  recipient: string;
 };
 
 export type Attachment = {
@@ -65,6 +66,8 @@ export const useMailBody = (
   attachmentRef: MailREsponseAttachment[];
   isInternalMail: boolean;
   id: string | undefined;
+  origin: string;
+  recipient: string;
 } => {
   const mail = useGetInboxFromCache(id);
 
@@ -97,72 +100,85 @@ export const useMailBody = (
     staleTime: Infinity,
   });
 
-  const [mailContent, attachments, textContent, payments, attachmentRef] =
-    useMemo((): [
-      string,
-      Attachment[],
-      string,
-      PaymentConfig[],
-      MailREsponseAttachment[],
-    ] => {
-      if (isInternalMail(mail?.version as StorageVersion)) {
-        const div = document.createElement("div");
-        div.innerHTML = content ?? "";
-        return [content ?? "", [], div.textContent ?? "", [], []];
-      }
+  const [
+    mailContent,
+    attachments,
+    textContent,
+    payments,
+    attachmentRef,
+    origin,
+    recipient,
+  ] = useMemo((): [
+    string,
+    Attachment[],
+    string,
+    PaymentConfig[],
+    MailREsponseAttachment[],
+    string,
+    string,
+  ] => {
+    if (isInternalMail(mail?.version as StorageVersion)) {
+      const div = document.createElement("div");
+      div.innerHTML = content ?? "";
+      return [content ?? "", [], div.textContent ?? "", [], [], "", ""];
+    }
 
-      if (!content || !content) {
-        return [
-          "",
-          [],
-          isLegacyMail(mail?.version as StorageVersion)
-            ? "[deprecated content]"
-            : "",
-          [],
-          [],
-        ];
-      }
+    if (!content || !content) {
+      return [
+        "",
+        [],
+        isLegacyMail(mail?.version as StorageVersion)
+          ? "[deprecated content]"
+          : "",
+        [],
+        [],
+        "",
+        "",
+      ];
+    }
 
-      try {
-        const decryptedContent = JSON.parse(
-          decryptData(content ?? "", mail?.iv, data)
-        ) as unknown as MailBodyResponse;
+    try {
+      const decryptedContent = JSON.parse(
+        decryptData(content ?? "", mail?.iv, data)
+      ) as unknown as MailBodyResponse;
 
-        if (!decryptedContent) return ["", [], "", [], []];
+      if (!decryptedContent) return ["", [], "", [], [], "", ""];
 
-        const div = document.createElement("div");
-        div.innerHTML = decryptedContent.body;
+      const div = document.createElement("div");
+      div.innerHTML = decryptedContent.body;
 
-        const attachments: Attachment[] = [];
+      const attachments: Attachment[] = [];
 
-        if (decryptedContent.attachments && decryptedContent.attachments) {
-          decryptedContent.attachments.forEach((file) => {
-            attachments.push({
-              path: `${PINATA_GATEWAY_URL}${file.hash}${file.name ? `/${file.name}` : ""}`,
-              name: file.name ?? file?.meta?.name ?? "",
-            });
+      if (decryptedContent.attachments && decryptedContent.attachments) {
+        decryptedContent.attachments.forEach((file) => {
+          attachments.push({
+            path: `${PINATA_GATEWAY_URL}${file.hash}${file.name ? `/${file.name}` : ""}`,
+            name: file.name ?? file?.meta?.name ?? "",
           });
-        }
-
-        const payments: PaymentConfig[] = [];
-
-        if (decryptedContent.solanaPay && decryptedContent.solanaPay.length) {
-          decryptedContent.solanaPay.map((pay) => {
-            payments.push(pay);
-          });
-        }
-
-        return [
-          div.innerHTML,
-          attachments,
-          div.textContent?.trim() ?? "",
-          payments,
-          decryptedContent.attachments ?? [],
-        ];
-      } catch {
-        return ["", [], "", [], []];
+        });
       }
-    }, [content, mail, data]);
+
+      const payments: PaymentConfig[] = [];
+
+      if (decryptedContent.solanaPay && decryptedContent.solanaPay.length) {
+        decryptedContent.solanaPay.map((pay) => {
+          payments.push(pay);
+        });
+      }
+
+      return [
+        div.innerHTML,
+        attachments,
+        div.textContent?.trim() ?? "",
+        payments,
+        decryptedContent.attachments ?? [],
+        decryptedContent?.origin ?? "",
+        decryptedContent?.recipient ?? "",
+      ];
+    } catch {
+      return ["", [], "", [], [], "", ""];
+    }
+  }, [content, mail, data]);
 
   const subject = useMemo(() => {
     if (mail && isInternalMail(mail?.version as StorageVersion)) {
@@ -182,11 +198,13 @@ export const useMailBody = (
     mail,
     subject,
     payments,
+    origin,
     hasSmartView:
       (attachments && attachments.length > 0) ||
       (payments && payments.length > 0),
     attachmentRef,
     isInternalMail: isInternalMail(mail?.version as StorageVersion),
     id,
+    recipient,
   };
 };
