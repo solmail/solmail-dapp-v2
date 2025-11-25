@@ -88,12 +88,12 @@ export const MenuHeader: React.FC<MenuConfig> = ({ name, header }) => {
         <Flex
           color={color}
           mt={1}
-          onClick={onLinkUsername}
           cursor={"pointer"}
           transition={"all ease .2s"}
           _hover={{
             opacity: 0.8,
           }}
+          fontSize={13}
         >
           <Link to={import.meta.env.VITE_SOLMAIL_MAIL_DOT_FUN} target="_blank">
             Get your username
