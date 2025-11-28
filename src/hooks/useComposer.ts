@@ -8,6 +8,7 @@ export const useComposer = () => {
       return {
         ...prev,
         isComposerOpen: !0,
+        composerMinimised: !1,
         ...config,
       };
     });

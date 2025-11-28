@@ -38,6 +38,7 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
   const redirect = useCallback(() => {
     navigate({ to: `/u/solmail/${context}/all` });
   }, [context, navigate]);
+
   const { data, isLoading, refetch, isRefetching } = useMailBoxGraphql({
     type,
     offset: page * limit,
@@ -59,7 +60,7 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
 
   const formattedMails = useMemo(() => {
     const mails = data?.mailsByType?.mails ?? [];
-    return mails.map((mail) => {
+    let _formatedMails = mails.map((mail) => {
       const [user0, user1] =
         mail.from.toString() >= mail.to.toString()
           ? [mail.from, mail.to]
@@ -92,7 +93,11 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
 
       return formattedMail;
     });
-  }, [context, data?.mailsByType?.mails]);
+    if (type === MailBoxLabels.payment) {
+      _formatedMails = _formatedMails.sort((a, b) => b.createdAt - a.createdAt);
+    }
+    return _formatedMails;
+  }, [context, data?.mailsByType?.mails, type]);
 
   useEffect(() => {
     if (!isLoading && !isRefetching) {

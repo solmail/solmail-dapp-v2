@@ -6,7 +6,7 @@ export const SolmailHeader: React.FC = () => {
   const { onOpen } = useComposer();
   return (
     <Flex w="100%">
-      <Button onClick={() => onOpen()} rightIcon={<FaPen />} w="full">
+      <Button onClick={onOpen} rightIcon={<FaPen />} w="full">
         Compose
       </Button>
     </Flex>
