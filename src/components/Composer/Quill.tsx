@@ -88,7 +88,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ value, onChange }) => {
           opacity: 0.8,
         },
       }}
-      h={"300px"}
+      h={"auto"}
       w="100%"
     >
       <Box ref={editorRef} />
