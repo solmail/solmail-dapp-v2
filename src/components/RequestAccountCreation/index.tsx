@@ -15,7 +15,8 @@ import {
 import { ClipboardText } from "@components/ClipboardText";
 import { keyframes } from "@emotion/react";
 import { useBalance } from "@hooks/useBalance";
-import { useCreateMailbox } from "@hooks/useMailAccount";
+import { useCreateCompressedMailbox } from "@hooks/useCreateCompressedMailbox";
+
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { useSessionHandler } from "@hooks/useSessionHandler";
 import { isFunction } from "lodash";
@@ -34,7 +35,7 @@ export const RequestAccountCreation: React.FC<
     isRefetching: boolean;
   }
 > = ({ isRefetching: checkingMailAccountStatus, onSuccess, ...props }) => {
-  const { mutateAsync, isPending } = useCreateMailbox();
+  const { mutateAsync, isPending } = useCreateCompressedMailbox();
   const { formattedBalance, isRefetching, refetch } = useBalance();
   const { wallet } = usePrivyWallet();
   const [disabled, tooltip] = useMemo(() => {

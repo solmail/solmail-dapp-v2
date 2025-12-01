@@ -79,7 +79,7 @@ export const UserLayout: React.FC = () => {
     refetchProfile();
   };
 
-  const requestWalletCreation = isFetched && !hasAccount && !isLoading;
+  const requestWalletCreation = !0; // isFetched && !hasAccount && !isLoading;
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
