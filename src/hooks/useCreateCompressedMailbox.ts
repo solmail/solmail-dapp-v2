@@ -7,13 +7,12 @@ import {
   PackedAccounts,
   SystemAccountMetaConfig,
   confirmTx,
-  createRpc,
   deriveAddress,
   deriveAddressSeed,
   getDefaultAddressTreeInfo,
   selectStateTreeInfo,
 } from "@lightprotocol/stateless.js";
-import { PublicKey } from "@solana/web3.js";
+import { ComputeBudgetProgram, PublicKey } from "@solana/web3.js";
 
 export const useCreateCompressedMailbox = () => {
   const { address } = usePrivyWallet();
@@ -28,7 +27,6 @@ export const useCreateCompressedMailbox = () => {
       const stateTreeInfos = await lightRpc.getStateTreeInfos();
       const outputStateTreeInfo = selectStateTreeInfo(stateTreeInfos);
 
-      // Get address tree info
       const addressTreeInfo = getDefaultAddressTreeInfo();
 
       const addressSeed = deriveAddressSeed(
@@ -42,7 +40,7 @@ export const useCreateCompressedMailbox = () => {
       );
 
       const proofRpcResult = await lightRpc.getValidityProofV0(
-        [], // No input accounts (creating new account)
+        [],
         [
           {
             address: Array.from(registeredAddress.toBytes()),
@@ -55,10 +53,9 @@ export const useCreateCompressedMailbox = () => {
       const systemAccountConfig = SystemAccountMetaConfig.new(
         program.programId
       );
-      let remainingAccounts =
+      const remainingAccounts =
         PackedAccounts.newWithSystemAccounts(systemAccountConfig);
 
-      // Add address tree accounts
       const addressMerkleTreePubkeyIndex = remainingAccounts.insertOrGet(
         addressTreeInfo.tree
       );
@@ -66,22 +63,39 @@ export const useCreateCompressedMailbox = () => {
         addressTreeInfo.queue
       );
 
-      // Create packed address tree info
       const packedAddressTreeInfo = {
         rootIndex: proofRpcResult.rootIndices[0],
         addressMerkleTreePubkeyIndex,
         addressQueuePubkeyIndex,
       };
 
-      // Add output state tree
       const outputMerkleTreeIndex = remainingAccounts.insertOrGet(
         outputStateTreeInfo.tree
       );
 
-      // Set compute budget
       const computeBudgetIx = ComputeBudgetProgram.setComputeUnitLimit({
         units: 1_400_000,
       });
+
+      const tx = await program.methods
+        .compressedRegister(
+          address,
+          { 0: proofRpcResult.compressedProof },
+          packedAddressTreeInfo,
+          outputMerkleTreeIndex
+        )
+        .accounts({
+          signer: address,
+        })
+        .preInstructions([computeBudgetIx])
+        .remainingAccounts(remainingAccounts.toAccountMetas().remainingAccounts)
+
+        .rpc();
+
+      await confirmTx(lightRpc, tx);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
 };

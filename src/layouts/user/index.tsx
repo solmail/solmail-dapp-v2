@@ -25,6 +25,7 @@ import { AuthState } from "@state/auth";
 import { ENABLE_USERNAME_CLAIM } from "@const/config";
 import { useFCMNotifications } from "@hooks/useFCMNotifications";
 import { useComposer } from "@hooks/useComposer";
+import { useGetCompressedAccountStatus } from "@hooks/useCompressedAccountStatus";
 
 export const UserLayout: React.FC = () => {
   const { address } = usePrivyWallet();
@@ -71,15 +72,31 @@ export const UserLayout: React.FC = () => {
     provider,
     requestSignIn,
   ]);
+
+  const {
+    data,
+    isLoading: isLoadingCompressedAccount,
+
+    refetch: refetchCompressedAccount,
+    isFetched: isFetchedCompressAccount,
+  } = useGetCompressedAccountStatus();
+
   const onSuccess = useCallback(() => {
     refetch();
-  }, [refetch]);
+    refetchCompressedAccount();
+  }, [refetch, refetchCompressedAccount]);
 
   const onCloseHandler = () => {
     refetchProfile();
   };
 
-  const requestWalletCreation = !0; // isFetched && !hasAccount && !isLoading;
+  const requestWalletCreation =
+    isFetched &&
+    !hasAccount &&
+    !isLoading &&
+    isFetchedCompressAccount &&
+    !isLoadingCompressedAccount &&
+    !data;
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -190,7 +207,7 @@ export const UserLayout: React.FC = () => {
         <Flex data-body flex={"auto"}>
           {isAuthenticated && (
             <>
-              {hasAccount && (
+              {!requestWalletCreation && (
                 <>
                   {isComposerOpen && <Composer />}
                   <Outlet />
