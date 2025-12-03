@@ -2953,6 +2953,49 @@ export type Solmail = {
       ]
     },
     {
+      "name": "linkUnlinkCompressedMailboxToUsername",
+      "discriminator": [
+        40,
+        10,
+        35,
+        183,
+        155,
+        219,
+        243,
+        177
+      ],
+      "accounts": [
+        {
+          "name": "oldUsernameAccount",
+          "docs": [
+            "The username account to unlink the mailbox from (optional)"
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "newUsernameAccount",
+          "docs": [
+            "The username account to link the mailbox to"
+          ],
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Authority that owns both username accounts"
+          ],
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "mailbox",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "markMailAsPayment",
       "discriminator": [
         98,
@@ -6143,6 +6186,11 @@ export type Solmail = {
       "code": 6108,
       "name": "cannotModifyMail",
       "msg": "Cannot modify mail - not authorized"
+    },
+    {
+      "code": 6109,
+      "name": "mailboxNotLinkedToThisUsername",
+      "msg": "Mailbox not linked to this username"
     }
   ],
   "types": [

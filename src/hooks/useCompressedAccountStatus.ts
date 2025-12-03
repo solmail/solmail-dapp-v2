@@ -65,8 +65,6 @@ export const useGetCompressedAccountStatus = () => {
           return !1;
         }
 
-        console.log(accountData.mailbox.toString());
-
         return !0;
       } catch {
         return !1;

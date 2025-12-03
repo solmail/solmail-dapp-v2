@@ -71,7 +71,6 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
           ? mail.is_inbox_favorite
           : mail.is_outbox_favorite;
 
-      console.log(mail.public_key, mail.id);
       const formattedMail: FormattedMailBox = {
         body: mail.body,
         from: new PublicKey(mail.from),
@@ -197,7 +196,7 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     let listener: number;
     if (program) {
       listener = (program as any).addEventListener(
-        "mailV2SendEvent",
+        "CompressedMailSendEvent",
         (event: {
           from: PublicKey;
           to: PublicKey;

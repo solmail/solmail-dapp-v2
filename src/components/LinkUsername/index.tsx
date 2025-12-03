@@ -34,7 +34,7 @@ type LinkableMail = {
   onUpdate: () => void;
   updatePending: boolean;
   updateStatus: (s: boolean) => void;
-  linkedUsername: string | undefined;
+  linkedUsername: string | null;
 };
 export const LinkableMail: React.FC<LinkableMail> = ({
   username,
@@ -48,18 +48,23 @@ export const LinkableMail: React.FC<LinkableMail> = ({
   const { mutateAsync, isPending } = useLinkUsernameToCompressedMailbox();
   const { updatingUsername } = useUsernameUpdateStatus();
 
-  const onLinkHandler = async () => {
+  const onLinkHandler = async (isUnlink: boolean = false) => {
     if (updatingUsername) {
       return;
     }
     await mutateAsync({
       username,
       unlink: linkedUsername,
+      isUnlinkOnly: isUnlink,
     });
 
     if (isFunction(onUpdate)) {
       onUpdate();
     }
+  };
+
+  const onUnlinkHandler = () => {
+    onLinkHandler(!0);
   };
   return (
     <Flex w="100%" direction={"row"}>
@@ -92,8 +97,14 @@ export const LinkableMail: React.FC<LinkableMail> = ({
           label="Update is in progress"
         >
           {!isLinked && (
-            <Button onClick={onLinkHandler} size={"sm"}>
+            <Button onClick={() => onLinkHandler()} size={"sm"}>
               Link {isPending && <Spinner ml={1} size={"sm"} />}
+            </Button>
+          )}
+
+          {isLinked && (
+            <Button variant={"red"} size={"sm"} onClick={onUnlinkHandler}>
+              Unlink {isPending && <Spinner ml={1} size={"sm"} />}
             </Button>
           )}
         </Tooltip>

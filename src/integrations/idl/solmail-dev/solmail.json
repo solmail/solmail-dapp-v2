@@ -2947,6 +2947,49 @@
       ]
     },
     {
+      "name": "link_unlink_compressed_mailbox_to_username",
+      "discriminator": [
+        40,
+        10,
+        35,
+        183,
+        155,
+        219,
+        243,
+        177
+      ],
+      "accounts": [
+        {
+          "name": "old_username_account",
+          "docs": [
+            "The username account to unlink the mailbox from (optional)"
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "new_username_account",
+          "docs": [
+            "The username account to link the mailbox to"
+          ],
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Authority that owns both username accounts"
+          ],
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "mailbox",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "mark_mail_as_payment",
       "discriminator": [
         98,
@@ -6137,6 +6180,11 @@
       "code": 6108,
       "name": "CannotModifyMail",
       "msg": "Cannot modify mail - not authorized"
+    },
+    {
+      "code": 6109,
+      "name": "MailboxNotLinkedToThisUsername",
+      "msg": "Mailbox not linked to this username"
     }
   ],
   "types": [

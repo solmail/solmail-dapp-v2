@@ -49,18 +49,19 @@ export const MenuHeader: React.FC<MenuConfig> = ({ name, header }) => {
             }}
             color={color}
             position={"relative"}
+            h="20px"
           >
             <chakra.span
               whiteSpace={"nowrap"}
-              maxW={"80%"}
+              maxW={"100%"}
               overflow={"hidden"}
               textOverflow={"ellipsis"}
-              position={"relative"}
+              position={"absolute"}
               paddingRight={"14px"}
-              display={"inline-flex"}
+              display={"inline-block"}
               alignItems={"center"}
             >
-              {displayName}
+              {displayName} {displayName}
               <chakra.span position={"absolute"} right={0} my="auto" bottom={0}>
                 <Icon ml={2} fontSize={9} as={BiSolidDownArrow} />
               </chakra.span>

@@ -19,9 +19,11 @@ export const useLinkUsernameToCompressedMailbox = () => {
     mutationFn: async ({
       username,
       unlink,
+      isUnlinkOnly = !1,
     }: {
       username?: string;
-      unlink?: string | undefined;
+      unlink?: string | null;
+      isUnlinkOnly?: boolean;
     }) => {
       if (!program || !username) {
         return;
@@ -30,17 +32,16 @@ export const useLinkUsernameToCompressedMailbox = () => {
       updateStatus(!0);
 
       let _unlinkPda: PublicKey | null = null;
-      if (unlink) {
+      if (unlink && !isUnlinkOnly) {
         const [unlink_pda] = PublicKey.findProgramAddressSync(
           [
             Buffer.from("username"),
-            Buffer.from(username.toLowerCase()),
+            Buffer.from(unlink.toLowerCase()),
             Buffer.from(DOMAINS.DEFAULT.slice(1)),
           ],
           program.programId
         );
         _unlinkPda = unlink_pda;
-        console.log(_unlinkPda, "_unlinkPda");
       }
 
       const [usernameAccountPDA] = PublicKey.findProgramAddressSync(
@@ -51,14 +52,24 @@ export const useLinkUsernameToCompressedMailbox = () => {
         ],
         program.programId
       );
-
-      await program.methods
-        .linkCompressedMailboxToUsername(new PublicKey(address))
-        .accounts({
-          usernameAccount: usernameAccountPDA,
-          authority: new PublicKey(address),
-        })
-        .rpc();
+      if (!isUnlinkOnly) {
+        await program.methods
+          .linkUnlinkCompressedMailboxToUsername(new PublicKey(address))
+          .accounts({
+            newUsernameAccount: usernameAccountPDA,
+            authority: new PublicKey(address),
+            oldUsernameAccount: _unlinkPda,
+          })
+          .rpc();
+      } else {
+        await program.methods
+          .unlinkCompressedMailboxFromUsername()
+          .accounts({
+            usernameAccount: usernameAccountPDA,
+            authority: new PublicKey(address),
+          })
+          .rpc();
+      }
     },
     onError: () => {
       updateStatus(!1);
