@@ -100,7 +100,6 @@ export const Sidebar: React.FC = () => {
         ...(hasChildMenu ? { md: "300px" } : {}),
       }}
       direction={"row"}
-      data-group
       bg="surface.100"
       position={"relative"}
     >
@@ -272,15 +271,51 @@ const SidebarMenu: React.FC<MenuConfig> = ({
       py={"10px"}
       transition={"all ease .5s"}
       onClick={onClick || noop}
+      data-group
       _hover={{
         bg: !_isActive ? "surface.200" : "",
       }}
     >
-      <Icon as={icon} mr={2} color={_isActive ? "solana.middle" : ""} />
-      <Box as="span" color={_isActive ? "solana.middle" : ""}>
-        {name}
-      </Box>
-      <LinkOverlay as={Link} to={link} />
+      <chakra.span
+        position={"relative"}
+        zIndex={1}
+        display={"inline-flex"}
+        alignItems={"center"}
+      >
+        <Icon
+          _groupHover={{
+            color: _isActive ? "" : "solana.middle",
+          }}
+          as={icon}
+          mr={2}
+          color={_isActive ? "solana.end" : ""}
+        />
+        <Box
+          as="span"
+          color={_isActive ? "solana.end" : ""}
+          transition={"all ease .2s"}
+          _groupHover={{
+            color: _isActive ? "" : "solana.middle",
+          }}
+        >
+          {name}
+        </Box>
+      </chakra.span>
+      {!_isActive && (
+        <chakra.span
+          borderRadius={10}
+          position={"absolute"}
+          inset={0}
+          transition={"all ease .2s"}
+          opacity={0}
+          _groupHover={{
+            opacity: 1,
+          }}
+          bgGradient={`linear-gradient(
+316deg, #0e0716, #140328, #040a0c)`}
+        ></chakra.span>
+      )}
+      <LinkOverlay zIndex={3} as={Link} to={link} />
     </LinkBox>
   );
 };
