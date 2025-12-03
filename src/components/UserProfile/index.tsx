@@ -48,6 +48,7 @@ export const UserProfileCard: React.FC = () => {
   const { username, address } = useMyUsername();
   const isLightTheme = useColorModeValue(!0, !1);
   const { toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Flex direction={"row"} alignItems={"center"} gap={3}>
@@ -83,7 +84,7 @@ export const UserProfileCard: React.FC = () => {
         <Flex h="100%" bg="light.500" w="100%" opacity={0.3} />
       </Flex>
       <Flex>
-        <Menu>
+        <Menu isOpen={isOpen}>
           <MenuButton
             display={"inline-flex"}
             as={Button}
@@ -93,11 +94,18 @@ export const UserProfileCard: React.FC = () => {
             fontWeight={"normal"}
             fontSize={14}
             px={0}
+            onMouseEnter={onOpen}
+            onMouseLeave={onClose}
             style={{
               display: "flex",
               flexDirection: "row",
               borderRadius: 20,
             }}
+            transition={"all ease .2s"}
+            _hover={{
+              opacity: 0.5,
+            }}
+            outline={"none !important"}
           >
             <Flex direction={"column"} gap={0}>
               {username && (
@@ -115,7 +123,17 @@ export const UserProfileCard: React.FC = () => {
             </Flex>
           </MenuButton>
 
-          <MenuList bg={"transparent"} border={"none"} p={0}>
+          <MenuList
+            bg={"transparent"}
+            border={"none"}
+            p={0}
+            top={-15}
+            position={"relative"}
+            pt={"10px !important"}
+            boxShadow={"none !important"}
+            onMouseEnter={onOpen}
+            onMouseLeave={onClose}
+          >
             <Profile />
           </MenuList>
         </Menu>

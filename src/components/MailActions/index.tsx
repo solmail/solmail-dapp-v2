@@ -3,17 +3,18 @@ import { MailOptionRenderer } from "@components/MailOptionRenderer";
 import { useComposer } from "@hooks/useComposer";
 import { useMailBody } from "@hooks/useMailBody";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
-import { useLabelIndexUpdate } from "@hooks/useMailIndexUpdate";
+
+import { useUpdateCompressedAccount } from "@hooks/useUpdateCompressedAccount";
 import { MailShareTypes } from "@state/index";
 import { IoIosShareAlt } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { RiReplyFill, RiSpam3Fill } from "react-icons/ri";
-import { MailBoxLabels, MailLabelIndex } from "src/types";
+import { MailBoxLabels } from "src/types";
 
 export const MailActions: React.FC = () => {
   const { id } = useMailBoxContext();
   const { onOpen } = useComposer();
-  const { isPending, mutateAsync } = useLabelIndexUpdate(id ?? "");
+
   const { mail } = useMailBody(id);
   const mailConfig = () => {
     return {
@@ -22,8 +23,15 @@ export const MailActions: React.FC = () => {
     };
   };
 
-  const onStatusUpdate = async (status: MailLabelIndex) => {
-    await mutateAsync({ index: status });
+  const { mutateAsync, isPending } = useUpdateCompressedAccount();
+
+  const onStatusUpdate = async (label: MailBoxLabels) => {
+    await mutateAsync({
+      label,
+      from: mail?.from?.toString() ?? "",
+      to: mail?.to?.toString() ?? "",
+      mail: mail?.uid ?? "",
+    });
   };
   const onReplay = () => {
     onOpen({
@@ -86,7 +94,7 @@ export const MailActions: React.FC = () => {
       >
         <Tooltip placement="auto" label="Delete" isDisabled={isPending}>
           <IconButton
-            onClick={() => onStatusUpdate(MailLabelIndex.trash)}
+            onClick={() => onStatusUpdate(MailBoxLabels.trash)}
             size={"sm"}
             aria-label="Delete"
             icon={<MdDelete />}
@@ -104,7 +112,7 @@ export const MailActions: React.FC = () => {
       >
         <Tooltip placement="auto" label="Mark as spam" isDisabled={isPending}>
           <IconButton
-            onClick={() => onStatusUpdate(MailLabelIndex.spam)}
+            onClick={() => onStatusUpdate(MailBoxLabels.spam)}
             size={"sm"}
             aria-label="Spam"
             icon={<RiSpam3Fill />}

@@ -71,10 +71,11 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
           ? mail.is_inbox_favorite
           : mail.is_outbox_favorite;
 
+      console.log(mail.public_key, mail.id);
       const formattedMail: FormattedMailBox = {
         body: mail.body,
         from: new PublicKey(mail.from),
-        id: mail.public_key ?? mail.id,
+        id: mail.id,
         iv: "",
         salt: "",
         subject: mail.subject,

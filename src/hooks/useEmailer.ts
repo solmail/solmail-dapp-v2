@@ -13,11 +13,22 @@ import { useMailBody } from "./useMailBody";
 import { MailShareTypes } from "@state/index";
 import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import { web3 } from "@coral-xyz/anchor";
-import { useSolanaConnection } from "./useConnection";
-import { PublicKey, Transaction } from "@solana/web3.js";
-import { useSendTransaction } from "@privy-io/react-auth/solana";
+// import { useSolanaConnection } from "./useConnection";
+import { ComputeBudgetProgram, PublicKey } from "@solana/web3.js";
+// import { useSendTransaction } from "@privy-io/react-auth/solana";
 import { useBalance } from "./useBalance";
 import { getErrorMessage } from "@utils/error/getErrorMessage";
+import { useLightRpc } from "./useLightRpc";
+import {
+  confirmTx,
+  deriveAddress,
+  deriveAddressSeed,
+  getDefaultAddressTreeInfo,
+  PackedAccounts,
+  selectStateTreeInfo,
+  SystemAccountMetaConfig,
+} from "@lightprotocol/stateless.js";
+import { useUpdateCompressedAccount } from "./useUpdateCompressedAccount";
 
 type FormPayload = Omit<ComposerFormInputs, "to"> & {
   to: string;
@@ -25,23 +36,26 @@ type FormPayload = Omit<ComposerFormInputs, "to"> & {
 };
 export const useEmailer = () => {
   const { showToast } = useToast();
-  const { address: from, wallet } = usePrivyWallet();
+  const { address: from } = usePrivyWallet();
   const { mutateAsync } = useGenerateEncryptionKey();
   const { mutateAsync: uploadToPinata } = usePinataUploader();
-  const { sendTransaction } = useSendTransaction();
+  // const { sendTransaction } = useSendTransaction();
   const { refetch } = useBalance();
   const { action, ref, updateStatus, collpaseComposer, expandComposer } =
     useComposer();
 
   const { attachmentRef } = useMailBody(ref);
-  const { provider, program, mailAccountAddress } = useGetMailProgramInstance();
-  const connection = useSolanaConnection();
+  const { provider, program } = useGetMailProgramInstance();
+  // const connection = useSolanaConnection();
   const { displayName } = useGetLinkedUsernameById(from);
 
   const queryClient = useQueryClient();
 
   const IS_FORWARDING = action === MailShareTypes.forward;
 
+  const lightRpc = useLightRpc();
+
+  const { mutateAsync: updateMailStatus } = useUpdateCompressedAccount();
   return useMutation({
     mutationKey: [QueryKeys.MUATATION_SEND_EMAIL],
     mutationFn: async (values: FormPayload) => {
@@ -95,7 +109,7 @@ export const useEmailer = () => {
       }
 
       const body = `${values.body}`;
-      const json: Record<string, any> = {
+      const json: Record<string, string | Array<unknown>> = {
         body,
         origin: displayName ?? "",
         recipient:
@@ -150,64 +164,152 @@ export const useEmailer = () => {
 
       updateStatus("Sending mail");
       const mailAccount = web3.Keypair.generate();
-      const userPublicKey = provider.publicKey;
 
-      const createMailInstruction = await program.methods
-        .createmailV3(
-          encryptData(values.subject, cData.iv, key),
-          userPublicKey,
+      /** COMPRESSION STARTS */
+
+      const stateTreeInfos = await lightRpc.getStateTreeInfos();
+      const outputStateTreeInfo = selectStateTreeInfo(stateTreeInfos);
+      const addressTreeInfo = getDefaultAddressTreeInfo();
+
+      const addressSeed = deriveAddressSeed(
+        [
+          Buffer.from("compressed-mail"),
+          new PublicKey(from).toBuffer(),
+          new PublicKey(to).toBuffer(),
+          Buffer.from(mailAccount.publicKey?.toString()),
+        ],
+        program.programId
+      );
+
+      const mailAddress = deriveAddress(addressSeed, addressTreeInfo.tree);
+
+      const proofRpcResult = await lightRpc.getValidityProofV0(
+        [],
+        [
+          {
+            address: Array.from(mailAddress.toBytes()),
+            tree: addressTreeInfo.tree,
+            queue: addressTreeInfo.queue,
+          },
+        ]
+      );
+
+      const systemAccountConfig = SystemAccountMetaConfig.new(
+        program.programId
+      );
+      const remainingAccounts =
+        PackedAccounts.newWithSystemAccounts(systemAccountConfig);
+
+      const addressMerkleTreePubkeyIndex = remainingAccounts.insertOrGet(
+        addressTreeInfo.tree
+      );
+      const addressQueuePubkeyIndex = remainingAccounts.insertOrGet(
+        addressTreeInfo.queue
+      );
+
+      const packedAddressTreeInfo = {
+        rootIndex: proofRpcResult.rootIndices[0],
+        addressMerkleTreePubkeyIndex,
+        addressQueuePubkeyIndex,
+      };
+
+      const outputMerkleTreeIndex = remainingAccounts.insertOrGet(
+        outputStateTreeInfo.tree
+      );
+
+      const computeBudgetIx = ComputeBudgetProgram.setComputeUnitLimit({
+        units: 1_400_000,
+      });
+
+      const tx = await program.methods
+        .compressedSendMail(
+          mailAccount.publicKey.toString(),
+          ref || "0",
           new PublicKey(to),
-          "salt!",
+          new PublicKey(from),
+          encryptData(values.subject, cData.iv, key),
+          "",
           cData.iv,
+          "salt!",
           StorageVersion.pinata,
-          ref || "0"
+          { 0: proofRpcResult.compressedProof },
+          packedAddressTreeInfo,
+          outputMerkleTreeIndex
         )
         .accounts({
-          mail: mailAccount.publicKey,
-          authority: userPublicKey,
-          mailAccountV2: mailAccountAddress,
+          signer: from,
         })
-        .instruction();
+        .preInstructions([computeBudgetIx])
+        .remainingAccounts(remainingAccounts.toAccountMetas().remainingAccounts)
 
-      const updateEmailInstruction = await program.methods
-        .updatemailV3(id as string)
-        .accounts({
-          mail: mailAccount.publicKey,
-          authority: userPublicKey,
-        })
-        .instruction();
+        .rpc();
 
-      const transaction = new Transaction().add(
-        createMailInstruction,
-        updateEmailInstruction
-      );
+      await confirmTx(lightRpc, tx);
 
-      if (values.solanaPay?.amount && values.solanaPay.tokenaddress) {
-        const paymentsStatusTransaction = await program.methods
-          .markMailV3AsPayment()
-          .accounts({
-            mail: mailAccount.publicKey,
-            authority: userPublicKey,
-          })
-          .instruction();
-
-        transaction.add(paymentsStatusTransaction);
-      }
-
-      const latestBlockhash = await connection.getLatestBlockhash("confirmed");
-      transaction.recentBlockhash = latestBlockhash.blockhash;
-      transaction.feePayer = new PublicKey(
-        wallet?.address?.toString() as string
-      );
-      transaction.partialSign(mailAccount);
-
-      await sendTransaction({
-        transaction: transaction,
-        connection: connection,
-        uiOptions: {
-          showWalletUIs: !1,
-        },
+      await updateMailStatus({
+        from,
+        to,
+        mail: mailAccount.publicKey.toString(),
+        body: id ?? "",
       });
+      // COMPRESSION END
+
+      // const createMailInstruction = await program.methods
+      //   .createmailV3(
+      //     encryptData(values.subject, cData.iv, key),
+      //     userPublicKey,
+      //     new PublicKey(to),
+      //     "salt!",
+      //     cData.iv,
+      //     StorageVersion.pinata,
+      //     ref || "0"
+      //   )
+      //   .accounts({
+      //     mail: mailAccount.publicKey,
+      //     authority: userPublicKey,
+      //     mailAccountV2: mailAccountAddress,
+      //   })
+      //   .instruction();
+
+      // const updateEmailInstruction = await program.methods
+      //   .updatemailV3(id as string)
+      //   .accounts({
+      //     mail: mailAccount.publicKey,
+      //     authority: userPublicKey,
+      //   })
+      //   .instruction();
+
+      // const transaction = new Transaction().add(
+      //   createMailInstruction,
+      //   updateEmailInstruction
+      // );
+
+      // if (values.solanaPay?.amount && values.solanaPay.tokenaddress) {
+      //   const paymentsStatusTransaction = await program.methods
+      //     .markMailV3AsPayment()
+      //     .accounts({
+      //       mail: mailAccount.publicKey,
+      //       authority: userPublicKey,
+      //     })
+      //     .instruction();
+
+      //   transaction.add(paymentsStatusTransaction);
+      // }
+
+      // const latestBlockhash = await connection.getLatestBlockhash("confirmed");
+      // transaction.recentBlockhash = latestBlockhash.blockhash;
+      // transaction.feePayer = new PublicKey(
+      //   wallet?.address?.toString() as string
+      // );
+      // transaction.partialSign(mailAccount);
+
+      // await sendTransaction({
+      //   transaction: transaction,
+      //   connection: connection,
+      //   uiOptions: {
+      //     showWalletUIs: !1,
+      //   },
+      // });
     },
     onSuccess: () => {
       showToast("Email sent", {
@@ -216,6 +318,7 @@ export const useEmailer = () => {
       refetch();
     },
     onError: (e) => {
+      console.log(e);
       showToast(getErrorMessage(e, "Failed to send mail"), {
         type: "error",
       });

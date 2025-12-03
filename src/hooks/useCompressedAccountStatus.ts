@@ -9,14 +9,16 @@ import {
   deriveAddressSeed,
   getDefaultAddressTreeInfo,
 } from "@lightprotocol/stateless.js";
+import { useEffect } from "react";
+import { useDisclosure } from "@chakra-ui/react";
 
 export const useGetCompressedAccountStatus = () => {
   const { address } = usePrivyWallet();
   const lightRpc = useLightRpc();
   const { program } = useGetMailProgramInstance();
+  const { isOpen, onOpen } = useDisclosure();
   const query = useQuery<Promise<boolean>>({
     queryKey: [QueryKeys.COMPRESSED_ACCOUNT, address],
-    staleTime: 60 * 1000,
     queryFn: async () => {
       if (!address || !program) {
         return !1;
@@ -67,9 +69,15 @@ export const useGetCompressedAccountStatus = () => {
         return !1;
       }
     },
+    enabled: !isOpen,
   });
 
-  console.log(query.data);
+  useEffect(() => {
+    if (!isOpen && query.data) {
+      onOpen();
+    }
+  }, [isOpen, onOpen, query.data]);
+
   return {
     ...query,
   };
