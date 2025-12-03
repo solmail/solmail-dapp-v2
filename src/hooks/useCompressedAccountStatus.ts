@@ -39,6 +39,7 @@ export const useGetCompressedAccountStatus = () => {
 
         const _address = new PublicKey(address ?? "");
 
+        console.log(registeredAddress.toString());
         const compressedAccount = await lightRpc.getCompressedAccount(
           Array.from(registeredAddress.toBytes())
         );
@@ -63,6 +64,8 @@ export const useGetCompressedAccountStatus = () => {
         if (accountData.mailbox.toString() !== _address.toString()) {
           return !1;
         }
+
+        console.log(accountData.mailbox.toString());
 
         return !0;
       } catch {

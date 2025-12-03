@@ -76,7 +76,6 @@ export const UserLayout: React.FC = () => {
   const {
     data,
     isLoading: isLoadingCompressedAccount,
-
     refetch: refetchCompressedAccount,
     isFetched: isFetchedCompressAccount,
   } = useGetCompressedAccountStatus();

@@ -17,17 +17,14 @@ import {
 } from "@chakra-ui/react";
 import { CustomScrollbarWrapper } from "@components/ScrollWrapper";
 import { USERNAME_SWITCH_INFO } from "@const/info";
+import { useLinkUsernameToCompressedMailbox } from "@hooks/useLinkUsernameToCompressedMailbox";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
-import {
-  useLinkUsername,
-  useUnlinkUsername,
-  useUsernameUpdateStatus,
-} from "@hooks/useUsername";
+import { useUsernameUpdateStatus } from "@hooks/useUsername";
 import { useGetMyUsernames } from "@hooks/useUsernames";
 import { PublicKey } from "@solana/web3.js";
 
 import isFunction from "lodash/isFunction";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type LinkableMail = {
   username: string;
@@ -37,38 +34,32 @@ type LinkableMail = {
   onUpdate: () => void;
   updatePending: boolean;
   updateStatus: (s: boolean) => void;
+  linkedUsername: string | undefined;
 };
 export const LinkableMail: React.FC<LinkableMail> = ({
   username,
   domain,
   mailbox,
-  account,
   onUpdate,
+  linkedUsername,
 }) => {
   const { address } = usePrivyWallet();
   const isLinked = address && address === mailbox?.toString();
-  const { mutateAsync, isPending } = useUnlinkUsername();
-  const { mutateAsync: linkUsername, isPending: isLinking } = useLinkUsername();
+  const { mutateAsync, isPending } = useLinkUsernameToCompressedMailbox();
   const { updatingUsername } = useUsernameUpdateStatus();
-  const onUnlinkHandler = async () => {
-    if (updatingUsername) {
-      return;
-    }
-    await mutateAsync({
-      usernameAccount: account,
-    });
-    if (isFunction(onUpdate)) {
-      onUpdate();
-    }
-  };
 
   const onLinkHandler = async () => {
     if (updatingUsername) {
       return;
     }
-    await linkUsername({
-      usernameAccount: account,
+    await mutateAsync({
+      username,
+      unlink: linkedUsername,
     });
+
+    if (isFunction(onUpdate)) {
+      onUpdate();
+    }
   };
   return (
     <Flex w="100%" direction={"row"}>
@@ -100,15 +91,9 @@ export const LinkableMail: React.FC<LinkableMail> = ({
           hasArrow
           label="Update is in progress"
         >
-          {isLinked && (
-            <Button variant={"red"} size={"sm"} onClick={onUnlinkHandler}>
-              Unlink {isPending && <Spinner ml={1} size={"sm"} />}
-            </Button>
-          )}
-
           {!isLinked && (
             <Button onClick={onLinkHandler} size={"sm"}>
-              Link {isLinking && <Spinner ml={1} size={"sm"} />}
+              Link {isPending && <Spinner ml={1} size={"sm"} />}
             </Button>
           )}
         </Tooltip>
@@ -156,6 +141,15 @@ export const UsernameLinkBox: React.FC<{ onUpdate?: () => void }> = ({
       onUpdate();
     }
   };
+
+  const activeUsername = useMemo(() => {
+    return usernames
+      .filter(({ account }) => {
+        return account?.mailbox?.toString() === address?.toString();
+      })
+      .at(0);
+  }, [address, usernames]);
+
   return (
     <Flex direction={"column"} w="100%">
       {usernames && (
@@ -173,6 +167,7 @@ export const UsernameLinkBox: React.FC<{ onUpdate?: () => void }> = ({
                     onUpdate={onUpdateHandler}
                     updateStatus={setIsUpdating}
                     updatePending={isUpdating}
+                    linkedUsername={activeUsername?.account?.username ?? null}
                   />
                 );
               })}

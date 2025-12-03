@@ -13,9 +13,7 @@ import { useMailBody } from "./useMailBody";
 import { MailShareTypes } from "@state/index";
 import { useGetMailProgramInstance } from "./useMailProgramInstance";
 import { web3 } from "@coral-xyz/anchor";
-// import { useSolanaConnection } from "./useConnection";
 import { ComputeBudgetProgram, PublicKey } from "@solana/web3.js";
-// import { useSendTransaction } from "@privy-io/react-auth/solana";
 import { useBalance } from "./useBalance";
 import { getErrorMessage } from "@utils/error/getErrorMessage";
 import { useLightRpc } from "./useLightRpc";
@@ -29,6 +27,7 @@ import {
   SystemAccountMetaConfig,
 } from "@lightprotocol/stateless.js";
 import { useUpdateCompressedAccount } from "./useUpdateCompressedAccount";
+import { useMarkAsPayment } from "./useMarkAsPayment";
 
 type FormPayload = Omit<ComposerFormInputs, "to"> & {
   to: string;
@@ -39,7 +38,7 @@ export const useEmailer = () => {
   const { address: from } = usePrivyWallet();
   const { mutateAsync } = useGenerateEncryptionKey();
   const { mutateAsync: uploadToPinata } = usePinataUploader();
-  // const { sendTransaction } = useSendTransaction();
+
   const { refetch } = useBalance();
   const { action, ref, updateStatus, collpaseComposer, expandComposer } =
     useComposer();
@@ -56,6 +55,7 @@ export const useEmailer = () => {
   const lightRpc = useLightRpc();
 
   const { mutateAsync: updateMailStatus } = useUpdateCompressedAccount();
+  const { mutateAsync: updateAsPayment } = useMarkAsPayment();
   return useMutation({
     mutationKey: [QueryKeys.MUATATION_SEND_EMAIL],
     mutationFn: async (values: FormPayload) => {
@@ -252,64 +252,14 @@ export const useEmailer = () => {
         mail: mailAccount.publicKey.toString(),
         body: id ?? "",
       });
-      // COMPRESSION END
 
-      // const createMailInstruction = await program.methods
-      //   .createmailV3(
-      //     encryptData(values.subject, cData.iv, key),
-      //     userPublicKey,
-      //     new PublicKey(to),
-      //     "salt!",
-      //     cData.iv,
-      //     StorageVersion.pinata,
-      //     ref || "0"
-      //   )
-      //   .accounts({
-      //     mail: mailAccount.publicKey,
-      //     authority: userPublicKey,
-      //     mailAccountV2: mailAccountAddress,
-      //   })
-      //   .instruction();
-
-      // const updateEmailInstruction = await program.methods
-      //   .updatemailV3(id as string)
-      //   .accounts({
-      //     mail: mailAccount.publicKey,
-      //     authority: userPublicKey,
-      //   })
-      //   .instruction();
-
-      // const transaction = new Transaction().add(
-      //   createMailInstruction,
-      //   updateEmailInstruction
-      // );
-
-      // if (values.solanaPay?.amount && values.solanaPay.tokenaddress) {
-      //   const paymentsStatusTransaction = await program.methods
-      //     .markMailV3AsPayment()
-      //     .accounts({
-      //       mail: mailAccount.publicKey,
-      //       authority: userPublicKey,
-      //     })
-      //     .instruction();
-
-      //   transaction.add(paymentsStatusTransaction);
-      // }
-
-      // const latestBlockhash = await connection.getLatestBlockhash("confirmed");
-      // transaction.recentBlockhash = latestBlockhash.blockhash;
-      // transaction.feePayer = new PublicKey(
-      //   wallet?.address?.toString() as string
-      // );
-      // transaction.partialSign(mailAccount);
-
-      // await sendTransaction({
-      //   transaction: transaction,
-      //   connection: connection,
-      //   uiOptions: {
-      //     showWalletUIs: !1,
-      //   },
-      // });
+      if (values.solanaPay?.amount && values.solanaPay.tokenaddress) {
+        await updateAsPayment({
+          from,
+          to,
+          mail: mailAccount.publicKey.toString(),
+        });
+      }
     },
     onSuccess: () => {
       showToast("Email sent", {
