@@ -114,6 +114,8 @@ export enum StorageVersion {
   "pinataMobile" = "2.0.0",
   "internal" = "3.0.0",
   "arweave" = "0.0.4",
+  "compressedWeb" = "1.0.1",
+  "compressedMobile" = "2.0.1",
 }
 
 export type FormClaimUsername = {

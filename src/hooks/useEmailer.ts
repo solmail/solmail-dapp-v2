@@ -231,7 +231,7 @@ export const useEmailer = () => {
           "",
           cData.iv,
           "salt!",
-          StorageVersion.pinata,
+          StorageVersion.compressedWeb,
           { 0: proofRpcResult.compressedProof },
           packedAddressTreeInfo,
           outputMerkleTreeIndex

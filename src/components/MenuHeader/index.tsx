@@ -61,7 +61,7 @@ export const MenuHeader: React.FC<MenuConfig> = ({ name, header }) => {
               display={"inline-block"}
               alignItems={"center"}
             >
-              {displayName} {displayName}
+              {displayName}
               <chakra.span position={"absolute"} right={0} my="auto" bottom={0}>
                 <Icon ml={2} fontSize={9} as={BiSolidDownArrow} />
               </chakra.span>

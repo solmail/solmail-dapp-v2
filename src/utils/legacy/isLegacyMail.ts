@@ -2,7 +2,12 @@ import { StorageVersion } from "src/types";
 
 export const isLegacyMail = (version: StorageVersion) => {
   return (
-    [StorageVersion.pinata, StorageVersion.pinataMobile].indexOf(version) === -1
+    [
+      StorageVersion.pinata,
+      StorageVersion.pinataMobile,
+      StorageVersion.compressedMobile,
+      StorageVersion.compressedWeb,
+    ].indexOf(version) === -1
   );
 };
 
@@ -11,5 +16,9 @@ export const isInternalMail = (version: StorageVersion) => {
 };
 
 export const isMailOriginMobile = (version: StorageVersion) => {
-  return version === StorageVersion.pinataMobile;
+  return (
+    [StorageVersion.pinataMobile, StorageVersion.compressedMobile].indexOf(
+      version
+    ) > -1
+  );
 };
