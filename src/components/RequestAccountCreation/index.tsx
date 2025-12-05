@@ -1,7 +1,6 @@
 import {
   Button,
   Flex,
-  Icon,
   IconButton,
   Modal,
   ModalBody,
@@ -21,7 +20,7 @@ import { useSessionHandler } from "@hooks/useSessionHandler";
 import { useCreateMailBoxApi } from "@hooks/useWalletSigner";
 import { isFunction } from "lodash";
 import { useMemo } from "react";
-import { FaLightbulb } from "react-icons/fa6";
+
 import { GrRefresh } from "react-icons/gr";
 import { RiShutDownLine } from "react-icons/ri";
 
@@ -108,13 +107,9 @@ export const RequestAccountCreation: React.FC<
                 }
               />
             </Flex>
-            <Flex pt={5} alignItems={"center"} justifyContent={"center"}>
+            <Flex pb={5} pt={5} alignItems={"center"} justifyContent={"center"}>
               <Tooltip label={tooltip} isDisabled={!disabled}>
-                <Button
-                  colorScheme="green"
-                  disabled={disabled}
-                  onClick={onClickHandler}
-                >
+                <Button colorScheme="green" onClick={onClickHandler}>
                   {isPending || checkingMailAccountStatus || isSigningOut ? (
                     <Spinner size={"sm"} />
                   ) : (
@@ -122,26 +117,6 @@ export const RequestAccountCreation: React.FC<
                   )}
                 </Button>
               </Tooltip>
-            </Flex>
-
-            <Flex direction={"column"} alignItems={"center"} my={4} mt={6}>
-              <Flex fontWeight={"bold"}>
-                Deposit SOL to Activate Your Mailbox
-              </Flex>
-              <Flex mt={1} opacity={0.6} textAlign={"center"} fontSize={13}>
-                Your SolMail wallet is now ready — powered by Privy!. To create
-                your mailbox and start sending messages, please deposit a small
-                amount of SOL
-              </Flex>
-              <Flex
-                mt={3}
-                fontSize={13}
-                color={"yellow.500"}
-                alignItems={"center"}
-              >
-                <Icon as={FaLightbulb} fontSize={10} mr={1} />
-                Minimum required: 0.02 Sol
-              </Flex>
             </Flex>
           </Flex>
         </ModalBody>
