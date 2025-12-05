@@ -74,7 +74,7 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
       const formattedMail: FormattedMailBox = {
         body: mail.body,
         from: new PublicKey(mail.from),
-        id: mail.id,
+        id: mail.public_key ?? mail.id,
         iv: "",
         salt: "",
         subject: mail.subject,
