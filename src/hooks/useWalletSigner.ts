@@ -23,7 +23,7 @@ type Response = {
   type: string;
   success: boolean;
 };
-export const useWalletSignerApi = () => {
+export const useCreateMailBoxApi = () => {
   const { fetch } = useHttp();
   const { address } = usePrivyWallet();
   const { signTransaction } = useSignTransaction();
