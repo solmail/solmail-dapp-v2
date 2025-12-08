@@ -631,6 +631,15 @@ export type Solmail = {
           "name": "signer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "feePayer",
+          "docs": [
+            "The master wallet that pays for all rent costs",
+            "This must be the fee payer in the transaction"
+          ],
+          "writable": true,
+          "signer": true
         }
       ],
       "args": [
@@ -907,6 +916,71 @@ export type Solmail = {
           "name": "newMailbox",
           "type": {
             "option": "pubkey"
+          }
+        },
+        {
+          "name": "address",
+          "type": "pubkey"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "validityProof"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "compressedUpdatePaymentMail",
+      "docs": [
+        "Update payment mail"
+      ],
+      "discriminator": [
+        246,
+        179,
+        121,
+        218,
+        159,
+        183,
+        101,
+        78
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "currentMailData",
+          "type": {
+            "defined": {
+              "name": "compressedMailData"
+            }
+          }
+        },
+        {
+          "name": "accountMeta",
+          "type": {
+            "defined": {
+              "name": "compressedAccountMeta"
+            }
+          }
+        },
+        {
+          "name": "newBody",
+          "type": "string"
+        },
+        {
+          "name": "newLabel",
+          "type": {
+            "defined": {
+              "name": "mailLabel"
+            }
           }
         },
         {
@@ -2572,14 +2646,11 @@ export type Solmail = {
           }
         },
         {
-          "name": "treasury",
-          "docs": [
-            "Treasury account to receive the 1 SOL payment"
-          ],
-          "writable": true
+          "name": "authority",
+          "signer": true
         },
         {
-          "name": "authority",
+          "name": "feePayer",
           "writable": true,
           "signer": true
         },
@@ -5329,19 +5400,6 @@ export type Solmail = {
       ]
     },
     {
-      "name": "migrationTreasuryEvent",
-      "discriminator": [
-        150,
-        79,
-        79,
-        75,
-        237,
-        252,
-        50,
-        37
-      ]
-    },
-    {
       "name": "paymentGatingStatusChangeEvent",
       "discriminator": [
         221,
@@ -7795,38 +7853,6 @@ export type Solmail = {
           {
             "name": "totalBidAmount",
             "type": "u64"
-          }
-        ]
-      }
-    },
-    {
-      "name": "migrationTreasuryEvent",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "user",
-            "type": "pubkey"
-          },
-          {
-            "name": "oldAccount",
-            "type": "pubkey"
-          },
-          {
-            "name": "compressedAccount",
-            "type": "pubkey"
-          },
-          {
-            "name": "lamportsTransferred",
-            "type": "u64"
-          },
-          {
-            "name": "treasury",
-            "type": "pubkey"
-          },
-          {
-            "name": "migratedAt",
-            "type": "u32"
           }
         ]
       }

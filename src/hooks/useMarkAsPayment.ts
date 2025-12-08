@@ -18,6 +18,7 @@ type Payload = {
   from: string;
   to: string;
   mail: string;
+  body: string;
 };
 export const useMarkAsPayment = () => {
   const { program } = useGetMailProgramInstance();
@@ -25,7 +26,7 @@ export const useMarkAsPayment = () => {
   const lightRpc = useLightRpc();
   return useMutation({
     mutationKey: [QueryKeys.MUTATION_MARK_AS_PAYMENT],
-    mutationFn: async ({ from, to, mail }: Payload) => {
+    mutationFn: async ({ from, to, mail, body }: Payload) => {
       if (!program || !_address) {
         return;
       }
@@ -101,9 +102,11 @@ export const useMarkAsPayment = () => {
       });
 
       const tx = await program.methods
-        .compressedMarkMailAsPayment(
+        .compressedUpdatePaymentMail(
           currentMailData,
           compressedAccountMeta,
+          body ?? "",
+          { payment: {} },
           address,
           { 0: proofRpcResult.compressedProof }
         )

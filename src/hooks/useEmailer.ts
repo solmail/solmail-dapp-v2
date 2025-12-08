@@ -246,18 +246,19 @@ export const useEmailer = () => {
 
       await confirmTx(lightRpc, tx);
 
-      await updateMailStatus({
-        from,
-        to,
-        mail: mailAccount.publicKey.toString(),
-        body: id ?? "",
-      });
-
       if (values.solanaPay?.amount && values.solanaPay.tokenaddress) {
         await updateAsPayment({
           from,
           to,
           mail: mailAccount.publicKey.toString(),
+          body: id ?? "",
+        });
+      } else {
+        await updateMailStatus({
+          from,
+          to,
+          mail: mailAccount.publicKey.toString(),
+          body: id ?? "",
         });
       }
     },

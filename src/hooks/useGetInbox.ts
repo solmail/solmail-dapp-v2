@@ -196,13 +196,14 @@ export const useGetInbox = (type: MailBoxLabels = MailBoxLabels.inbox) => {
     let listener: number;
     if (program) {
       listener = (program as any).addEventListener(
-        "CompressedMailSendEvent",
+        "compressedMailUpdateEvent",
         (event: {
           from: PublicKey;
           to: PublicKey;
           id: string;
           mailbox: PublicKey;
         }) => {
+          console.log(`Event:${event}`);
           if (
             address &&
             event.to &&

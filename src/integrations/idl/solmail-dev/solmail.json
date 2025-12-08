@@ -625,6 +625,15 @@
           "name": "signer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "fee_payer",
+          "docs": [
+            "The master wallet that pays for all rent costs",
+            "This must be the fee payer in the transaction"
+          ],
+          "writable": true,
+          "signer": true
         }
       ],
       "args": [
@@ -901,6 +910,71 @@
           "name": "new_mailbox",
           "type": {
             "option": "pubkey"
+          }
+        },
+        {
+          "name": "address",
+          "type": "pubkey"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "ValidityProof"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "compressed_update_payment_mail",
+      "docs": [
+        "Update payment mail"
+      ],
+      "discriminator": [
+        246,
+        179,
+        121,
+        218,
+        159,
+        183,
+        101,
+        78
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "current_mail_data",
+          "type": {
+            "defined": {
+              "name": "CompressedMailData"
+            }
+          }
+        },
+        {
+          "name": "account_meta",
+          "type": {
+            "defined": {
+              "name": "CompressedAccountMeta"
+            }
+          }
+        },
+        {
+          "name": "new_body",
+          "type": "string"
+        },
+        {
+          "name": "new_label",
+          "type": {
+            "defined": {
+              "name": "MailLabel"
+            }
           }
         },
         {
@@ -2566,14 +2640,11 @@
           }
         },
         {
-          "name": "treasury",
-          "docs": [
-            "Treasury account to receive the 1 SOL payment"
-          ],
-          "writable": true
+          "name": "authority",
+          "signer": true
         },
         {
-          "name": "authority",
+          "name": "fee_payer",
           "writable": true,
           "signer": true
         },
@@ -5323,19 +5394,6 @@
       ]
     },
     {
-      "name": "MigrationTreasuryEvent",
-      "discriminator": [
-        150,
-        79,
-        79,
-        75,
-        237,
-        252,
-        50,
-        37
-      ]
-    },
-    {
       "name": "PaymentGatingStatusChangeEvent",
       "discriminator": [
         221,
@@ -7789,38 +7847,6 @@
           {
             "name": "total_bid_amount",
             "type": "u64"
-          }
-        ]
-      }
-    },
-    {
-      "name": "MigrationTreasuryEvent",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "user",
-            "type": "pubkey"
-          },
-          {
-            "name": "old_account",
-            "type": "pubkey"
-          },
-          {
-            "name": "compressed_account",
-            "type": "pubkey"
-          },
-          {
-            "name": "lamports_transferred",
-            "type": "u64"
-          },
-          {
-            "name": "treasury",
-            "type": "pubkey"
-          },
-          {
-            "name": "migrated_at",
-            "type": "u32"
           }
         ]
       }
