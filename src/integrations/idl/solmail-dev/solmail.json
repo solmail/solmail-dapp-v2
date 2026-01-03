@@ -556,6 +556,70 @@
       "args": []
     },
     {
+      "name": "compressed_airdrop_create",
+      "docs": [
+        "Create a new compressed airdrop"
+      ],
+      "discriminator": [
+        136,
+        77,
+        183,
+        37,
+        128,
+        240,
+        5,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "fee_payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint",
+          "docs": [
+            "The SPL token mint that will be airdropped"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "total_amount",
+          "type": "u64"
+        },
+        {
+          "name": "amount_per_user",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "ValidityProof"
+            }
+          }
+        },
+        {
+          "name": "address_tree_info",
+          "type": {
+            "defined": {
+              "name": "PackedAddressTreeInfo"
+            }
+          }
+        },
+        {
+          "name": "output_merkle_tree_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "compressed_mark_mail_as_payment",
       "docs": [
         "Mark a mail as payment"
@@ -5121,6 +5185,19 @@
       ]
     },
     {
+      "name": "CompressedAirdropCreatedEvent",
+      "discriminator": [
+        82,
+        200,
+        31,
+        101,
+        66,
+        185,
+        67,
+        115
+      ]
+    },
+    {
       "name": "CompressedMailAccountRegisterEvent",
       "discriminator": [
         223,
@@ -6243,6 +6320,51 @@
       "code": 6109,
       "name": "MailboxNotLinkedToThisUsername",
       "msg": "Mailbox not linked to this username"
+    },
+    {
+      "code": 6110,
+      "name": "InvalidAirdropAmount",
+      "msg": "Invalid airdrop amount: total_amount and amount_per_user must be > 0, and amount_per_user <= total_amount"
+    },
+    {
+      "code": 6111,
+      "name": "InvalidMaxRecipients",
+      "msg": "Invalid max recipients: must be > 0 and not exceed total_amount / amount_per_user"
+    },
+    {
+      "code": 6112,
+      "name": "InvalidExpiration",
+      "msg": "Invalid expiration: must be in the future"
+    },
+    {
+      "code": 6113,
+      "name": "EmptyIdentifier",
+      "msg": "Identifier cannot be empty"
+    },
+    {
+      "code": 6114,
+      "name": "IdentifierTooLong",
+      "msg": "Identifier too long: max 64 characters"
+    },
+    {
+      "code": 6115,
+      "name": "UnauthorizedAirdropAccess",
+      "msg": "Unauthorized: only the airdrop authority can perform this action"
+    },
+    {
+      "code": 6116,
+      "name": "AirdropNotActive",
+      "msg": "Airdrop is not active"
+    },
+    {
+      "code": 6117,
+      "name": "AirdropExpired",
+      "msg": "Airdrop has expired"
+    },
+    {
+      "code": 6118,
+      "name": "MaxRecipientsReached",
+      "msg": "Maximum recipients reached"
     }
   ],
   "types": [
@@ -6846,6 +6968,42 @@
               "Output merkle tree index."
             ],
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CompressedAirdropCreatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airdrop_address",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_amount",
+            "type": "u64"
+          },
+          {
+            "name": "amount_per_user",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "u32"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
           }
         ]
       }

@@ -51,8 +51,8 @@ export const SOLMAIL_MENU: MenuConfig[] = [
   },
   {
     icon: BiBullseye,
-    name: "Airdrop",
-    link: "/u/solmail/airdrop/",
+    name: "Airdrops",
+    link: "/u/solmail/airdrops/",
     id: "airdrop",
   },
 ];

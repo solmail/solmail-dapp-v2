@@ -15,6 +15,10 @@ export const AppTheme = extendTheme({
   },
   semanticTokens,
   colors,
+  gradients: {
+    solanaBg: "linear-gradient(316deg, #0e0716, #140328, #040a0c)",
+    solanaBg2: "linear-gradient(316deg, #0f2341, #140328, #0f2341);",
+  },
   styles: {
     global: (props: StyleFunctionProps) => ({
       body: {

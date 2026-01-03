@@ -119,3 +119,17 @@ export const fromRawAmount = (
     new BigNumber(10).pow(decimals ?? 9)
   );
 };
+
+export const formatKMBCompact = (input: string | number) => {
+  const value = parseFloat(input.toString());
+  if (!Number.isFinite(value)) return "0";
+
+  const abs = Math.abs(value);
+  const sign = value < 0 ? "-" : "";
+
+  if (abs >= 1e9) return `${sign}${(abs / 1e9).toFixed(1)}B`.replace(".0", "");
+  if (abs >= 1e6) return `${sign}${(abs / 1e6).toFixed(1)}M`.replace(".0", "");
+  if (abs >= 1e3) return `${sign}${(abs / 1e3).toFixed(1)}K`.replace(".0", "");
+
+  return `${value}`;
+};

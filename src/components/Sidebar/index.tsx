@@ -311,8 +311,7 @@ const SidebarMenu: React.FC<MenuConfig> = ({
           _groupHover={{
             opacity: 1,
           }}
-          bgGradient={`linear-gradient(
-316deg, #0e0716, #140328, #040a0c)`}
+          bgGradient="solanaBg"
         ></chakra.span>
       )}
       <LinkOverlay zIndex={3} as={Link} to={link} />
