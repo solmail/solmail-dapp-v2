@@ -31,7 +31,6 @@ export const TokenSwapInput: React.FC<TokenSwapInputProps> = ({
   id,
   isPrimaryInput = !1,
   showSpinner = !1,
-  isLoading = !1,
 
   ...props
 }) => {

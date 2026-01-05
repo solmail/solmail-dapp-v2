@@ -1,27 +1,68 @@
-import { chakra, Container, Flex } from "@chakra-ui/react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  chakra,
+  Container,
+  Flex,
+  SkeletonText,
+} from "@chakra-ui/react";
+import { ClaimCard } from "@components/ClaimCard";
+import { useGetAirdrop } from "@hooks/useGetAirdrop";
+
+import { usePinataFile } from "@hooks/usePinataFile";
+import { Link, useParams } from "@tanstack/react-router";
 
 export const Airdrop: React.FC = () => {
+  const { id } = useParams({ from: `/u/_layout/solmail/airdrop/d/$id` });
+  const { data: airdrop } = useGetAirdrop(id);
+
+  const { data: message, isLoading } = usePinataFile(airdrop?.message ?? "");
+
   return (
     <Container w="full" py={3}>
-      <Flex w="full" justifyContent={"space-between"}>
+      <Flex w="full" justifyContent={"space-between"} mb={3}>
         <Flex direction={"column"}>
           <Flex>
             <chakra.span fontWeight={"bold"} fontSize={18}>
-              Project name here
+              {airdrop?.name}
             </chakra.span>
           </Flex>
-          <Flex>1 Day ago</Flex>
+          <Flex>
+            <Breadcrumb fontSize={13}>
+              <BreadcrumbItem>
+                <BreadcrumbLink as={Link} to="/u/solmail/airdrops">
+                  Airdrops
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+
+              <BreadcrumbItem isCurrentPage>
+                <BreadcrumbLink>{airdrop?.name ?? ""}</BreadcrumbLink>
+              </BreadcrumbItem>
+            </Breadcrumb>
+          </Flex>
         </Flex>
       </Flex>
 
-      <Flex mt={5}>
-        <iframe
-          width="100%"
-          height="400"
-          src="https://birdeye.so/tv-widget/GMzuntWYJLpNuCizrSR7ZXggiMdDzTNiEmSNHHunpump?chain=solana&viewMode=pair&chartInterval=15&chartType=Candle&chartTimezone=Asia%2FCalcutta&chartLeftToolbar=show&theme=dark"
-          allowFullScreen
-        ></iframe>
+      <Flex
+        border="solid 1px"
+        borderColor={"surface.900"}
+        borderLeft={"none"}
+        borderRight={"none"}
+      >
+        <ClaimCard />
       </Flex>
+      {!isLoading && (
+        <Flex fontSize={13} my={3} opacity={0.5}>
+          {message}
+        </Flex>
+      )}
+
+      {isLoading && (
+        <Flex>
+          <SkeletonText noOfLines={5} w="100%" height={300} isLoaded={!1} />
+        </Flex>
+      )}
     </Container>
   );
 };

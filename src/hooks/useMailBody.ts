@@ -40,7 +40,7 @@ export type Attachment = {
   name: string;
   path: string;
 };
-async function fetchContent(url: string): Promise<string> {
+export async function fetchContent(url: string): Promise<string> {
   try {
     const response = await fetch(url);
     if (!response.ok) {
