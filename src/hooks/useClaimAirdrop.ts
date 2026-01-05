@@ -4,8 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 import {
   ClaimAirdropMutation,
   ClaimAirdropMutationVariables,
-  CreateDecompressTransactionMutation,
-  CreateDecompressTransactionMutationVariables,
+  DecompressMutation,
+  DecompressMutationVariables,
 } from "src/gql/graphql";
 import { QueryKeys } from "src/types";
 import { usePrivyWallet } from "./usePrivyWallet";
@@ -16,15 +16,14 @@ import { useSendTransaction } from "@privy-io/react-auth/solana";
 import { CLAIM_AIRDROP } from "@integrations/graphql/mutation/markClaim";
 
 type MutationPayload = {
-  mint: string;
   airdropAddress: string;
 };
 export const useClaimAirdrop = () => {
   const { address } = usePrivyWallet();
   const { showToast } = useToast();
   const [createDecompressTx] = useMutationAppolo<
-    CreateDecompressTransactionMutation,
-    CreateDecompressTransactionMutationVariables
+    DecompressMutation,
+    DecompressMutationVariables
   >(CREATE_DECOMPRESS_TRANSACTION);
 
   const [claimAirdrop] = useMutationAppolo<
@@ -38,12 +37,11 @@ export const useClaimAirdrop = () => {
 
   return useMutation({
     mutationKey: [QueryKeys.MUTATION_CLAIM_AIRDROP],
-    mutationFn: async ({ mint, airdropAddress }: MutationPayload) => {
+    mutationFn: async ({ airdropAddress }: MutationPayload) => {
       const { data } = await createDecompressTx({
         variables: {
           wallet: address,
-          tokenMint: mint,
-          amount: null,
+          airdropAddress,
         },
       });
 

@@ -1,15 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_DECOMPRESS_TRANSACTION = gql`
-  mutation CreateDecompressTransaction(
-    $wallet: String!
-    $tokenMint: String!
-    $amount: String
-  ) {
+  mutation Decompress($airdropAddress: String!, $wallet: String!) {
     createDecompressInstruction(
+      airdropAddress: $airdropAddress
       wallet: $wallet
-      tokenMint: $tokenMint
-      amount: $amount
     ) {
       success
       transaction

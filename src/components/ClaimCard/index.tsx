@@ -30,7 +30,7 @@ export const ClaimCard: React.FC = () => {
 
   const onClickHandler = async () => {
     if (isPending) return;
-    await mutateAsync({ airdropAddress: id, mint: airdrop?.token_mint ?? "" });
+    await mutateAsync({ airdropAddress: id });
     refetch();
   };
   return (
