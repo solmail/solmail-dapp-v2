@@ -7,7 +7,7 @@ import {
 import { usePrivyWallet } from "./usePrivyWallet";
 import { useMemo } from "react";
 
-const AIRDROPS_LIMIT = 30;
+const AIRDROPS_LIMIT = 16;
 
 type AirdropsQueryOptions = Omit<
   GetUserAirdropsQueryVariables,
@@ -50,9 +50,14 @@ export const useGetUserAirdrops = (
     }
   }, [data]);
 
+  const offset = config.offset ?? 0;
+
   return {
     ..._data,
     loading,
     refetch,
+    AIRDROPS_LIMIT,
+    pages: Math.ceil(_data.count / AIRDROPS_LIMIT),
+    page: offset / AIRDROPS_LIMIT + 1,
   };
 };

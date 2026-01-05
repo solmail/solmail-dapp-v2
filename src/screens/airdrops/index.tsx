@@ -10,6 +10,7 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { AirdropCard } from "@components/AirdropCard";
+import { Pagination } from "@components/Pagination/inddex";
 import { keyframes } from "@emotion/react";
 import { useGetUserAirdrops } from "@hooks/useGetUserAirdrops";
 import { Link } from "@tanstack/react-router";
@@ -59,7 +60,7 @@ const Option: React.FC<OptionProps> = ({
 const OPTIONS = ["All", "Unclaimed", "Claimed"];
 export const Airdrops: React.FC = () => {
   const [value, setValue] = useState<string>(OPTIONS[0]);
-  const [offset] = useState<number>(0);
+  const [offset, set] = useState<number>(0);
   const filter = useMemo(() => {
     if (value.toLocaleLowerCase() === "all") {
       return {
@@ -72,7 +73,16 @@ export const Airdrops: React.FC = () => {
       };
     }
   }, [offset, value]);
-  const { data, loading, refetch } = useGetUserAirdrops(filter);
+  const { data, loading, refetch, pages, page, AIRDROPS_LIMIT } =
+    useGetUserAirdrops(filter);
+
+  const onNextHandler = () => {
+    set((prev) => prev + AIRDROPS_LIMIT);
+  };
+
+  const onPrevHandler = () => {
+    set((prev) => prev - AIRDROPS_LIMIT);
+  };
   return (
     <Container maxW={"full"} py={3}>
       <Box>
@@ -168,6 +178,19 @@ export const Airdrops: React.FC = () => {
                 <Icon as={HiOutlineExternalLink} ml={2} />
               </Button>
             </Flex>
+          </Flex>
+        )}
+
+        {pages > 1 && (
+          <Flex mt={5} w="full">
+            <Pagination
+              pages={pages}
+              page={page}
+              onNext={onNextHandler}
+              onPrev={onPrevHandler}
+              hasNext={page !== pages}
+              hasPrev={page > 1}
+            />
           </Flex>
         )}
       </Box>
