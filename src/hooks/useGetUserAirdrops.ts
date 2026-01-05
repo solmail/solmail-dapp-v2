@@ -22,7 +22,7 @@ export const useGetUserAirdrops = (
   config: AirdropsQueryOptions = { offset: 0 }
 ) => {
   const { address } = usePrivyWallet();
-  const { data, loading } = useQuery<
+  const { data, loading, refetch } = useQuery<
     GetUserAirdropsQuery,
     GetUserAirdropsQueryVariables
   >(GET_USER_AIRDROPS, {
@@ -53,5 +53,6 @@ export const useGetUserAirdrops = (
   return {
     ..._data,
     loading,
+    refetch,
   };
 };

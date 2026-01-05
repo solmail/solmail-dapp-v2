@@ -10,11 +10,17 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { AirdropCard } from "@components/AirdropCard";
+import { keyframes } from "@emotion/react";
 import { useGetUserAirdrops } from "@hooks/useGetUserAirdrops";
 import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { BiBullseye } from "react-icons/bi";
-import { HiOutlineExternalLink } from "react-icons/hi";
+import { HiOutlineExternalLink, HiOutlineRefresh } from "react-icons/hi";
+
+const spin = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
 
 type OptionProps = {
   children: string;
@@ -66,7 +72,7 @@ export const Airdrops: React.FC = () => {
       };
     }
   }, [offset, value]);
-  const { data, loading } = useGetUserAirdrops(filter);
+  const { data, loading, refetch } = useGetUserAirdrops(filter);
   return (
     <Container maxW={"full"} py={3}>
       <Box>
@@ -80,7 +86,7 @@ export const Airdrops: React.FC = () => {
         borderBottom="solid 1px"
         borderBottomColor={"surface.900"}
       >
-        <Flex direction={"row"} gap={3} my={3}>
+        <Flex direction={"row"} gap={3} my={3} alignItems={"center"}>
           {OPTIONS.map((option) => {
             return (
               <Option value={value} onChangeHandler={setValue}>
@@ -88,6 +94,26 @@ export const Airdrops: React.FC = () => {
               </Option>
             );
           })}
+
+          <Flex
+            alignItems={"center"}
+            ml={10}
+            fontSize={13}
+            cursor={"pointer"}
+            transition={"all ease .2s"}
+            _hover={{
+              opacity: 0.5,
+            }}
+            onClick={() => refetch()}
+            color={"solana.end"}
+          >
+            Refresh
+            <Icon
+              animation={loading ? `${spin} 1s linear infinite` : ""}
+              ml={1}
+              as={HiOutlineRefresh}
+            />
+          </Flex>
         </Flex>
       </Box>
 
