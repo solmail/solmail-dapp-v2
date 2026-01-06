@@ -1,4 +1,5 @@
 import {
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -53,8 +54,22 @@ export const Airdrop: React.FC = () => {
         <ClaimCard />
       </Flex>
       {!isLoading && (
-        <Flex fontSize={13} my={3} opacity={0.5}>
-          {message}
+        <Flex my={3} opacity={0.5}>
+          <Box
+            w="full"
+            color={"white"}
+            sx={{
+              ol: {
+                ml: 5,
+              },
+            }}
+          >
+            <Box
+              dangerouslySetInnerHTML={{
+                __html: message ?? "",
+              }}
+            ></Box>
+          </Box>
         </Flex>
       )}
 
