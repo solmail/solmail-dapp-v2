@@ -1,13 +1,13 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { STORAGE_NAME } from "@const/config";
 
+import { getAccessToken } from "@privy-io/react-auth";
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_SOLMAIL_GRAPHQL_ENDPOINT,
 });
 
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem(STORAGE_NAME);
+const authLink = setContext(async (_, { headers }) => {
+  const token = await getAccessToken();
 
   return {
     headers: {
