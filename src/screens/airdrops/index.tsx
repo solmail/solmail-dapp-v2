@@ -73,6 +73,7 @@ export const Airdrops: React.FC = () => {
       };
     }
   }, [offset, value]);
+
   const { data, loading, refetch, pages, page, AIRDROPS_LIMIT } =
     useGetUserAirdrops(filter);
 
@@ -162,21 +163,14 @@ export const Airdrops: React.FC = () => {
             justifyContent={"center"}
             minH={"30vh"}
           >
-            <Flex>
-              <Icon as={BiBullseye} fontSize={30} />
-            </Flex>
-            <Flex my={2}>No aidrops available now</Flex>
-            <Flex my={3}>
-              <Button
-                as={Link}
-                target="_blank"
-                colorScheme="green"
-                bg="green.500"
-                to={`${import.meta.env.VITE_SOLMAIL_MAIL_DOT_FUN}airdrop/dashboard`}
-              >
-                Create airdrop
-                <Icon as={HiOutlineExternalLink} ml={2} />
-              </Button>
+            <Flex my={2} direction={"column"} alignItems={"center"}>
+              <Flex fontSize={18} mb={1}>
+                🔔 More Rewards Coming Soon{" "}
+              </Flex>
+              <Flex fontSize={13} opacity={0.5}>
+                New campaigns, bonuses, and surprise drops are on the way. Keep
+                using the app so you don’t miss out.
+              </Flex>
             </Flex>
           </Flex>
         )}
