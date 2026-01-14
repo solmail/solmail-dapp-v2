@@ -10,10 +10,12 @@ import { useMemo } from "react";
 import BigNumber from "bignumber.js";
 import { useEstimatedFee } from "./useEstimatedFee";
 
-export const useBalance = (
-  tokenMint?: string,
-  requestedAmount: string | number = 0
-) => {
+type Args = {
+  tokenMint?: string;
+  requestedAmount: string | number;
+};
+export const useBalance = (options?: Args) => {
+  const { tokenMint, requestedAmount = 0 } = options || {};
   const { wallet } = usePrivyWallet();
   const connection = useSolanaConnection();
   const { symbol, decimals } = useToken(tokenMint);

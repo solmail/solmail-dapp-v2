@@ -21,7 +21,7 @@ import { getSolScanTxUrl } from "@utils/string/getSolscanUrl";
 import { formatTime } from "@utils/time";
 import { FiExternalLink } from "react-icons/fi";
 
-export const ClaimCard: React.FC = () => {
+export const ClaimCard: React.FC<{ disable: boolean }> = ({ disable }) => {
   const { id } = useParams({ from: `/u/_layout/solmail/airdrop/d/$id` });
   const { data: airdrop } = useGetAirdrop(id);
   const { token } = useTokenMeta(airdrop?.token_mint);
@@ -109,7 +109,7 @@ export const ClaimCard: React.FC = () => {
         }}
       >
         {!data?.has_claimed && (
-          <Button w="full" onClick={onClickHandler}>
+          <Button isDisabled={disable} w="full" onClick={onClickHandler}>
             Claim Now
             {isPending && <Spinner ml={2} />}
           </Button>

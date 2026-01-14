@@ -6,17 +6,16 @@ import {
   Grid,
   GridItem,
   Spinner,
-  Button,
   Icon,
 } from "@chakra-ui/react";
 import { AirdropCard } from "@components/AirdropCard";
 import { Pagination } from "@components/Pagination/inddex";
 import { keyframes } from "@emotion/react";
 import { useGetUserAirdrops } from "@hooks/useGetUserAirdrops";
-import { Link } from "@tanstack/react-router";
+
 import { useMemo, useState } from "react";
-import { BiBullseye } from "react-icons/bi";
-import { HiOutlineExternalLink, HiOutlineRefresh } from "react-icons/hi";
+
+import { HiOutlineRefresh } from "react-icons/hi";
 
 const spin = keyframes`
   from { transform: rotate(0deg); }

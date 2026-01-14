@@ -1,4 +1,7 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Box,
   Breadcrumb,
   BreadcrumbItem,
@@ -9,10 +12,13 @@ import {
   SkeletonText,
 } from "@chakra-ui/react";
 import { ClaimCard } from "@components/ClaimCard";
+
+import { useBalance } from "@hooks/useBalance";
 import { useGetAirdrop } from "@hooks/useGetAirdrop";
 
 import { usePinataFile } from "@hooks/usePinataFile";
 import { PageNotFound } from "@screens/404";
+
 import { Link, useParams } from "@tanstack/react-router";
 
 export const Airdrop: React.FC = () => {
@@ -20,6 +26,9 @@ export const Airdrop: React.FC = () => {
   const { data: airdrop, loading } = useGetAirdrop(id);
 
   const { data: message, isLoading } = usePinataFile(airdrop?.message ?? "");
+  const { hasEnoughBalance } = useBalance({
+    requestedAmount: 0.0035,
+  });
 
   return (
     <Container w="full" py={3}>
@@ -48,14 +57,24 @@ export const Airdrop: React.FC = () => {
             </Flex>
           </Flex>
 
+          <Flex mb={2}>
+            <Alert status="warning" borderRadius={5}>
+              <AlertIcon />
+              <AlertDescription>
+                You need 0.0035 SOL for gas fee to claim this airdrop.
+              </AlertDescription>
+            </Alert>
+          </Flex>
+
           <Flex
             border="solid 1px"
             borderColor={"surface.900"}
             borderLeft={"none"}
             borderRight={"none"}
           >
-            <ClaimCard />
+            <ClaimCard disable={!hasEnoughBalance} />
           </Flex>
+
           {!isLoading && (
             <Flex my={3} opacity={0.5}>
               <Box
