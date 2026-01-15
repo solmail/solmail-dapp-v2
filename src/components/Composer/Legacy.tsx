@@ -128,7 +128,7 @@ export const ComposerLegacy: React.FC = () => {
   ]);
 
   const [id, set] = useState(0);
-  const { hasEnoughBalance } = useBalance(undefined, 0.01021728);
+  const { hasEnoughBalance } = useBalance({ requestedAmount: 0.01021728 });
 
   const { composerCollapsed, composerMinimised, update } = useComposer();
 

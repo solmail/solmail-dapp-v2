@@ -1,8 +1,9 @@
 import { forwardRef, useImperativeHandle } from "react";
-import { Box, Button, Flex, Spinner, VStack } from "@chakra-ui/react";
+import { Box, Flex, Spinner, VStack } from "@chakra-ui/react";
 import { MailCard } from "@components/MailCard";
 import { useGetInbox } from "@hooks/useGetInbox";
 import { useMailBoxContext } from "@hooks/useMailBoxContext";
+import { Pagination } from "@components/Pagination/inddex";
 
 export interface InboxRef {
   refresh: () => void;
@@ -46,27 +47,14 @@ export const Inbox = forwardRef<InboxRef>((_, ref) => {
         )}
 
         {pages > 1 && (
-          <Flex
-            direction={"column"}
-            px={5}
-            alignItems={"center"}
-            pt={3}
-            borderTop={"solid 1px"}
-            borderTopColor={"surface.900"}
-          >
-            <Flex gap={1}>
-              <Button onClick={onPrev} isDisabled={!hasPrev} size={"sm"}>
-                Prev
-              </Button>
-
-              <Button onClick={onNext} isDisabled={!hasNext} size={"sm"}>
-                Next
-              </Button>
-            </Flex>
-            <Flex fontSize={12} mt={1} mb={1} opacity={0.6}>
-              Page {page} of {pages}
-            </Flex>
-          </Flex>
+          <Pagination
+            hasNext={hasNext}
+            hasPrev={hasPrev}
+            onPrev={onPrev}
+            onNext={onNext}
+            page={page}
+            pages={pages}
+          />
         )}
 
         {!isLoading && (!mail || !mail.length) && (

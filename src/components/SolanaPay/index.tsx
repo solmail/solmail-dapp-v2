@@ -46,10 +46,10 @@ export const SolanaPay: React.FC<
   ...props
 }) => {
   const { symbol, address, decimals } = useToken(tokenaddress ?? "");
-  const { formattedBalance, hasEnoughBalance } = useBalance(
-    symbol !== "SOL" ? address : undefined,
-    amount
-  );
+  const { formattedBalance, hasEnoughBalance } = useBalance({
+    tokenMint: symbol !== "SOL" ? address : undefined,
+    requestedAmount: amount,
+  });
   const { id } = useMailBoxContext();
   const [paymentUrl, setUrl] = useState<URL | null>(null);
   const qrRef = useRef<HTMLDivElement>(null);

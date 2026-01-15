@@ -8,17 +8,78 @@
   },
   "instructions": [
     {
-      "name": "broadcast_message",
-      "discriminator": [
-        253,
-        144,
-        203,
-        42,
-        219,
-        122,
-        147,
-        97
+      "name": "add_tld",
+      "discriminator": [85, 96, 82, 211, 199, 179, 225, 135],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tld_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116, 108, 100, 95, 114, 101, 103, 105, 115, 116, 114, 121
+                ]
+              }
+            ]
+          }
+        }
       ],
+      "args": [
+        {
+          "name": "tld_suffix",
+          "type": "string"
+        },
+        {
+          "name": "parent_pubkey",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "batch_add_tlds",
+      "discriminator": [55, 169, 109, 138, 222, 165, 163, 175],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tld_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116, 108, 100, 95, 114, 101, 103, 105, 115, 116, 114, 121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "tld_entries",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "TldBatchEntry"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "broadcast_message",
+      "discriminator": [253, 144, 203, 42, 219, 122, 147, 97],
       "accounts": [
         {
           "name": "sender",
@@ -42,16 +103,7 @@
     },
     {
       "name": "cancel_sol_bid",
-      "discriminator": [
-        95,
-        87,
-        55,
-        4,
-        23,
-        162,
-        228,
-        160
-      ],
+      "discriminator": [95, 87, 55, 4, 23, 162, 228, 160],
       "accounts": [
         {
           "name": "bid_account"
@@ -64,26 +116,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -96,26 +130,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -128,16 +144,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
+                "value": [117, 115, 101, 114, 95, 98, 105, 100]
               },
               {
                 "kind": "account",
@@ -164,19 +171,8 @@
     },
     {
       "name": "claim_sol_refund",
-      "docs": [
-        "Claim refund for non-winning SOL bidders"
-      ],
-      "discriminator": [
-        79,
-        83,
-        6,
-        173,
-        51,
-        174,
-        186,
-        93
-      ],
+      "docs": ["Claim refund for non-winning SOL bidders"],
+      "discriminator": [79, 83, 6, 173, 51, 174, 186, 93],
       "accounts": [
         {
           "name": "bid_account"
@@ -189,26 +185,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -221,26 +199,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -253,16 +213,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
+                "value": [117, 115, 101, 114, 95, 98, 105, 100]
               },
               {
                 "kind": "account",
@@ -292,16 +243,7 @@
       "docs": [
         "Claim username after winning a SOL bid - NO RATE LIMITING as requested"
       ],
-      "discriminator": [
-        136,
-        118,
-        43,
-        141,
-        107,
-        8,
-        33,
-        116
-      ],
+      "discriminator": [136, 118, 43, 141, 107, 8, 33, 116],
       "accounts": [
         {
           "name": "bid_account",
@@ -314,26 +256,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -347,26 +271,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -379,16 +285,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
+                "value": [117, 115, 101, 114, 110, 97, 109, 101]
               },
               {
                 "kind": "account",
@@ -410,16 +307,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
+                "value": [117, 115, 101, 114, 95, 98, 105, 100]
               },
               {
                 "kind": "account",
@@ -445,20 +333,72 @@
       "args": []
     },
     {
+      "name": "compressed_airdrop_create",
+      "docs": ["Create a new compressed airdrop"],
+      "discriminator": [136, 77, 183, 37, 128, 240, 5, 32],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "fee_payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint",
+          "docs": ["The SPL token mint that will be airdropped"]
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "created_at",
+          "type": "u32"
+        },
+        {
+          "name": "total_amount",
+          "type": "u64"
+        },
+        {
+          "name": "amount_per_user",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "ValidityProof"
+            }
+          }
+        },
+        {
+          "name": "address_tree_info",
+          "type": {
+            "defined": {
+              "name": "PackedAddressTreeInfo"
+            }
+          }
+        },
+        {
+          "name": "output_merkle_tree_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "compressed_mark_mail_as_payment",
-      "docs": [
-        "Mark a mail as payment"
-      ],
-      "discriminator": [
-        216,
-        44,
-        181,
-        65,
-        97,
-        205,
-        224,
-        145
-      ],
+      "docs": ["Mark a mail as payment"],
+      "discriminator": [216, 44, 181, 65, 97, 205, 224, 145],
       "accounts": [
         {
           "name": "signer",
@@ -499,16 +439,7 @@
     },
     {
       "name": "compressed_register",
-      "discriminator": [
-        128,
-        103,
-        157,
-        89,
-        239,
-        184,
-        75,
-        117
-      ],
+      "discriminator": [128, 103, 157, 89, 239, 184, 75, 117],
       "accounts": [
         {
           "name": "signer",
@@ -554,19 +485,8 @@
     },
     {
       "name": "compressed_send_mail",
-      "docs": [
-        "Send a new mail (replaces create_mail_v2/v3)"
-      ],
-      "discriminator": [
-        151,
-        23,
-        168,
-        141,
-        198,
-        232,
-        208,
-        168
-      ],
+      "docs": ["Send a new mail (replaces create_mail_v2/v3)"],
+      "discriminator": [151, 23, 168, 141, 198, 232, 208, 168],
       "accounts": [
         {
           "name": "signer",
@@ -635,19 +555,8 @@
     },
     {
       "name": "compressed_update_mail",
-      "docs": [
-        "Update mail"
-      ],
-      "discriminator": [
-        241,
-        203,
-        63,
-        25,
-        54,
-        91,
-        221,
-        64
-      ],
+      "docs": ["Update mail"],
+      "discriminator": [241, 203, 63, 25, 54, 91, 221, 64],
       "accounts": [
         {
           "name": "signer",
@@ -700,19 +609,8 @@
     },
     {
       "name": "compressed_update_mail_label",
-      "docs": [
-        "Update mail label (inbox, sent, trash, etc.)"
-      ],
-      "discriminator": [
-        210,
-        156,
-        154,
-        178,
-        173,
-        13,
-        0,
-        140
-      ],
+      "docs": ["Update mail label (inbox, sent, trash, etc.)"],
+      "discriminator": [210, 156, 154, 178, 173, 13, 0, 140],
       "accounts": [
         {
           "name": "signer",
@@ -761,16 +659,7 @@
     },
     {
       "name": "compressed_update_mailbox",
-      "discriminator": [
-        81,
-        17,
-        28,
-        78,
-        144,
-        7,
-        243,
-        195
-      ],
+      "discriminator": [81, 17, 28, 78, 144, 7, 243, 195],
       "accounts": [
         {
           "name": "signer",
@@ -817,19 +706,8 @@
     },
     {
       "name": "compressed_update_payment_mail",
-      "docs": [
-        "Update payment mail"
-      ],
-      "discriminator": [
-        246,
-        179,
-        121,
-        218,
-        159,
-        183,
-        101,
-        78
-      ],
+      "docs": ["Update payment mail"],
+      "discriminator": [246, 179, 121, 218, 159, 183, 101, 78],
       "accounts": [
         {
           "name": "signer",
@@ -882,19 +760,8 @@
     },
     {
       "name": "create_collection_master_edition",
-      "docs": [
-        "Create collection master edition"
-      ],
-      "discriminator": [
-        154,
-        111,
-        109,
-        77,
-        5,
-        124,
-        194,
-        238
-      ],
+      "docs": ["Create collection master edition"],
+      "discriminator": [154, 111, 109, 77, 5, 124, 194, 238],
       "accounts": [
         {
           "name": "central_state",
@@ -903,21 +770,8 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  95,
-                  99,
-                  101,
-                  110,
-                  116,
-                  114,
-                  97,
-                  108
+                  115, 111, 108, 109, 97, 105, 108, 95, 99, 101, 110, 116, 114,
+                  97, 108
                 ]
               }
             ]
@@ -931,22 +785,8 @@
               {
                 "kind": "const",
                 "value": [
-                  83,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  83, 111, 108, 109, 97, 105, 108, 32, 85, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               }
             ]
@@ -954,34 +794,14 @@
         },
         {
           "name": "marketplace_settings",
-          "docs": [
-            "Marketplace settings to verify authority"
-          ],
+          "docs": ["Marketplace settings to verify authority"],
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -994,16 +814,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
+                "value": [109, 101, 116, 97, 100, 97, 116, 97]
               },
               {
                 "kind": "account",
@@ -1027,16 +838,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
+                "value": [109, 101, 116, 97, 100, 97, 116, 97]
               },
               {
                 "kind": "account",
@@ -1048,15 +850,7 @@
               },
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  100,
-                  105,
-                  116,
-                  105,
-                  111,
-                  110
-                ]
+                "value": [101, 100, 105, 116, 105, 111, 110]
               }
             ],
             "program": {
@@ -1091,19 +885,8 @@
     },
     {
       "name": "create_collection_metadata",
-      "docs": [
-        "Create collection metadata"
-      ],
-      "discriminator": [
-        246,
-        165,
-        159,
-        126,
-        15,
-        178,
-        235,
-        83
-      ],
+      "docs": ["Create collection metadata"],
+      "discriminator": [246, 165, 159, 126, 15, 178, 235, 83],
       "accounts": [
         {
           "name": "central_state",
@@ -1112,21 +895,8 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  95,
-                  99,
-                  101,
-                  110,
-                  116,
-                  114,
-                  97,
-                  108
+                  115, 111, 108, 109, 97, 105, 108, 95, 99, 101, 110, 116, 114,
+                  97, 108
                 ]
               }
             ]
@@ -1139,22 +909,8 @@
               {
                 "kind": "const",
                 "value": [
-                  83,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  83, 111, 108, 109, 97, 105, 108, 32, 85, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               }
             ]
@@ -1167,26 +923,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -1194,34 +932,14 @@
         },
         {
           "name": "marketplace_settings",
-          "docs": [
-            "Marketplace settings to verify authority"
-          ],
+          "docs": ["Marketplace settings to verify authority"],
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -1234,16 +952,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
+                "value": [109, 101, 116, 97, 100, 97, 116, 97]
               },
               {
                 "kind": "account",
@@ -1282,19 +991,8 @@
     },
     {
       "name": "create_sol_bid",
-      "docs": [
-        "Create a new SOL bid for a username with fixed fee collection"
-      ],
-      "discriminator": [
-        84,
-        105,
-        9,
-        66,
-        182,
-        174,
-        149,
-        34
-      ],
+      "docs": ["Create a new SOL bid for a username with fixed fee collection"],
+      "discriminator": [84, 105, 9, 66, 182, 174, 149, 34],
       "accounts": [
         {
           "name": "bid_account",
@@ -1303,11 +1001,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  98,
-                  105,
-                  100
-                ]
+                "value": [98, 105, 100]
               },
               {
                 "kind": "arg",
@@ -1315,16 +1009,7 @@
               },
               {
                 "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
+                "value": [115, 111, 108, 46, 109, 97, 105, 108]
               }
             ]
           }
@@ -1336,16 +1021,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
+                "value": [117, 115, 101, 114, 95, 98, 105, 100]
               },
               {
                 "kind": "account",
@@ -1365,16 +1041,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
+                "value": [117, 115, 101, 114, 110, 97, 109, 101]
               },
               {
                 "kind": "arg",
@@ -1382,16 +1049,7 @@
               },
               {
                 "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
+                "value": [115, 111, 108, 46, 109, 97, 105, 108]
               }
             ]
           }
@@ -1403,26 +1061,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -1436,26 +1076,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -1484,19 +1106,8 @@
     },
     {
       "name": "create_solmail_collection",
-      "docs": [
-        "Create Solmail NFT collection (one-time setup)"
-      ],
-      "discriminator": [
-        113,
-        115,
-        208,
-        187,
-        133,
-        207,
-        108,
-        34
-      ],
+      "docs": ["Create Solmail NFT collection (one-time setup)"],
+      "discriminator": [113, 115, 208, 187, 133, 207, 108, 34],
       "accounts": [
         {
           "name": "central_state",
@@ -1506,21 +1117,8 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  95,
-                  99,
-                  101,
-                  110,
-                  116,
-                  114,
-                  97,
-                  108
+                  115, 111, 108, 109, 97, 105, 108, 95, 99, 101, 110, 116, 114,
+                  97, 108
                 ]
               }
             ]
@@ -1534,22 +1132,8 @@
               {
                 "kind": "const",
                 "value": [
-                  83,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  83, 111, 108, 109, 97, 105, 108, 32, 85, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               }
             ]
@@ -1567,38 +1151,9 @@
               {
                 "kind": "const",
                 "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
                 ]
               },
               {
@@ -1609,72 +1164,23 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
         },
         {
           "name": "marketplace_settings",
-          "docs": [
-            "Marketplace settings to verify authority"
-          ],
+          "docs": ["Marketplace settings to verify authority"],
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -1709,16 +1215,7 @@
       "docs": [
         "Create a new username account without mailbox assignment - RATE LIMITED for direct creation only"
       ],
-      "discriminator": [
-        166,
-        69,
-        156,
-        133,
-        149,
-        194,
-        61,
-        190
-      ],
+      "discriminator": [166, 69, 156, 133, 149, 194, 61, 190],
       "accounts": [
         {
           "name": "username_account",
@@ -1727,16 +1224,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
+                "value": [117, 115, 101, 114, 110, 97, 109, 101]
               },
               {
                 "kind": "arg",
@@ -1744,16 +1232,7 @@
               },
               {
                 "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
+                "value": [115, 111, 108, 46, 109, 97, 105, 108]
               }
             ]
           }
@@ -1765,18 +1244,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  114,
-                  97,
-                  116,
-                  101,
-                  95,
-                  108,
-                  105,
-                  109,
-                  105,
-                  116
-                ]
+                "value": [114, 97, 116, 101, 95, 108, 105, 109, 105, 116]
               },
               {
                 "kind": "account",
@@ -1792,26 +1260,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -1819,9 +1269,7 @@
         },
         {
           "name": "treasury",
-          "docs": [
-            "Treasury account to receive the 1 SOL payment"
-          ],
+          "docs": ["Treasury account to receive the 1 SOL payment"],
           "writable": true
         },
         {
@@ -1843,19 +1291,8 @@
     },
     {
       "name": "create_username_mint",
-      "docs": [
-        "Create NFT mint for a specific username"
-      ],
-      "discriminator": [
-        5,
-        247,
-        123,
-        17,
-        135,
-        32,
-        201,
-        93
-      ],
+      "docs": ["Create NFT mint for a specific username"],
+      "discriminator": [5, 247, 123, 17, 135, 32, 201, 93],
       "accounts": [
         {
           "name": "central_state",
@@ -1864,21 +1301,8 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  95,
-                  99,
-                  101,
-                  110,
-                  116,
-                  114,
-                  97,
-                  108
+                  115, 111, 108, 109, 97, 105, 108, 95, 99, 101, 110, 116, 114,
+                  97, 108
                 ]
               }
             ]
@@ -1892,22 +1316,8 @@
               {
                 "kind": "const",
                 "value": [
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  100,
-                  95,
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  119, 114, 97, 112, 112, 101, 100, 95, 117, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               },
               {
@@ -1919,9 +1329,7 @@
         },
         {
           "name": "username_account",
-          "docs": [
-            "The username account that will be wrapped"
-          ]
+          "docs": ["The username account that will be wrapped"]
         },
         {
           "name": "fee_payer",
@@ -1945,22 +1353,11 @@
     },
     {
       "name": "create_username_seeker",
-      "discriminator": [
-        18,
-        121,
-        227,
-        225,
-        152,
-        72,
-        70,
-        216
-      ],
+      "discriminator": [18, 121, 227, 225, 152, 72, 70, 216],
       "accounts": [
         {
           "name": "authority",
-          "docs": [
-            "Username owner and fee payer"
-          ],
+          "docs": ["Username owner and fee payer"],
           "writable": true,
           "signer": true
         },
@@ -1978,16 +1375,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
+                "value": [117, 115, 101, 114, 110, 97, 109, 101]
               },
               {
                 "kind": "arg",
@@ -1995,16 +1383,7 @@
               },
               {
                 "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
+                "value": [115, 111, 108, 46, 109, 97, 105, 108]
               }
             ]
           }
@@ -2016,18 +1395,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  114,
-                  97,
-                  116,
-                  101,
-                  95,
-                  108,
-                  105,
-                  109,
-                  105,
-                  116
-                ]
+                "value": [114, 97, 116, 101, 95, 108, 105, 109, 105, 116]
               },
               {
                 "kind": "account",
@@ -2043,26 +1411,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -2070,9 +1420,15 @@
         },
         {
           "name": "skr_domain_account",
-          "docs": [
-            ".skr AllDomain account owned by domain_owner"
-          ]
+          "docs": [".skr AllDomain account owned by domain_owner"]
+        },
+        {
+          "name": "tld_house",
+          "docs": ["TldHouse for .skr (needed to verify reverse lookup PDA)"]
+        },
+        {
+          "name": "tld_house_reverse_lookup_account",
+          "docs": ["Reverse lookup account containing the domain name"]
         },
         {
           "name": "system_program",
@@ -2088,22 +1444,11 @@
     },
     {
       "name": "create_username_seeker_new",
-      "discriminator": [
-        174,
-        23,
-        117,
-        61,
-        140,
-        0,
-        189,
-        125
-      ],
+      "discriminator": [174, 23, 117, 61, 140, 0, 189, 125],
       "accounts": [
         {
           "name": "authority",
-          "docs": [
-            "Username owner and fee payer"
-          ],
+          "docs": ["Username owner and fee payer"],
           "writable": true,
           "signer": true
         },
@@ -2121,16 +1466,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
-                ]
+                "value": [117, 115, 101, 114, 110, 97, 109, 101]
               },
               {
                 "kind": "arg",
@@ -2138,16 +1474,7 @@
               },
               {
                 "kind": "const",
-                "value": [
-                  115,
-                  111,
-                  108,
-                  46,
-                  109,
-                  97,
-                  105,
-                  108
-                ]
+                "value": [115, 111, 108, 46, 109, 97, 105, 108]
               }
             ]
           }
@@ -2159,18 +1486,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  114,
-                  97,
-                  116,
-                  101,
-                  95,
-                  108,
-                  105,
-                  109,
-                  105,
-                  116
-                ]
+                "value": [114, 97, 116, 101, 95, 108, 105, 109, 105, 116]
               },
               {
                 "kind": "account",
@@ -2186,26 +1502,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -2213,21 +1511,112 @@
         },
         {
           "name": "skr_domain_account",
-          "docs": [
-            ".skr AllDomain account owned by domain_owner"
-          ]
+          "docs": [".skr AllDomain account owned by domain_owner"]
         },
         {
           "name": "tld_house",
-          "docs": [
-            "TldHouse for .skr (needed to verify reverse lookup PDA)"
-          ]
+          "docs": ["TldHouse for .skr (needed to verify reverse lookup PDA)"]
         },
         {
           "name": "tld_house_reverse_lookup_account",
-          "docs": [
-            "Reverse lookup account containing the domain name"
-          ]
+          "docs": ["Reverse lookup account containing the domain name"]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_username_with_ans_domain",
+      "discriminator": [40, 36, 41, 28, 88, 232, 180, 183],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "domain_owner",
+          "signer": true
+        },
+        {
+          "name": "username_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [117, 115, 101, 114, 110, 97, 109, 101]
+              },
+              {
+                "kind": "arg",
+                "path": "username"
+              },
+              {
+                "kind": "const",
+                "value": [115, 111, 108, 46, 109, 97, 105, 108]
+              }
+            ]
+          }
+        },
+        {
+          "name": "rate_limit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [114, 97, 116, 101, 95, 108, 105, 109, 105, 116]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace_settings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "tld_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116, 108, 100, 95, 114, 101, 103, 105, 115, 116, 114, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "ans_domain_account"
+        },
+        {
+          "name": "tld_house"
+        },
+        {
+          "name": "tld_house_reverse_lookup_account"
         },
         {
           "name": "system_program",
@@ -2243,19 +1632,8 @@
     },
     {
       "name": "createmail",
-      "docs": [
-        "Create mail V2"
-      ],
-      "discriminator": [
-        79,
-        186,
-        79,
-        109,
-        12,
-        168,
-        250,
-        107
-      ],
+      "docs": ["Create mail V2"],
+      "discriminator": [79, 186, 79, 109, 12, 168, 250, 107],
       "accounts": [
         {
           "name": "mail",
@@ -2308,19 +1686,8 @@
     },
     {
       "name": "createmail_v3",
-      "docs": [
-        "Create mail V3 - Optimized with smaller space requirements"
-      ],
-      "discriminator": [
-        43,
-        112,
-        87,
-        226,
-        191,
-        232,
-        163,
-        178
-      ],
+      "docs": ["Create mail V3 - Optimized with smaller space requirements"],
+      "discriminator": [43, 112, 87, 226, 191, 232, 163, 178],
       "accounts": [
         {
           "name": "mail",
@@ -2372,20 +1739,39 @@
       ]
     },
     {
+      "name": "deactivate_tld",
+      "discriminator": [7, 157, 230, 84, 143, 236, 89, 229],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tld_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116, 108, 100, 95, 114, 101, 103, 105, 115, 116, 114, 121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "tld_suffix",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "edit_wrapped_username",
-      "docs": [
-        "Allow NFT holder to modify wrapped username data"
-      ],
-      "discriminator": [
-        142,
-        86,
-        16,
-        71,
-        205,
-        186,
-        149,
-        153
-      ],
+      "docs": ["Allow NFT holder to modify wrapped username data"],
+      "discriminator": [142, 86, 16, 71, 205, 186, 149, 153],
       "accounts": [
         {
           "name": "username_account",
@@ -2398,22 +1784,8 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
-                  95,
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  114
+                  117, 115, 101, 114, 110, 97, 109, 101, 95, 119, 114, 97, 112,
+                  112, 101, 114
                 ]
               },
               {
@@ -2442,19 +1814,8 @@
     },
     {
       "name": "initialize_sol_treasury",
-      "docs": [
-        "Initialize marketplace treasury for SOL payments (admin only)"
-      ],
-      "discriminator": [
-        195,
-        26,
-        174,
-        10,
-        130,
-        208,
-        16,
-        131
-      ],
+      "docs": ["Initialize marketplace treasury for SOL payments (admin only)"],
+      "discriminator": [195, 26, 174, 10, 130, 208, 16, 131],
       "accounts": [
         {
           "name": "marketplace_settings",
@@ -2463,26 +1824,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -2496,26 +1839,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -2534,17 +1859,43 @@
       "args": []
     },
     {
-      "name": "link_compressed_mailbox_to_username",
-      "discriminator": [
-        213,
-        204,
-        137,
-        220,
-        159,
-        150,
-        230,
-        225
+      "name": "initialize_tld_registry",
+      "discriminator": [14, 174, 178, 126, 165, 10, 19, 63],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tld_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116, 108, 100, 95, 114, 101, 103, 105, 115, 116, 114, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
+      "args": [
+        {
+          "name": "ans_program_id",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "link_compressed_mailbox_to_username",
+      "discriminator": [213, 204, 137, 220, 159, 150, 230, 225],
       "accounts": [
         {
           "name": "username_account",
@@ -2564,19 +1915,8 @@
     },
     {
       "name": "link_mailbox_to_username",
-      "docs": [
-        "Link a mailbox to an existing username"
-      ],
-      "discriminator": [
-        233,
-        178,
-        23,
-        214,
-        77,
-        169,
-        52,
-        35
-      ],
+      "docs": ["Link a mailbox to an existing username"],
+      "discriminator": [233, 178, 23, 214, 77, 169, 52, 35],
       "accounts": [
         {
           "name": "username_account",
@@ -2600,16 +1940,7 @@
     },
     {
       "name": "link_unlink_compressed_mailbox_to_username",
-      "discriminator": [
-        40,
-        10,
-        35,
-        183,
-        155,
-        219,
-        243,
-        177
-      ],
+      "discriminator": [40, 10, 35, 183, 155, 219, 243, 177],
       "accounts": [
         {
           "name": "old_username_account",
@@ -2621,16 +1952,12 @@
         },
         {
           "name": "new_username_account",
-          "docs": [
-            "The username account to link the mailbox to"
-          ],
+          "docs": ["The username account to link the mailbox to"],
           "writable": true
         },
         {
           "name": "authority",
-          "docs": [
-            "Authority that owns both username accounts"
-          ],
+          "docs": ["Authority that owns both username accounts"],
           "signer": true
         }
       ],
@@ -2643,16 +1970,7 @@
     },
     {
       "name": "mark_mail_as_payment",
-      "discriminator": [
-        98,
-        210,
-        179,
-        157,
-        6,
-        65,
-        213,
-        160
-      ],
+      "discriminator": [98, 210, 179, 157, 6, 65, 213, 160],
       "accounts": [
         {
           "name": "mail",
@@ -2667,19 +1985,8 @@
     },
     {
       "name": "mark_mail_v3_as_payment",
-      "docs": [
-        "Mark mail V3 as payment"
-      ],
-      "discriminator": [
-        84,
-        203,
-        191,
-        248,
-        20,
-        21,
-        195,
-        159
-      ],
+      "docs": ["Mark mail V3 as payment"],
+      "discriminator": [84, 203, 191, 248, 20, 21, 195, 159],
       "accounts": [
         {
           "name": "mail",
@@ -2694,19 +2001,8 @@
     },
     {
       "name": "register",
-      "docs": [
-        "Register mail account V1 (legacy)"
-      ],
-      "discriminator": [
-        211,
-        124,
-        67,
-        15,
-        211,
-        194,
-        178,
-        240
-      ],
+      "docs": ["Register mail account V1 (legacy)"],
+      "discriminator": [211, 124, 67, 15, 211, 194, 178, 240],
       "accounts": [
         {
           "name": "mail_account",
@@ -2715,20 +2011,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  97,
-                  105,
-                  108,
-                  45,
-                  97,
-                  99,
-                  99,
-                  111,
-                  117,
-                  110,
-                  116
-                ]
+                "value": [109, 97, 105, 108, 45, 97, 99, 99, 111, 117, 110, 116]
               },
               {
                 "kind": "account",
@@ -2756,19 +2039,8 @@
     },
     {
       "name": "register_v2",
-      "docs": [
-        "Register mail account V2"
-      ],
-      "discriminator": [
-        225,
-        250,
-        193,
-        26,
-        37,
-        179,
-        205,
-        76
-      ],
+      "docs": ["Register mail account V2"],
+      "discriminator": [225, 250, 193, 26, 37, 179, 205, 76],
       "accounts": [
         {
           "name": "mail_account_v2",
@@ -2778,20 +2050,7 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  105,
-                  108,
-                  45,
-                  97,
-                  99,
-                  99,
-                  111,
-                  117,
-                  110,
-                  116,
-                  118,
-                  50
+                  109, 97, 105, 108, 45, 97, 99, 99, 111, 117, 110, 116, 118, 50
                 ]
               },
               {
@@ -2820,19 +2079,8 @@
     },
     {
       "name": "rewrap_username",
-      "docs": [
-        "Re-wrap a username that was previously unwrapped"
-      ],
-      "discriminator": [
-        142,
-        184,
-        154,
-        88,
-        103,
-        179,
-        176,
-        223
-      ],
+      "docs": ["Re-wrap a username that was previously unwrapped"],
+      "discriminator": [142, 184, 154, 88, 103, 179, 176, 223],
       "accounts": [
         {
           "name": "username_account",
@@ -2846,22 +2094,8 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
-                  95,
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  114
+                  117, 115, 101, 114, 110, 97, 109, 101, 95, 119, 114, 97, 112,
+                  112, 101, 114
                 ]
               },
               {
@@ -2879,21 +2113,8 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  95,
-                  99,
-                  101,
-                  110,
-                  116,
-                  114,
-                  97,
-                  108
+                  115, 111, 108, 109, 97, 105, 108, 95, 99, 101, 110, 116, 114,
+                  97, 108
                 ]
               }
             ]
@@ -2907,22 +2128,8 @@
               {
                 "kind": "const",
                 "value": [
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  100,
-                  95,
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  119, 114, 97, 112, 112, 101, 100, 95, 117, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               },
               {
@@ -2954,19 +2161,8 @@
     },
     {
       "name": "sendmail",
-      "docs": [
-        "Send mail V1 (legacy)"
-      ],
-      "discriminator": [
-        254,
-        11,
-        16,
-        48,
-        131,
-        123,
-        30,
-        181
-      ],
+      "docs": ["Send mail V1 (legacy)"],
+      "discriminator": [254, 11, 16, 48, 131, 123, 30, 181],
       "accounts": [
         {
           "name": "mail",
@@ -3016,19 +2212,8 @@
     },
     {
       "name": "transfer_username_authority",
-      "docs": [
-        "Transfer username authority to a new owner"
-      ],
-      "discriminator": [
-        85,
-        160,
-        157,
-        156,
-        215,
-        111,
-        42,
-        167
-      ],
+      "docs": ["Transfer username authority to a new owner"],
+      "discriminator": [85, 160, 157, 156, 215, 111, 42, 167],
       "accounts": [
         {
           "name": "username_account",
@@ -3048,16 +2233,7 @@
     },
     {
       "name": "unlink_compressed_mailbox_from_username",
-      "discriminator": [
-        193,
-        93,
-        139,
-        217,
-        147,
-        164,
-        152,
-        48
-      ],
+      "discriminator": [193, 93, 139, 217, 147, 164, 152, 48],
       "accounts": [
         {
           "name": "username_account",
@@ -3072,19 +2248,8 @@
     },
     {
       "name": "unlink_mailbox_from_username",
-      "docs": [
-        "Unlink mailbox from username"
-      ],
-      "discriminator": [
-        168,
-        98,
-        155,
-        71,
-        126,
-        158,
-        126,
-        154
-      ],
+      "docs": ["Unlink mailbox from username"],
+      "discriminator": [168, 98, 155, 71, 126, 158, 126, 154],
       "accounts": [
         {
           "name": "username_account",
@@ -3103,19 +2268,8 @@
     },
     {
       "name": "unwrap_username",
-      "docs": [
-        "Unwrap a username NFT back to a regular username"
-      ],
-      "discriminator": [
-        67,
-        221,
-        210,
-        83,
-        41,
-        47,
-        174,
-        122
-      ],
+      "docs": ["Unwrap a username NFT back to a regular username"],
+      "discriminator": [67, 221, 210, 83, 41, 47, 174, 122],
       "accounts": [
         {
           "name": "username_account",
@@ -3129,22 +2283,8 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
-                  95,
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  114
+                  117, 115, 101, 114, 110, 97, 109, 101, 95, 119, 114, 97, 112,
+                  112, 101, 114
                 ]
               },
               {
@@ -3162,21 +2302,8 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  95,
-                  99,
-                  101,
-                  110,
-                  116,
-                  114,
-                  97,
-                  108
+                  115, 111, 108, 109, 97, 105, 108, 95, 99, 101, 110, 116, 114,
+                  97, 108
                 ]
               }
             ]
@@ -3190,22 +2317,8 @@
               {
                 "kind": "const",
                 "value": [
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  100,
-                  95,
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  119, 114, 97, 112, 112, 101, 100, 95, 117, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               },
               {
@@ -3236,19 +2349,8 @@
     },
     {
       "name": "update_account_v2",
-      "docs": [
-        "Update mail account V2"
-      ],
-      "discriminator": [
-        207,
-        128,
-        25,
-        128,
-        97,
-        131,
-        11,
-        255
-      ],
+      "docs": ["Update mail account V2"],
+      "discriminator": [207, 128, 25, 128, 97, 131, 11, 255],
       "accounts": [
         {
           "name": "mail_account_v2",
@@ -3272,19 +2374,8 @@
     },
     {
       "name": "update_marketplace_settings",
-      "docs": [
-        "Update existing enhanced marketplace settings(admin only)"
-      ],
-      "discriminator": [
-        121,
-        115,
-        116,
-        71,
-        200,
-        23,
-        66,
-        209
-      ],
+      "docs": ["Update existing enhanced marketplace settings(admin only)"],
+      "discriminator": [121, 115, 116, 71, 200, 23, 66, 209],
       "accounts": [
         {
           "name": "marketplace_settings",
@@ -3294,26 +2385,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -3441,19 +2514,8 @@
     },
     {
       "name": "update_sol_bid",
-      "docs": [
-        "Update an existing SOL bid with a higher amount"
-      ],
-      "discriminator": [
-        119,
-        190,
-        162,
-        119,
-        96,
-        53,
-        74,
-        159
-      ],
+      "docs": ["Update an existing SOL bid with a higher amount"],
+      "discriminator": [119, 190, 162, 119, 96, 53, 74, 159],
       "accounts": [
         {
           "name": "bid_account",
@@ -3466,26 +2528,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -3499,26 +2543,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -3531,16 +2557,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
+                "value": [117, 115, 101, 114, 95, 98, 105, 100]
               },
               {
                 "kind": "account",
@@ -3571,16 +2588,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  98,
-                  105,
-                  100
-                ]
+                "value": [117, 115, 101, 114, 95, 98, 105, 100]
               },
               {
                 "kind": "account",
@@ -3608,19 +2616,8 @@
     },
     {
       "name": "updatemail",
-      "docs": [
-        "Update mail V2"
-      ],
-      "discriminator": [
-        103,
-        89,
-        239,
-        89,
-        179,
-        196,
-        168,
-        188
-      ],
+      "docs": ["Update mail V2"],
+      "discriminator": [103, 89, 239, 89, 179, 196, 168, 188],
       "accounts": [
         {
           "name": "mail",
@@ -3645,19 +2642,8 @@
     },
     {
       "name": "updatemail_v3",
-      "docs": [
-        "Update mail V3 body"
-      ],
-      "discriminator": [
-        189,
-        63,
-        60,
-        8,
-        49,
-        97,
-        122,
-        73
-      ],
+      "docs": ["Update mail V3 body"],
+      "discriminator": [189, 63, 60, 8, 49, 97, 122, 73],
       "accounts": [
         {
           "name": "mail",
@@ -3682,19 +2668,8 @@
     },
     {
       "name": "updatemail_v3_label",
-      "docs": [
-        "Update mail V3 label"
-      ],
-      "discriminator": [
-        1,
-        108,
-        233,
-        127,
-        198,
-        102,
-        227,
-        93
-      ],
+      "docs": ["Update mail V3 label"],
+      "discriminator": [1, 108, 233, 127, 198, 102, 227, 93],
       "accounts": [
         {
           "name": "mail",
@@ -3719,19 +2694,8 @@
     },
     {
       "name": "updatemail_v3_readstatus",
-      "docs": [
-        "Update mail V3 read status"
-      ],
-      "discriminator": [
-        63,
-        155,
-        240,
-        252,
-        16,
-        234,
-        102,
-        93
-      ],
+      "docs": ["Update mail V3 read status"],
+      "discriminator": [63, 155, 240, 252, 16, 234, 102, 93],
       "accounts": [
         {
           "name": "mail",
@@ -3751,19 +2715,8 @@
     },
     {
       "name": "updatemaillabel",
-      "docs": [
-        "Update mail label"
-      ],
-      "discriminator": [
-        127,
-        96,
-        27,
-        207,
-        164,
-        210,
-        203,
-        16
-      ],
+      "docs": ["Update mail label"],
+      "discriminator": [127, 96, 27, 207, 164, 210, 203, 16],
       "accounts": [
         {
           "name": "mail",
@@ -3788,19 +2741,8 @@
     },
     {
       "name": "updatemailreadstatus",
-      "docs": [
-        "Update mail read status"
-      ],
-      "discriminator": [
-        22,
-        58,
-        187,
-        161,
-        225,
-        237,
-        130,
-        155
-      ],
+      "docs": ["Update mail read status"],
+      "discriminator": [22, 58, 187, 161, 225, 237, 130, 155],
       "accounts": [
         {
           "name": "mail",
@@ -3820,19 +2762,8 @@
     },
     {
       "name": "wrap_username",
-      "docs": [
-        "Wrap a username as an NFT"
-      ],
-      "discriminator": [
-        59,
-        94,
-        211,
-        65,
-        20,
-        41,
-        98,
-        102
-      ],
+      "docs": ["Wrap a username as an NFT"],
+      "discriminator": [59, 94, 211, 65, 20, 41, 98, 102],
       "accounts": [
         {
           "name": "username_account",
@@ -3846,22 +2777,8 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101,
-                  95,
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  114
+                  117, 115, 101, 114, 110, 97, 109, 101, 95, 119, 114, 97, 112,
+                  112, 101, 114
                 ]
               },
               {
@@ -3879,21 +2796,8 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  95,
-                  99,
-                  101,
-                  110,
-                  116,
-                  114,
-                  97,
-                  108
+                  115, 111, 108, 109, 97, 105, 108, 95, 99, 101, 110, 116, 114,
+                  97, 108
                 ]
               }
             ]
@@ -3907,22 +2811,8 @@
               {
                 "kind": "const",
                 "value": [
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  100,
-                  95,
-                  117,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  119, 114, 97, 112, 112, 101, 100, 95, 117, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               },
               {
@@ -3939,26 +2829,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  116,
-                  114,
-                  101,
-                  97,
-                  115,
-                  117,
-                  114,
-                  121
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 116,
+                  114, 101, 97, 115, 117, 114, 121
                 ]
               }
             ]
@@ -3971,26 +2843,8 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  97,
-                  114,
-                  107,
-                  101,
-                  116,
-                  112,
-                  108,
-                  97,
-                  99,
-                  101,
-                  95,
-                  115,
-                  101,
-                  116,
-                  116,
-                  105,
-                  110,
-                  103,
-                  115
+                  109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101, 95, 115,
+                  101, 116, 116, 105, 110, 103, 115
                 ]
               }
             ]
@@ -4003,16 +2857,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
+                "value": [109, 101, 116, 97, 100, 97, 116, 97]
               },
               {
                 "kind": "account",
@@ -4036,22 +2881,8 @@
               {
                 "kind": "const",
                 "value": [
-                  83,
-                  111,
-                  108,
-                  109,
-                  97,
-                  105,
-                  108,
-                  32,
-                  85,
-                  115,
-                  101,
-                  114,
-                  110,
-                  97,
-                  109,
-                  101
+                  83, 111, 108, 109, 97, 105, 108, 32, 85, 115, 101, 114, 110,
+                  97, 109, 101
                 ]
               }
             ]
@@ -4063,16 +2894,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
+                "value": [109, 101, 116, 97, 100, 97, 116, 97]
               },
               {
                 "kind": "account",
@@ -4095,16 +2917,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
-                ]
+                "value": [109, 101, 116, 97, 100, 97, 116, 97]
               },
               {
                 "kind": "account",
@@ -4116,15 +2929,7 @@
               },
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  100,
-                  105,
-                  116,
-                  105,
-                  111,
-                  110
-                ]
+                "value": [101, 100, 105, 116, 105, 111, 110]
               }
             ],
             "program": {
@@ -4182,1426 +2987,822 @@
   "accounts": [
     {
       "name": "BidAccount",
-      "discriminator": [
-        27,
-        161,
-        15,
-        114,
-        230,
-        126,
-        56,
-        104
-      ]
+      "discriminator": [27, 161, 15, 114, 230, 126, 56, 104]
     },
     {
       "name": "MarketplaceSettings",
-      "discriminator": [
-        159,
-        177,
-        179,
-        196,
-        220,
-        75,
-        86,
-        16
-      ]
+      "discriminator": [159, 177, 179, 196, 220, 75, 86, 16]
     },
     {
       "name": "MarketplaceTreasury",
-      "discriminator": [
-        2,
-        62,
-        171,
-        100,
-        3,
-        18,
-        90,
-        227
-      ]
+      "discriminator": [2, 62, 171, 100, 3, 18, 90, 227]
     },
     {
       "name": "SolMail",
-      "discriminator": [
-        247,
-        239,
-        251,
-        112,
-        232,
-        125,
-        215,
-        255
-      ]
+      "discriminator": [247, 239, 251, 112, 232, 125, 215, 255]
     },
     {
       "name": "SolMailAccount",
-      "discriminator": [
-        72,
-        22,
-        32,
-        1,
-        49,
-        244,
-        46,
-        180
-      ]
+      "discriminator": [72, 22, 32, 1, 49, 244, 46, 180]
     },
     {
       "name": "SolMailAccountV2",
-      "discriminator": [
-        56,
-        165,
-        134,
-        52,
-        94,
-        16,
-        21,
-        14
-      ]
+      "discriminator": [56, 165, 134, 52, 94, 16, 21, 14]
     },
     {
       "name": "SolMailV2",
-      "discriminator": [
-        138,
-        97,
-        203,
-        217,
-        101,
-        227,
-        70,
-        35
-      ]
+      "discriminator": [138, 97, 203, 217, 101, 227, 70, 35]
     },
     {
       "name": "SolMailV3",
-      "discriminator": [
-        196,
-        174,
-        45,
-        88,
-        227,
-        33,
-        42,
-        70
-      ]
+      "discriminator": [196, 174, 45, 88, 227, 33, 42, 70]
     },
     {
       "name": "SolmailCentralState",
-      "discriminator": [
-        99,
-        124,
-        165,
-        34,
-        55,
-        150,
-        4,
-        250
-      ]
+      "discriminator": [99, 124, 165, 34, 55, 150, 4, 250]
+    },
+    {
+      "name": "TldRegistry",
+      "discriminator": [248, 79, 147, 86, 57, 139, 42, 142]
     },
     {
       "name": "UserBid",
-      "discriminator": [
-        13,
-        209,
-        228,
-        159,
-        155,
-        166,
-        149,
-        53
-      ]
+      "discriminator": [13, 209, 228, 159, 155, 166, 149, 53]
     },
     {
       "name": "UserRateLimit",
-      "discriminator": [
-        156,
-        245,
-        156,
-        195,
-        8,
-        43,
-        139,
-        184
-      ]
+      "discriminator": [156, 245, 156, 195, 8, 43, 139, 184]
     },
     {
       "name": "UsernameAccount",
-      "discriminator": [
-        120,
-        2,
-        212,
-        44,
-        208,
-        63,
-        20,
-        122
-      ]
+      "discriminator": [120, 2, 212, 44, 208, 63, 20, 122]
     },
     {
       "name": "UsernameWrapper",
-      "discriminator": [
-        178,
-        242,
-        111,
-        106,
-        198,
-        168,
-        204,
-        135
-      ]
+      "discriminator": [178, 242, 111, 106, 198, 168, 204, 135]
     }
   ],
   "events": [
     {
       "name": "AccountValidationFailureEvent",
-      "discriminator": [
-        188,
-        44,
-        79,
-        214,
-        125,
-        10,
-        106,
-        208
-      ]
+      "discriminator": [188, 44, 79, 214, 125, 10, 106, 208]
     },
     {
       "name": "AdminActionEvent",
-      "discriminator": [
-        220,
-        224,
-        207,
-        200,
-        52,
-        226,
-        42,
-        155
-      ]
+      "discriminator": [220, 224, 207, 200, 52, 226, 42, 155]
     },
     {
       "name": "BidCancelledEvent",
-      "discriminator": [
-        149,
-        225,
-        90,
-        15,
-        245,
-        141,
-        102,
-        145
-      ]
+      "discriminator": [149, 225, 90, 15, 245, 141, 102, 145]
     },
     {
       "name": "BidCreatedEvent",
-      "discriminator": [
-        119,
-        134,
-        95,
-        199,
-        242,
-        88,
-        176,
-        254
-      ]
+      "discriminator": [119, 134, 95, 199, 242, 88, 176, 254]
     },
     {
       "name": "BidGracePeriodEvent",
-      "discriminator": [
-        255,
-        22,
-        213,
-        108,
-        30,
-        101,
-        237,
-        210
-      ]
+      "discriminator": [255, 22, 213, 108, 30, 101, 237, 210]
     },
     {
       "name": "BidParametersChangedEvent",
-      "discriminator": [
-        110,
-        73,
-        158,
-        25,
-        134,
-        72,
-        105,
-        185
-      ]
+      "discriminator": [110, 73, 158, 25, 134, 72, 105, 185]
     },
     {
       "name": "BidRefundEvent",
-      "discriminator": [
-        2,
-        119,
-        161,
-        92,
-        202,
-        2,
-        244,
-        28
-      ]
+      "discriminator": [2, 119, 161, 92, 202, 2, 244, 28]
     },
     {
       "name": "BidStatusChangeEvent",
-      "discriminator": [
-        245,
-        13,
-        92,
-        176,
-        132,
-        250,
-        64,
-        253
-      ]
+      "discriminator": [245, 13, 92, 176, 132, 250, 64, 253]
     },
     {
       "name": "BidUpdatedEvent",
-      "discriminator": [
-        234,
-        172,
-        58,
-        147,
-        27,
-        189,
-        244,
-        211
-      ]
+      "discriminator": [234, 172, 58, 147, 27, 189, 244, 211]
     },
     {
       "name": "BroadcastMessageEvent",
-      "discriminator": [
-        218,
-        100,
-        18,
-        33,
-        113,
-        107,
-        164,
-        205
-      ]
+      "discriminator": [218, 100, 18, 33, 113, 107, 164, 205]
     },
     {
       "name": "BulkOperationEvent",
-      "discriminator": [
-        40,
-        21,
-        147,
-        124,
-        13,
-        126,
-        189,
-        43
-      ]
+      "discriminator": [40, 21, 147, 124, 13, 126, 189, 43]
+    },
+    {
+      "name": "CompressedAirdropCreatedEvent",
+      "discriminator": [82, 200, 31, 101, 66, 185, 67, 115]
     },
     {
       "name": "CompressedMailAccountRegisterEvent",
-      "discriminator": [
-        223,
-        153,
-        231,
-        225,
-        14,
-        41,
-        202,
-        28
-      ]
+      "discriminator": [223, 153, 231, 225, 14, 41, 202, 28]
     },
     {
       "name": "CompressedMailAccountUpdateEvent",
-      "discriminator": [
-        184,
-        51,
-        19,
-        156,
-        131,
-        40,
-        5,
-        73
-      ]
+      "discriminator": [184, 51, 19, 156, 131, 40, 5, 73]
     },
     {
       "name": "CompressedMailPaymentEvent",
-      "discriminator": [
-        91,
-        136,
-        84,
-        88,
-        100,
-        162,
-        75,
-        157
-      ]
+      "discriminator": [91, 136, 84, 88, 100, 162, 75, 157]
     },
     {
       "name": "CompressedMailReadEvent",
-      "discriminator": [
-        189,
-        140,
-        195,
-        98,
-        148,
-        220,
-        159,
-        241
-      ]
+      "discriminator": [189, 140, 195, 98, 148, 220, 159, 241]
     },
     {
       "name": "CompressedMailSendEvent",
-      "discriminator": [
-        40,
-        219,
-        34,
-        146,
-        152,
-        227,
-        125,
-        120
-      ]
+      "discriminator": [40, 219, 34, 146, 152, 227, 125, 120]
     },
     {
       "name": "CompressedMailUpdateEvent",
-      "discriminator": [
-        88,
-        177,
-        48,
-        249,
-        25,
-        8,
-        88,
-        85
-      ]
+      "discriminator": [88, 177, 48, 249, 25, 8, 88, 85]
     },
     {
       "name": "CompressedMailUpdateLabelEvent",
-      "discriminator": [
-        196,
-        189,
-        141,
-        221,
-        9,
-        35,
-        98,
-        87
-      ]
+      "discriminator": [196, 189, 141, 221, 9, 35, 98, 87]
     },
     {
       "name": "EnhancedMarketplaceSettingsEvent",
-      "discriminator": [
-        98,
-        51,
-        238,
-        228,
-        63,
-        5,
-        139,
-        199
-      ]
+      "discriminator": [98, 51, 238, 228, 63, 5, 139, 199]
     },
     {
       "name": "FeeRateChangedEvent",
-      "discriminator": [
-        198,
-        44,
-        78,
-        81,
-        101,
-        68,
-        130,
-        79
-      ]
+      "discriminator": [198, 44, 78, 81, 101, 68, 130, 79]
     },
     {
       "name": "FinancialTransactionEvent",
-      "discriminator": [
-        53,
-        189,
-        58,
-        212,
-        96,
-        94,
-        55,
-        149
-      ]
+      "discriminator": [53, 189, 58, 212, 96, 94, 55, 149]
     },
     {
       "name": "GracePeriodParametersChangedEvent",
-      "discriminator": [
-        20,
-        63,
-        174,
-        134,
-        143,
-        31,
-        188,
-        234
-      ]
+      "discriminator": [20, 63, 174, 134, 143, 31, 188, 234]
     },
     {
       "name": "MailAccountV2RegisterEvent",
-      "discriminator": [
-        250,
-        87,
-        69,
-        103,
-        135,
-        185,
-        177,
-        156
-      ]
+      "discriminator": [250, 87, 69, 103, 135, 185, 177, 156]
     },
     {
       "name": "MailAccountV2UpdateEvent",
-      "discriminator": [
-        239,
-        63,
-        234,
-        251,
-        172,
-        161,
-        13,
-        162
-      ]
+      "discriminator": [239, 63, 234, 251, 172, 161, 13, 162]
     },
     {
       "name": "MailSendEvent",
-      "discriminator": [
-        246,
-        25,
-        155,
-        65,
-        156,
-        90,
-        174,
-        160
-      ]
+      "discriminator": [246, 25, 155, 65, 156, 90, 174, 160]
     },
     {
       "name": "MailV2ReadEvent",
-      "discriminator": [
-        185,
-        241,
-        60,
-        172,
-        90,
-        110,
-        65,
-        90
-      ]
+      "discriminator": [185, 241, 60, 172, 90, 110, 65, 90]
     },
     {
       "name": "MailV2SendEvent",
-      "discriminator": [
-        57,
-        95,
-        119,
-        238,
-        197,
-        56,
-        38,
-        155
-      ]
+      "discriminator": [57, 95, 119, 238, 197, 56, 38, 155]
     },
     {
       "name": "MailV2UpdateEvent",
-      "discriminator": [
-        224,
-        123,
-        44,
-        76,
-        87,
-        109,
-        105,
-        110
-      ]
+      "discriminator": [224, 123, 44, 76, 87, 109, 105, 110]
     },
     {
       "name": "MailV2UpdateLabelEvent",
-      "discriminator": [
-        25,
-        155,
-        115,
-        145,
-        193,
-        110,
-        174,
-        83
-      ]
+      "discriminator": [25, 155, 115, 145, 193, 110, 174, 83]
     },
     {
       "name": "MarketplaceRevenueReportEvent",
-      "discriminator": [
-        20,
-        8,
-        193,
-        138,
-        70,
-        16,
-        245,
-        166
-      ]
+      "discriminator": [20, 8, 193, 138, 70, 16, 245, 166]
     },
     {
       "name": "MarketplaceSettingsCreatedEvent",
-      "discriminator": [
-        152,
-        36,
-        221,
-        52,
-        61,
-        136,
-        113,
-        253
-      ]
+      "discriminator": [152, 36, 221, 52, 61, 136, 113, 253]
     },
     {
       "name": "MarketplaceSettingsUpdatedEvent",
-      "discriminator": [
-        234,
-        193,
-        102,
-        113,
-        14,
-        142,
-        204,
-        191
-      ]
+      "discriminator": [234, 193, 102, 113, 14, 142, 204, 191]
     },
     {
       "name": "PaymentGatingStatusChangeEvent",
-      "discriminator": [
-        221,
-        72,
-        20,
-        126,
-        189,
-        50,
-        45,
-        215
-      ]
+      "discriminator": [221, 72, 20, 126, 189, 50, 45, 215]
     },
     {
       "name": "PlatformFeeCollectedEvent",
-      "discriminator": [
-        56,
-        187,
-        6,
-        159,
-        22,
-        32,
-        58,
-        175
-      ]
+      "discriminator": [56, 187, 6, 159, 22, 32, 58, 175]
     },
     {
       "name": "RateLimitParametersChangedEvent",
-      "discriminator": [
-        111,
-        148,
-        192,
-        14,
-        255,
-        206,
-        118,
-        140
-      ]
+      "discriminator": [111, 148, 192, 14, 255, 206, 118, 140]
     },
     {
       "name": "RateLimitResetEvent",
-      "discriminator": [
-        176,
-        64,
-        170,
-        212,
-        240,
-        46,
-        185,
-        63
-      ]
+      "discriminator": [176, 64, 170, 212, 240, 46, 185, 63]
     },
     {
       "name": "RateLimitUpdatedEvent",
-      "discriminator": [
-        117,
-        73,
-        176,
-        253,
-        21,
-        69,
-        103,
-        117
-      ]
+      "discriminator": [117, 73, 176, 253, 21, 69, 103, 117]
     },
     {
       "name": "RateLimitViolationEvent",
-      "discriminator": [
-        199,
-        192,
-        66,
-        0,
-        33,
-        53,
-        176,
-        250
-      ]
+      "discriminator": [199, 192, 66, 0, 33, 53, 176, 250]
     },
     {
       "name": "SolmailCollectionCreatedEvent",
-      "discriminator": [
-        135,
-        188,
-        144,
-        234,
-        67,
-        63,
-        236,
-        246
-      ]
+      "discriminator": [135, 188, 144, 234, 67, 63, 236, 246]
     },
     {
       "name": "SystemStateChangeEvent",
-      "discriminator": [
-        191,
-        208,
-        175,
-        241,
-        211,
-        36,
-        249,
-        116
-      ]
+      "discriminator": [191, 208, 175, 241, 211, 36, 249, 116]
     },
     {
       "name": "TreasuryRevenueEvent",
-      "discriminator": [
-        117,
-        163,
-        237,
-        195,
-        200,
-        247,
-        236,
-        72
-      ]
+      "discriminator": [117, 163, 237, 195, 200, 247, 236, 72]
     },
     {
       "name": "UserBidsCleanupEvent",
-      "discriminator": [
-        165,
-        93,
-        217,
-        22,
-        189,
-        6,
-        70,
-        240
-      ]
+      "discriminator": [165, 93, 217, 22, 189, 6, 70, 240]
     },
     {
       "name": "UsernameAuthorityTransferredEvent",
-      "discriminator": [
-        169,
-        128,
-        164,
-        236,
-        203,
-        67,
-        147,
-        221
-      ]
+      "discriminator": [169, 128, 164, 236, 203, 67, 147, 221]
     },
     {
       "name": "UsernameBuyEvent",
-      "discriminator": [
-        201,
-        10,
-        7,
-        172,
-        72,
-        22,
-        125,
-        103
-      ]
+      "discriminator": [201, 10, 7, 172, 72, 22, 125, 103]
     },
     {
       "name": "UsernameClaimedFromBidEvent",
-      "discriminator": [
-        232,
-        32,
-        52,
-        189,
-        10,
-        218,
-        82,
-        161
-      ]
+      "discriminator": [232, 32, 52, 189, 10, 218, 82, 161]
     },
     {
       "name": "UsernameCreatedEvent",
-      "discriminator": [
-        186,
-        17,
-        123,
-        213,
-        3,
-        164,
-        96,
-        224
-      ]
+      "discriminator": [186, 17, 123, 213, 3, 164, 96, 224]
     },
     {
       "name": "UsernameMailboxLinkedEvent",
-      "discriminator": [
-        103,
-        167,
-        212,
-        13,
-        44,
-        26,
-        130,
-        58
-      ]
+      "discriminator": [103, 167, 212, 13, 44, 26, 130, 58]
     },
     {
       "name": "UsernameMailboxUnlinkedEvent",
-      "discriminator": [
-        239,
-        51,
-        123,
-        120,
-        149,
-        77,
-        191,
-        251
-      ]
+      "discriminator": [239, 51, 123, 120, 149, 77, 191, 251]
     },
     {
       "name": "UsernameNftMintCreatedEvent",
-      "discriminator": [
-        57,
-        71,
-        33,
-        4,
-        156,
-        206,
-        5,
-        153
-      ]
+      "discriminator": [57, 71, 33, 4, 156, 206, 5, 153]
     },
     {
       "name": "UsernameReservationEvent",
-      "discriminator": [
-        14,
-        173,
-        124,
-        121,
-        169,
-        116,
-        193,
-        18
-      ]
+      "discriminator": [14, 173, 124, 121, 169, 116, 193, 18]
     },
     {
       "name": "UsernameRewrappedEvent",
-      "discriminator": [
-        1,
-        248,
-        89,
-        41,
-        168,
-        31,
-        225,
-        86
-      ]
+      "discriminator": [1, 248, 89, 41, 168, 31, 225, 86]
     },
     {
       "name": "UsernameUnwrappedEvent",
-      "discriminator": [
-        161,
-        205,
-        89,
-        209,
-        242,
-        30,
-        250,
-        58
-      ]
+      "discriminator": [161, 205, 89, 209, 242, 30, 250, 58]
     },
     {
       "name": "UsernameWrappedEvent",
-      "discriminator": [
-        200,
-        217,
-        249,
-        41,
-        22,
-        254,
-        111,
-        128
-      ]
+      "discriminator": [200, 217, 249, 41, 22, 254, 111, 128]
     },
     {
       "name": "WrappedUsernameMailboxChangedEvent",
-      "discriminator": [
-        0,
-        207,
-        103,
-        166,
-        125,
-        16,
-        13,
-        185
-      ]
+      "discriminator": [0, 207, 103, 166, 125, 16, 13, 185]
     },
     {
       "name": "WrapperFundsWithdrawnEvent",
-      "discriminator": [
-        193,
-        131,
-        79,
-        12,
-        105,
-        71,
-        36,
-        110
-      ]
+      "discriminator": [193, 131, 79, 12, 105, 71, 36, 110]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidInstruction",
-      "msg": "Invalid instruction"
-    },
-    {
-      "code": 6001,
-      "name": "InvalidBody",
-      "msg": "The body of your email is too long. The max is 512 chars"
-    },
-    {
-      "code": 6002,
-      "name": "InvalidSubject",
-      "msg": "The subject of your email is too long. The max is 40 chars"
-    },
-    {
-      "code": 6003,
-      "name": "InvalidSalt",
-      "msg": "The salt should be exactly 16 chars"
-    },
-    {
-      "code": 6004,
-      "name": "InvalidIv",
-      "msg": "The IV should be exactly 32 chars"
-    },
-    {
-      "code": 6005,
-      "name": "InvalidDiffie",
-      "msg": "The diffie publickey should be exactly 64 chars"
-    },
-    {
-      "code": 6006,
-      "name": "InvalidDestination",
-      "msg": "From and to address should not be same"
-    },
-    {
-      "code": 6007,
-      "name": "InvalidSource",
-      "msg": "Signer and from address should be same"
-    },
-    {
-      "code": 6008,
-      "name": "Unauthorized",
-      "msg": "Unauthorized access"
-    },
-    {
-      "code": 6009,
-      "name": "UnauthorizedSigner",
-      "msg": "Unauthorized signer"
-    },
-    {
-      "code": 6010,
-      "name": "InvalidLabel",
-      "msg": "Invalid label"
-    },
-    {
-      "code": 6011,
-      "name": "InvalidMailAccount",
-      "msg": "Invalid mailaccount"
-    },
-    {
-      "code": 6012,
-      "name": "UsernameAlreadyExists",
-      "msg": "Username already exists"
-    },
-    {
-      "code": 6013,
-      "name": "InvalidUsername",
-      "msg": "Invalid username - must be 1-32 characters, alphanumeric and underscores only"
-    },
-    {
-      "code": 6014,
-      "name": "UsernameNotFound",
-      "msg": "Username not found"
-    },
-    {
-      "code": 6015,
-      "name": "UsernameAlreadyWrapped",
-      "msg": "Username is already wrapped as NFT"
-    },
-    {
-      "code": 6016,
-      "name": "UsernameNotWrapped",
-      "msg": "Username is not wrapped"
-    },
-    {
-      "code": 6017,
-      "name": "CannotModifyWrappedUsername",
-      "msg": "Cannot modify wrapped username - unwrap first"
-    },
-    {
-      "code": 6018,
-      "name": "InvalidNewAuthority",
-      "msg": "Invalid new authority"
-    },
-    {
-      "code": 6019,
-      "name": "InvalidMailbox",
-      "msg": "Invalid mailbox"
-    },
-    {
-      "code": 6020,
-      "name": "WrapperAlreadyExists",
-      "msg": "Wrapper already exists for this username"
-    },
-    {
-      "code": 6021,
-      "name": "WrapperNotFound",
-      "msg": "Wrapper not found"
-    },
-    {
-      "code": 6022,
-      "name": "WrapperNotActive",
-      "msg": "Wrapper is not active"
-    },
-    {
-      "code": 6023,
-      "name": "InvalidWrapperState",
-      "msg": "Invalid wrapper state"
-    },
-    {
-      "code": 6024,
-      "name": "NftMintMismatch",
-      "msg": "NFT mint mismatch"
-    },
-    {
-      "code": 6025,
-      "name": "InvalidNftAmount",
-      "msg": "Invalid NFT amount - must be exactly 1"
-    },
-    {
-      "code": 6026,
-      "name": "InvalidCollectionMint",
-      "msg": "Invalid collection mint"
-    },
-    {
-      "code": 6027,
-      "name": "CollectionNotVerified",
-      "msg": "Collection not verified"
-    },
-    {
-      "code": 6028,
-      "name": "InvalidMetadataAccount",
-      "msg": "Invalid metadata account"
-    },
-    {
-      "code": 6029,
-      "name": "MetadataCreationFailed",
-      "msg": "Metadata creation failed"
-    },
-    {
-      "code": 6030,
-      "name": "UsernameLockedForModifications",
-      "msg": "Username is locked for modifications"
-    },
-    {
-      "code": 6031,
-      "name": "NftTransferNotAllowed",
-      "msg": "NFT transfer not allowed"
-    },
-    {
-      "code": 6032,
-      "name": "InvalidOriginalAuthority",
-      "msg": "Invalid original authority"
-    },
-    {
-      "code": 6033,
-      "name": "CentralStateNotInitialized",
-      "msg": "Central state not initialized"
-    },
-    {
-      "code": 6034,
-      "name": "InvalidCentralState",
-      "msg": "Invalid central state"
-    },
-    {
-      "code": 6035,
-      "name": "UsernameAlreadyHasMailbox",
-      "msg": "Username already has a linked mailbox"
-    },
-    {
-      "code": 6036,
-      "name": "UsernameNoMailbox",
-      "msg": "Username does not have a linked mailbox"
-    },
-    {
-      "code": 6037,
-      "name": "InvalidMailboxAccount",
-      "msg": "Mailbox account does not exist or is invalid"
-    },
-    {
-      "code": 6038,
-      "name": "CannotLinkMailboxToWrappedUsername",
-      "msg": "Cannot link mailbox to wrapped username"
-    },
-    {
-      "code": 6039,
-      "name": "CannotUnlinkMailboxFromWrappedUsername",
-      "msg": "Cannot unlink mailbox from wrapped username"
-    },
-    {
-      "code": 6040,
-      "name": "UsernameMustHaveNoMailboxBeforeWrapping",
-      "msg": "Username must have no mailbox before wrapping"
-    },
-    {
-      "code": 6041,
-      "name": "MailboxOperationsLocked",
-      "msg": "Mailbox operations are locked for this wrapped username"
-    },
-    {
-      "code": 6042,
-      "name": "RateLimitExceeded",
-      "msg": "Rate limit exceeded: too many usernames created in time window"
-    },
-    {
-      "code": 6043,
-      "name": "RateLimitTooFrequent",
-      "msg": "Rate limit exceeded: creation too frequent, please wait"
-    },
-    {
-      "code": 6044,
-      "name": "InvalidRateLimit",
-      "msg": "Invalid rate limit account"
-    },
-    {
-      "code": 6045,
-      "name": "AccountNotInitialized",
-      "msg": "Account not initialized or has invalid discriminator"
-    },
-    {
-      "code": 6046,
-      "name": "UsernameInBiddingPeriod",
-      "msg": "Username is currently in bidding period"
-    },
-    {
-      "code": 6047,
-      "name": "PaymentGatingEnabled",
-      "msg": "Payment gating is enabled - must use bidding system"
-    },
-    {
-      "code": 6048,
-      "name": "BidTooLow",
-      "msg": "Bid amount is below minimum required"
-    },
-    {
-      "code": 6049,
-      "name": "BidNotHigherThanCurrent",
-      "msg": "Bid amount must be higher than current highest bid"
-    },
-    {
-      "code": 6050,
-      "name": "BidNotExpired",
-      "msg": "Bid has not expired yet - cannot claim username"
-    },
-    {
-      "code": 6051,
-      "name": "NotHighestBidder",
-      "msg": "You are not the highest bidder"
-    },
-    {
-      "code": 6052,
-      "name": "HighestBidder",
-      "msg": "You the current highest bidder, Cannot claim refund."
-    },
-    {
-      "code": 6053,
-      "name": "MarketplaceNotInitialized",
-      "msg": "Marketplace settings not initialized"
-    },
-    {
-      "code": 6054,
-      "name": "InvalidMarketplaceSettings",
-      "msg": "Invalid marketplace settings"
-    },
-    {
-      "code": 6055,
-      "name": "BidAccountNotFound",
-      "msg": "Bid account not found"
-    },
-    {
-      "code": 6056,
-      "name": "BidAccountNotActive",
-      "msg": "Bid account is not active"
-    },
-    {
-      "code": 6057,
-      "name": "CannotBidOnOwnBid",
-      "msg": "Cannot bid on your own bid"
-    },
-    {
-      "code": 6058,
-      "name": "BidAlreadyExpired",
-      "msg": "Bid has already expired"
-    },
-    {
-      "code": 6059,
-      "name": "UsernameAlreadyHasBid",
-      "msg": "Username already has an active bid"
-    },
-    {
-      "code": 6060,
-      "name": "CannotCancelBid",
-      "msg": "Cannot cancel bid - you are not the bidder"
-    },
-    {
-      "code": 6061,
-      "name": "InsufficientFundsForBid",
-      "msg": "Insufficient funds for bid"
-    },
-    {
-      "code": 6062,
-      "name": "InvalidBidDuration",
-      "msg": "Invalid bid duration"
-    },
-    {
-      "code": 6063,
-      "name": "MarketplaceAuthorityMismatch",
-      "msg": "Marketplace authority mismatch"
-    },
-    {
-      "code": 6064,
-      "name": "UsernameHasActiveBid",
-      "msg": "Username has active bid - cannot create directly"
-    },
-    {
-      "code": 6065,
-      "name": "PaymentRequired",
-      "msg": "Payment required - marketplace has payment gating enabled"
-    },
-    {
-      "code": 6066,
-      "name": "BiddingPaused",
-      "msg": "Bidding paused - marketplace has paused bidding system"
-    },
-    {
-      "code": 6067,
-      "name": "InvalidPreviousBidder",
-      "msg": "Invalid previous bidder"
-    },
-    {
-      "code": 6068,
-      "name": "ArithmeticOverflow",
-      "msg": "Arithmetic overflow"
-    },
-    {
-      "code": 6069,
-      "name": "InvalidBidAccountState",
-      "msg": "Invalid bid account state"
-    },
-    {
-      "code": 6070,
-      "name": "InsufficientAccountBalance",
-      "msg": "Insufficient account balance"
-    },
-    {
-      "code": 6071,
-      "name": "BidAmountTooHigh",
-      "msg": "Bid amount exceeds maximum allowed"
-    },
-    {
-      "code": 6072,
-      "name": "InvalidDomainAccount",
-      "msg": "Invalid domain account"
-    },
-    {
-      "code": 6073,
-      "name": "InvalidUsernameCharacters",
-      "msg": "Username contains invalid characters"
-    },
-    {
-      "code": 6074,
-      "name": "UsernameReserved",
-      "msg": "Username is reserved and cannot be used"
-    },
-    {
-      "code": 6075,
-      "name": "AccountSpaceError",
-      "msg": "Account space calculation error"
-    },
-    {
-      "code": 6076,
-      "name": "InvalidBumpSeed",
-      "msg": "Invalid account bump seed"
-    },
-    {
-      "code": 6077,
-      "name": "AccountDeserializationFailed",
-      "msg": "Account deserialization failed"
-    },
-    {
-      "code": 6078,
-      "name": "InvalidAccountDiscriminator",
-      "msg": "Invalid account discriminator"
-    },
-    {
-      "code": 6079,
-      "name": "InvalidTimestamp",
-      "msg": "Clock drift detected - invalid timestamp"
-    },
-    {
-      "code": 6080,
-      "name": "RentCalculationFailed",
-      "msg": "Rent calculation failed"
-    },
-    {
-      "code": 6081,
-      "name": "InvalidInstructionData",
-      "msg": "Invalid instruction data"
-    },
-    {
-      "code": 6082,
-      "name": "SecurityViolation",
-      "msg": "Security violation detected"
-    },
-    {
-      "code": 6083,
-      "name": "InvalidAccountOwner",
-      "msg": "Invalid account owner"
-    },
-    {
-      "code": 6084,
-      "name": "AccountClosureNotPermitted",
-      "msg": "Account closure not permitted"
-    },
-    {
-      "code": 6085,
-      "name": "InvalidAccountState",
-      "msg": "Invalid account state or data"
-    },
-    {
-      "code": 6086,
-      "name": "MailboxAlreadyLinked",
-      "msg": "This mailbox is already linked to another username"
-    },
-    {
-      "code": 6087,
-      "name": "MailboxLinkMismatch",
-      "msg": "Mailbox link mismatch - username not linked to this mailbox"
-    },
-    {
-      "code": 6088,
-      "name": "RefundGracePeriodNotMet",
-      "msg": "Refund grace period not met - must wait 24 hours after bid expiration"
-    },
-    {
-      "code": 6089,
-      "name": "InvalidAllDomainProgram",
-      "msg": "Invalid AllDomain program - not ANS program"
-    },
-    {
-      "code": 6090,
-      "name": "InvalidSkrDomainAccount",
-      "msg": "Invalid .skr domain account - not owned by ANS program"
-    },
-    {
-      "code": 6091,
-      "name": "InvalidSkrDomainAccountSize",
-      "msg": "Invalid .skr domain account size - too small"
-    },
-    {
-      "code": 6092,
-      "name": "InvalidSkrDomainAccountData",
-      "msg": "Invalid .skr domain account data format"
-    },
-    {
-      "code": 6093,
-      "name": "SkrDomainOwnerMismatch",
-      "msg": ".skr domain account owner does not match authority"
-    },
-    {
-      "code": 6094,
-      "name": "InvalidSkrTldParent",
-      "msg": "Invalid .skr TLD parent account"
-    },
-    {
-      "code": 6095,
-      "name": "NotSkrDomain",
-      "msg": "Not a .skr domain - only .skr domains allowed for Seeker Phone"
-    },
-    {
-      "code": 6096,
-      "name": "FailedToBorrowAccountData",
-      "msg": "Failed to borrow account data"
-    },
-    {
-      "code": 6097,
-      "name": "UsernameSkrDomainMismatch",
-      "msg": "Username does not match .skr domain name"
-    },
-    {
-      "code": 6098,
-      "name": "CannotWrapSkrUsername",
-      "msg": "Cannot wrap .skr domain usernames as NFT"
-    },
-    {
-      "code": 6099,
-      "name": "CannotUnlinkSkrMailbox",
-      "msg": "Cannot unlink mailbox from .skr domain username"
-    },
-    {
-      "code": 6100,
-      "name": "SkrDomainExpired",
-      "msg": ".skr domain has expired"
-    },
-    {
-      "code": 6101,
       "name": "SameFromAndTo",
       "msg": "Sender and recipient cannot be the same"
     },
     {
-      "code": 6102,
+      "code": 6001,
       "name": "InvalidSender",
       "msg": "Invalid sender address"
     },
     {
-      "code": 6103,
+      "code": 6002,
       "name": "InvalidRecipient",
       "msg": "Invalid recipient address"
     },
     {
-      "code": 6104,
+      "code": 6003,
       "name": "InvalidMailId",
       "msg": "Invalid mail ID"
     },
     {
-      "code": 6105,
+      "code": 6004,
       "name": "InvalidAuthority",
       "msg": "Invalid authority"
     },
     {
-      "code": 6106,
+      "code": 6005,
       "name": "InvalidEncryptionParams",
       "msg": "Invalid encryption params"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidInstruction",
+      "msg": "Invalid instruction"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidBody",
+      "msg": "The body of your email is too long. The max is 512 chars"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidSubject",
+      "msg": "The subject of your email is too long. The max is 150 chars"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidSalt",
+      "msg": "The salt should be exactly 16 chars"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidIv",
+      "msg": "The IV should be exactly 32 chars"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidDiffie",
+      "msg": "The diffie publickey should be exactly 64 chars"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidDestination",
+      "msg": "From and to address should not be same"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidSource",
+      "msg": "Signer and from address should be same"
+    },
+    {
+      "code": 6014,
+      "name": "Unauthorized",
+      "msg": "Unauthorized access"
+    },
+    {
+      "code": 6015,
+      "name": "UnauthorizedSigner",
+      "msg": "Unauthorized signer"
+    },
+    {
+      "code": 6016,
+      "name": "InvalidLabel",
+      "msg": "Invalid label"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidMailAccount",
+      "msg": "Invalid mailaccount"
+    },
+    {
+      "code": 6018,
+      "name": "UsernameAlreadyExists",
+      "msg": "Username already exists"
+    },
+    {
+      "code": 6019,
+      "name": "InvalidUsername",
+      "msg": "Invalid username - must be 1-32 characters, alphanumeric and underscores only"
+    },
+    {
+      "code": 6020,
+      "name": "UsernameNotFound",
+      "msg": "Username not found"
+    },
+    {
+      "code": 6021,
+      "name": "UsernameAlreadyWrapped",
+      "msg": "Username is already wrapped as NFT"
+    },
+    {
+      "code": 6022,
+      "name": "UsernameNotWrapped",
+      "msg": "Username is not wrapped"
+    },
+    {
+      "code": 6023,
+      "name": "CannotModifyWrappedUsername",
+      "msg": "Cannot modify wrapped username - unwrap first"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidNewAuthority",
+      "msg": "Invalid new authority"
+    },
+    {
+      "code": 6025,
+      "name": "InvalidMailbox",
+      "msg": "Invalid mailbox"
+    },
+    {
+      "code": 6026,
+      "name": "WrapperAlreadyExists",
+      "msg": "Wrapper already exists for this username"
+    },
+    {
+      "code": 6027,
+      "name": "WrapperNotFound",
+      "msg": "Wrapper not found"
+    },
+    {
+      "code": 6028,
+      "name": "WrapperNotActive",
+      "msg": "Wrapper is not active"
+    },
+    {
+      "code": 6029,
+      "name": "InvalidWrapperState",
+      "msg": "Invalid wrapper state"
+    },
+    {
+      "code": 6030,
+      "name": "NftMintMismatch",
+      "msg": "NFT mint mismatch"
+    },
+    {
+      "code": 6031,
+      "name": "InvalidNftAmount",
+      "msg": "Invalid NFT amount - must be exactly 1"
+    },
+    {
+      "code": 6032,
+      "name": "InvalidCollectionMint",
+      "msg": "Invalid collection mint"
+    },
+    {
+      "code": 6033,
+      "name": "CollectionNotVerified",
+      "msg": "Collection not verified"
+    },
+    {
+      "code": 6034,
+      "name": "InvalidMetadataAccount",
+      "msg": "Invalid metadata account"
+    },
+    {
+      "code": 6035,
+      "name": "MetadataCreationFailed",
+      "msg": "Metadata creation failed"
+    },
+    {
+      "code": 6036,
+      "name": "UsernameLockedForModifications",
+      "msg": "Username is locked for modifications"
+    },
+    {
+      "code": 6037,
+      "name": "NftTransferNotAllowed",
+      "msg": "NFT transfer not allowed"
+    },
+    {
+      "code": 6038,
+      "name": "InvalidOriginalAuthority",
+      "msg": "Invalid original authority"
+    },
+    {
+      "code": 6039,
+      "name": "CentralStateNotInitialized",
+      "msg": "Central state not initialized"
+    },
+    {
+      "code": 6040,
+      "name": "InvalidCentralState",
+      "msg": "Invalid central state"
+    },
+    {
+      "code": 6041,
+      "name": "UsernameAlreadyHasMailbox",
+      "msg": "Username already has a linked mailbox"
+    },
+    {
+      "code": 6042,
+      "name": "UsernameNoMailbox",
+      "msg": "Username does not have a linked mailbox"
+    },
+    {
+      "code": 6043,
+      "name": "InvalidMailboxAccount",
+      "msg": "Mailbox account does not exist or is invalid"
+    },
+    {
+      "code": 6044,
+      "name": "CannotLinkMailboxToWrappedUsername",
+      "msg": "Cannot link mailbox to wrapped username"
+    },
+    {
+      "code": 6045,
+      "name": "CannotUnlinkMailboxFromWrappedUsername",
+      "msg": "Cannot unlink mailbox from wrapped username"
+    },
+    {
+      "code": 6046,
+      "name": "UsernameMustHaveNoMailboxBeforeWrapping",
+      "msg": "Username must have no mailbox before wrapping"
+    },
+    {
+      "code": 6047,
+      "name": "MailboxOperationsLocked",
+      "msg": "Mailbox operations are locked for this wrapped username"
+    },
+    {
+      "code": 6048,
+      "name": "RateLimitExceeded",
+      "msg": "Rate limit exceeded: too many usernames created in time window"
+    },
+    {
+      "code": 6049,
+      "name": "RateLimitTooFrequent",
+      "msg": "Rate limit exceeded: creation too frequent, please wait"
+    },
+    {
+      "code": 6050,
+      "name": "InvalidRateLimit",
+      "msg": "Invalid rate limit account"
+    },
+    {
+      "code": 6051,
+      "name": "AccountNotInitialized",
+      "msg": "Account not initialized or has invalid discriminator"
+    },
+    {
+      "code": 6052,
+      "name": "UsernameInBiddingPeriod",
+      "msg": "Username is currently in bidding period"
+    },
+    {
+      "code": 6053,
+      "name": "PaymentGatingEnabled",
+      "msg": "Payment gating is enabled - must use bidding system"
+    },
+    {
+      "code": 6054,
+      "name": "BidTooLow",
+      "msg": "Bid amount is below minimum required"
+    },
+    {
+      "code": 6055,
+      "name": "BidNotHigherThanCurrent",
+      "msg": "Bid amount must be higher than current highest bid"
+    },
+    {
+      "code": 6056,
+      "name": "BidNotExpired",
+      "msg": "Bid has not expired yet - cannot claim username"
+    },
+    {
+      "code": 6057,
+      "name": "NotHighestBidder",
+      "msg": "You are not the highest bidder"
+    },
+    {
+      "code": 6058,
+      "name": "HighestBidder",
+      "msg": "You the current highest bidder, Cannot claim refund."
+    },
+    {
+      "code": 6059,
+      "name": "MarketplaceNotInitialized",
+      "msg": "Marketplace settings not initialized"
+    },
+    {
+      "code": 6060,
+      "name": "InvalidMarketplaceSettings",
+      "msg": "Invalid marketplace settings"
+    },
+    {
+      "code": 6061,
+      "name": "BidAccountNotFound",
+      "msg": "Bid account not found"
+    },
+    {
+      "code": 6062,
+      "name": "BidAccountNotActive",
+      "msg": "Bid account is not active"
+    },
+    {
+      "code": 6063,
+      "name": "CannotBidOnOwnBid",
+      "msg": "Cannot bid on your own bid"
+    },
+    {
+      "code": 6064,
+      "name": "BidAlreadyExpired",
+      "msg": "Bid has already expired"
+    },
+    {
+      "code": 6065,
+      "name": "UsernameAlreadyHasBid",
+      "msg": "Username already has an active bid"
+    },
+    {
+      "code": 6066,
+      "name": "CannotCancelBid",
+      "msg": "Cannot cancel bid - you are not the bidder"
+    },
+    {
+      "code": 6067,
+      "name": "InsufficientFundsForBid",
+      "msg": "Insufficient funds for bid"
+    },
+    {
+      "code": 6068,
+      "name": "InvalidBidDuration",
+      "msg": "Invalid bid duration"
+    },
+    {
+      "code": 6069,
+      "name": "MarketplaceAuthorityMismatch",
+      "msg": "Marketplace authority mismatch"
+    },
+    {
+      "code": 6070,
+      "name": "UsernameHasActiveBid",
+      "msg": "Username has active bid - cannot create directly"
+    },
+    {
+      "code": 6071,
+      "name": "PaymentRequired",
+      "msg": "Payment required - marketplace has payment gating enabled"
+    },
+    {
+      "code": 6072,
+      "name": "BiddingPaused",
+      "msg": "Bidding paused - marketplace has paused bidding system"
+    },
+    {
+      "code": 6073,
+      "name": "InvalidPreviousBidder",
+      "msg": "Invalid previous bidder"
+    },
+    {
+      "code": 6074,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6075,
+      "name": "InvalidBidAccountState",
+      "msg": "Invalid bid account state"
+    },
+    {
+      "code": 6076,
+      "name": "InsufficientAccountBalance",
+      "msg": "Insufficient account balance"
+    },
+    {
+      "code": 6077,
+      "name": "BidAmountTooHigh",
+      "msg": "Bid amount exceeds maximum allowed"
+    },
+    {
+      "code": 6078,
+      "name": "InvalidDomainAccount",
+      "msg": "Invalid domain account"
+    },
+    {
+      "code": 6079,
+      "name": "InvalidUsernameCharacters",
+      "msg": "Username contains invalid characters"
+    },
+    {
+      "code": 6080,
+      "name": "UsernameReserved",
+      "msg": "Username is reserved and cannot be used"
+    },
+    {
+      "code": 6081,
+      "name": "AccountSpaceError",
+      "msg": "Account space calculation error"
+    },
+    {
+      "code": 6082,
+      "name": "InvalidBumpSeed",
+      "msg": "Invalid account bump seed"
+    },
+    {
+      "code": 6083,
+      "name": "AccountDeserializationFailed",
+      "msg": "Account deserialization failed"
+    },
+    {
+      "code": 6084,
+      "name": "InvalidAccountDiscriminator",
+      "msg": "Invalid account discriminator"
+    },
+    {
+      "code": 6085,
+      "name": "InvalidTimestamp",
+      "msg": "Clock drift detected - invalid timestamp"
+    },
+    {
+      "code": 6086,
+      "name": "RentCalculationFailed",
+      "msg": "Rent calculation failed"
+    },
+    {
+      "code": 6087,
+      "name": "InvalidInstructionData",
+      "msg": "Invalid instruction data"
+    },
+    {
+      "code": 6088,
+      "name": "SecurityViolation",
+      "msg": "Security violation detected"
+    },
+    {
+      "code": 6089,
+      "name": "InvalidAccountOwner",
+      "msg": "Invalid account owner"
+    },
+    {
+      "code": 6090,
+      "name": "AccountClosureNotPermitted",
+      "msg": "Account closure not permitted"
+    },
+    {
+      "code": 6091,
+      "name": "InvalidAccountState",
+      "msg": "Invalid account state or data"
+    },
+    {
+      "code": 6092,
+      "name": "MailboxAlreadyLinked",
+      "msg": "This mailbox is already linked to another username"
+    },
+    {
+      "code": 6093,
+      "name": "MailboxLinkMismatch",
+      "msg": "Mailbox link mismatch - username not linked to this mailbox"
+    },
+    {
+      "code": 6094,
+      "name": "RefundGracePeriodNotMet",
+      "msg": "Refund grace period not met - must wait 24 hours after bid expiration"
+    },
+    {
+      "code": 6095,
+      "name": "InvalidAllDomainProgram",
+      "msg": "Invalid AllDomain program - not ANS program"
+    },
+    {
+      "code": 6096,
+      "name": "InvalidSkrDomainAccount",
+      "msg": "Invalid .skr domain account - not owned by ANS program"
+    },
+    {
+      "code": 6097,
+      "name": "InvalidSkrDomainAccountSize",
+      "msg": "Invalid .skr domain account size - too small"
+    },
+    {
+      "code": 6098,
+      "name": "InvalidSkrDomainAccountData",
+      "msg": "Invalid .skr domain account data format"
+    },
+    {
+      "code": 6099,
+      "name": "SkrDomainOwnerMismatch",
+      "msg": ".skr domain account owner does not match authority"
+    },
+    {
+      "code": 6100,
+      "name": "InvalidSkrTldParent",
+      "msg": "Invalid .skr TLD parent account"
+    },
+    {
+      "code": 6101,
+      "name": "NotSkrDomain",
+      "msg": "Not a .skr domain - only .skr domains allowed for Seeker Phone"
+    },
+    {
+      "code": 6102,
+      "name": "FailedToBorrowAccountData",
+      "msg": "Failed to borrow account data"
+    },
+    {
+      "code": 6103,
+      "name": "UsernameSkrDomainMismatch",
+      "msg": "Username does not match .skr domain name"
+    },
+    {
+      "code": 6104,
+      "name": "CannotWrapSkrUsername",
+      "msg": "Cannot wrap .skr domain usernames as NFT"
+    },
+    {
+      "code": 6105,
+      "name": "CannotUnlinkSkrMailbox",
+      "msg": "Cannot unlink mailbox from .skr domain username"
+    },
+    {
+      "code": 6106,
+      "name": "SkrDomainExpired",
+      "msg": ".skr domain has expired"
     },
     {
       "code": 6107,
@@ -5617,6 +3818,61 @@
       "code": 6109,
       "name": "MailboxNotLinkedToThisUsername",
       "msg": "Mailbox not linked to this username"
+    },
+    {
+      "code": 6110,
+      "name": "InvalidAirdropAmount",
+      "msg": "Invalid airdrop amount: total_amount and amount_per_user must be > 0, and amount_per_user <= total_amount"
+    },
+    {
+      "code": 6111,
+      "name": "InvalidMaxRecipients",
+      "msg": "Invalid max recipients: must be > 0 and not exceed total_amount / amount_per_user"
+    },
+    {
+      "code": 6112,
+      "name": "InvalidExpiration",
+      "msg": "Invalid expiration: must be in the future"
+    },
+    {
+      "code": 6113,
+      "name": "EmptyIdentifier",
+      "msg": "Identifier cannot be empty"
+    },
+    {
+      "code": 6114,
+      "name": "IdentifierTooLong",
+      "msg": "Identifier too long: max 64 characters"
+    },
+    {
+      "code": 6115,
+      "name": "UnauthorizedAirdropAccess",
+      "msg": "Unauthorized: only the airdrop authority can perform this action"
+    },
+    {
+      "code": 6116,
+      "name": "AirdropNotActive",
+      "msg": "Airdrop is not active"
+    },
+    {
+      "code": 6117,
+      "name": "AirdropExpired",
+      "msg": "Airdrop has expired"
+    },
+    {
+      "code": 6118,
+      "name": "MaxRecipientsReached",
+      "msg": "Maximum recipients reached"
+    },
+    {
+      "code": 6119,
+      "name": "InvalidAirdropName",
+      "msg": "Invalid airdrop name: must be between 1 and 64 characters"
+    },
+    {
+      "code": 6120,
+      "name": "InvalidAirdropMessage",
+      "msg": "Invalid airdrop message: must not exceed 256 characters"
     }
   ],
   "types": [
@@ -5692,9 +3948,7 @@
     },
     {
       "name": "BidAccount",
-      "docs": [
-        "Fixed-size fields first for efficient querying"
-      ],
+      "docs": ["Fixed-size fields first for efficient querying"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -6193,9 +4447,7 @@
         "fields": [
           {
             "name": "tree_info",
-            "docs": [
-              "Merkle tree context."
-            ],
+            "docs": ["Merkle tree context."],
             "type": {
               "defined": {
                 "name": "PackedStateTreeInfo"
@@ -6204,22 +4456,59 @@
           },
           {
             "name": "address",
-            "docs": [
-              "Address."
-            ],
+            "docs": ["Address."],
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           },
           {
             "name": "output_state_tree_index",
-            "docs": [
-              "Output merkle tree index."
-            ],
+            "docs": ["Output merkle tree index."],
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CompressedAirdropCreatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airdrop_address",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_amount",
+            "type": "u64"
+          },
+          {
+            "name": "amount_per_user",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "u32"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "type": "string"
           }
         ]
       }
@@ -6263,86 +4552,50 @@
         "fields": [
           {
             "name": "id",
-            "docs": [
-              "Mail ID (unique identifier)"
-            ],
             "type": "string"
           },
           {
             "name": "parent_id",
-            "docs": [
-              "Parent mail ID for threading/replies"
-            ],
             "type": "string"
           },
           {
             "name": "from",
-            "docs": [
-              "Sender's public key"
-            ],
             "type": "pubkey"
           },
           {
             "name": "to",
-            "docs": [
-              "Recipient's public key"
-            ],
             "type": "pubkey"
           },
           {
             "name": "mailbox",
-            "docs": [
-              "Recipient's mailbox PDA"
-            ],
             "type": "pubkey"
           },
           {
             "name": "subject",
-            "docs": [
-              "Email subject (encrypted)"
-            ],
             "type": "string"
           },
           {
             "name": "body",
-            "docs": [
-              "Email body (encrypted)"
-            ],
             "type": "string"
           },
           {
             "name": "authority",
-            "docs": [
-              "Mail owner (either sender or recipient)"
-            ],
             "type": "pubkey"
           },
           {
             "name": "encryption_params",
-            "docs": [
-              "Encryption params JSON: {\"iv\": \"...\", \"salt\": \"...\", \"version\": \"...\"}"
-            ],
             "type": "string"
           },
           {
             "name": "created_at",
-            "docs": [
-              "Creation timestamp"
-            ],
             "type": "i64"
           },
           {
             "name": "mark_as_read",
-            "docs": [
-              "Whether mail has been read"
-            ],
             "type": "bool"
           },
           {
             "name": "label",
-            "docs": [
-              "Label for categorization"
-            ],
             "type": {
               "defined": {
                 "name": "MailLabel"
@@ -6527,28 +4780,19 @@
           {
             "name": "a",
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           },
           {
             "name": "b",
             "type": {
-              "array": [
-                "u8",
-                64
-              ]
+              "array": ["u8", 64]
             }
           },
           {
             "name": "c",
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           }
         ]
@@ -7200,9 +5444,7 @@
     },
     {
       "name": "MarketplaceTreasury",
-      "docs": [
-        "Simple PDA account for SOL treasury"
-      ],
+      "docs": ["Simple PDA account for SOL treasury"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -7731,9 +5973,7 @@
     },
     {
       "name": "SolmailCentralState",
-      "docs": [
-        "Central State for managing collection and program authority"
-      ],
+      "docs": ["Central State for managing collection and program authority"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -7817,6 +6057,72 @@
       }
     },
     {
+      "name": "TldBatchEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "suffix",
+            "type": "string"
+          },
+          {
+            "name": "parent_pubkey",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TldEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "suffix",
+            "type": "string"
+          },
+          {
+            "name": "parent_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TldRegistry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "tlds",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TldEntry"
+                }
+              }
+            }
+          },
+          {
+            "name": "ans_program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
       "name": "TreasuryRevenueEvent",
       "type": {
         "kind": "struct",
@@ -7856,9 +6162,7 @@
     },
     {
       "name": "UserBid",
-      "docs": [
-        "Individual UserBid account - one per (user, bid_account) pair"
-      ],
+      "docs": ["Individual UserBid account - one per (user, bid_account) pair"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -8564,9 +6868,7 @@
     },
     {
       "name": "WrapperTag",
-      "docs": [
-        "Wrapper state tags for tracking tokenization status"
-      ],
+      "docs": ["Wrapper state tags for tracking tokenization status"],
       "type": {
         "kind": "enum",
         "variants": [

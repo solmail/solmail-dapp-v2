@@ -562,6 +562,70 @@ export type Solmail = {
       "args": []
     },
     {
+      "name": "compressedAirdropCreate",
+      "docs": [
+        "Create a new compressed airdrop"
+      ],
+      "discriminator": [
+        136,
+        77,
+        183,
+        37,
+        128,
+        240,
+        5,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "feePayer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tokenMint",
+          "docs": [
+            "The SPL token mint that will be airdropped"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "totalAmount",
+          "type": "u64"
+        },
+        {
+          "name": "amountPerUser",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "validityProof"
+            }
+          }
+        },
+        {
+          "name": "addressTreeInfo",
+          "type": {
+            "defined": {
+              "name": "packedAddressTreeInfo"
+            }
+          }
+        },
+        {
+          "name": "outputMerkleTreeIndex",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "compressedMarkMailAsPayment",
       "docs": [
         "Mark a mail as payment"
@@ -5127,6 +5191,19 @@ export type Solmail = {
       ]
     },
     {
+      "name": "compressedAirdropCreatedEvent",
+      "discriminator": [
+        82,
+        200,
+        31,
+        101,
+        66,
+        185,
+        67,
+        115
+      ]
+    },
+    {
       "name": "compressedMailAccountRegisterEvent",
       "discriminator": [
         223,
@@ -6249,6 +6326,51 @@ export type Solmail = {
       "code": 6109,
       "name": "mailboxNotLinkedToThisUsername",
       "msg": "Mailbox not linked to this username"
+    },
+    {
+      "code": 6110,
+      "name": "invalidAirdropAmount",
+      "msg": "Invalid airdrop amount: total_amount and amount_per_user must be > 0, and amount_per_user <= total_amount"
+    },
+    {
+      "code": 6111,
+      "name": "invalidMaxRecipients",
+      "msg": "Invalid max recipients: must be > 0 and not exceed total_amount / amount_per_user"
+    },
+    {
+      "code": 6112,
+      "name": "invalidExpiration",
+      "msg": "Invalid expiration: must be in the future"
+    },
+    {
+      "code": 6113,
+      "name": "emptyIdentifier",
+      "msg": "Identifier cannot be empty"
+    },
+    {
+      "code": 6114,
+      "name": "identifierTooLong",
+      "msg": "Identifier too long: max 64 characters"
+    },
+    {
+      "code": 6115,
+      "name": "unauthorizedAirdropAccess",
+      "msg": "Unauthorized: only the airdrop authority can perform this action"
+    },
+    {
+      "code": 6116,
+      "name": "airdropNotActive",
+      "msg": "Airdrop is not active"
+    },
+    {
+      "code": 6117,
+      "name": "airdropExpired",
+      "msg": "Airdrop has expired"
+    },
+    {
+      "code": 6118,
+      "name": "maxRecipientsReached",
+      "msg": "Maximum recipients reached"
     }
   ],
   "types": [
@@ -6852,6 +6974,42 @@ export type Solmail = {
               "Output merkle tree index."
             ],
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "compressedAirdropCreatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airdropAddress",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "tokenMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "totalAmount",
+            "type": "u64"
+          },
+          {
+            "name": "amountPerUser",
+            "type": "u64"
+          },
+          {
+            "name": "createdAt",
+            "type": "u32"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
           }
         ]
       }

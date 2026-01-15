@@ -14,6 +14,116 @@ export type Solmail = {
   },
   "instructions": [
     {
+      "name": "addTld",
+      "discriminator": [
+        85,
+        96,
+        82,
+        211,
+        199,
+        179,
+        225,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tldRegistry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  108,
+                  100,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "tldSuffix",
+          "type": "string"
+        },
+        {
+          "name": "parentPubkey",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "batchAddTlds",
+      "discriminator": [
+        55,
+        169,
+        109,
+        138,
+        222,
+        165,
+        163,
+        175
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tldRegistry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  108,
+                  100,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "tldEntries",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "tldBatchEntry"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "broadcastMessage",
       "discriminator": [
         253,
@@ -449,6 +559,82 @@ export type Solmail = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "compressedAirdropCreate",
+      "docs": [
+        "Create a new compressed airdrop"
+      ],
+      "discriminator": [
+        136,
+        77,
+        183,
+        37,
+        128,
+        240,
+        5,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "feePayer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tokenMint",
+          "docs": [
+            "The SPL token mint that will be airdropped"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "createdAt",
+          "type": "u32"
+        },
+        {
+          "name": "totalAmount",
+          "type": "u64"
+        },
+        {
+          "name": "amountPerUser",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "validityProof"
+            }
+          }
+        },
+        {
+          "name": "addressTreeInfo",
+          "type": {
+            "defined": {
+              "name": "packedAddressTreeInfo"
+            }
+          }
+        },
+        {
+          "name": "outputMerkleTreeIndex",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "compressedMarkMailAsPayment",
@@ -2081,6 +2267,18 @@ export type Solmail = {
           ]
         },
         {
+          "name": "tldHouse",
+          "docs": [
+            "TldHouse for .skr (needed to verify reverse lookup PDA)"
+          ]
+        },
+        {
+          "name": "tldHouseReverseLookupAccount",
+          "docs": [
+            "Reverse lookup account containing the domain name"
+          ]
+        },
+        {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
@@ -2248,6 +2446,170 @@ export type Solmail = {
       ]
     },
     {
+      "name": "createUsernameWithAnsDomain",
+      "discriminator": [
+        40,
+        36,
+        41,
+        28,
+        88,
+        232,
+        180,
+        183
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "domainOwner",
+          "signer": true
+        },
+        {
+          "name": "usernameAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  110,
+                  97,
+                  109,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "username"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  111,
+                  108,
+                  46,
+                  109,
+                  97,
+                  105,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "rateLimit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplaceSettings",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101,
+                  95,
+                  115,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "tldRegistry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  108,
+                  100,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "ansDomainAccount"
+        },
+        {
+          "name": "tldHouse"
+        },
+        {
+          "name": "tldHouseReverseLookupAccount"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "createmail",
       "docs": [
         "Create mail V2"
@@ -2373,6 +2735,56 @@ export type Solmail = {
         },
         {
           "name": "parentId",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deactivateTld",
+      "discriminator": [
+        7,
+        157,
+        230,
+        84,
+        143,
+        236,
+        89,
+        229
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tldRegistry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  108,
+                  100,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "tldSuffix",
           "type": "string"
         }
       ]
@@ -2538,6 +2950,61 @@ export type Solmail = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "initializeTldRegistry",
+      "discriminator": [
+        14,
+        174,
+        178,
+        126,
+        165,
+        10,
+        19,
+        63
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tldRegistry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  108,
+                  100,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "ansProgramId",
+          "type": "pubkey"
+        }
+      ]
     },
     {
       "name": "linkCompressedMailboxToUsername",
@@ -4304,6 +4771,19 @@ export type Solmail = {
       ]
     },
     {
+      "name": "tldRegistry",
+      "discriminator": [
+        248,
+        79,
+        147,
+        86,
+        57,
+        139,
+        42,
+        142
+      ]
+    },
+    {
       "name": "userBid",
       "discriminator": [
         13,
@@ -4498,6 +4978,19 @@ export type Solmail = {
         126,
         189,
         43
+      ]
+    },
+    {
+      "name": "compressedAirdropCreatedEvent",
+      "discriminator": [
+        82,
+        200,
+        31,
+        101,
+        66,
+        185,
+        67,
+        115
       ]
     },
     {
@@ -5076,538 +5569,538 @@ export type Solmail = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidInstruction",
-      "msg": "Invalid instruction"
-    },
-    {
-      "code": 6001,
-      "name": "invalidBody",
-      "msg": "The body of your email is too long. The max is 512 chars"
-    },
-    {
-      "code": 6002,
-      "name": "invalidSubject",
-      "msg": "The subject of your email is too long. The max is 40 chars"
-    },
-    {
-      "code": 6003,
-      "name": "invalidSalt",
-      "msg": "The salt should be exactly 16 chars"
-    },
-    {
-      "code": 6004,
-      "name": "invalidIv",
-      "msg": "The IV should be exactly 32 chars"
-    },
-    {
-      "code": 6005,
-      "name": "invalidDiffie",
-      "msg": "The diffie publickey should be exactly 64 chars"
-    },
-    {
-      "code": 6006,
-      "name": "invalidDestination",
-      "msg": "From and to address should not be same"
-    },
-    {
-      "code": 6007,
-      "name": "invalidSource",
-      "msg": "Signer and from address should be same"
-    },
-    {
-      "code": 6008,
-      "name": "unauthorized",
-      "msg": "Unauthorized access"
-    },
-    {
-      "code": 6009,
-      "name": "unauthorizedSigner",
-      "msg": "Unauthorized signer"
-    },
-    {
-      "code": 6010,
-      "name": "invalidLabel",
-      "msg": "Invalid label"
-    },
-    {
-      "code": 6011,
-      "name": "invalidMailAccount",
-      "msg": "Invalid mailaccount"
-    },
-    {
-      "code": 6012,
-      "name": "usernameAlreadyExists",
-      "msg": "Username already exists"
-    },
-    {
-      "code": 6013,
-      "name": "invalidUsername",
-      "msg": "Invalid username - must be 1-32 characters, alphanumeric and underscores only"
-    },
-    {
-      "code": 6014,
-      "name": "usernameNotFound",
-      "msg": "Username not found"
-    },
-    {
-      "code": 6015,
-      "name": "usernameAlreadyWrapped",
-      "msg": "Username is already wrapped as NFT"
-    },
-    {
-      "code": 6016,
-      "name": "usernameNotWrapped",
-      "msg": "Username is not wrapped"
-    },
-    {
-      "code": 6017,
-      "name": "cannotModifyWrappedUsername",
-      "msg": "Cannot modify wrapped username - unwrap first"
-    },
-    {
-      "code": 6018,
-      "name": "invalidNewAuthority",
-      "msg": "Invalid new authority"
-    },
-    {
-      "code": 6019,
-      "name": "invalidMailbox",
-      "msg": "Invalid mailbox"
-    },
-    {
-      "code": 6020,
-      "name": "wrapperAlreadyExists",
-      "msg": "Wrapper already exists for this username"
-    },
-    {
-      "code": 6021,
-      "name": "wrapperNotFound",
-      "msg": "Wrapper not found"
-    },
-    {
-      "code": 6022,
-      "name": "wrapperNotActive",
-      "msg": "Wrapper is not active"
-    },
-    {
-      "code": 6023,
-      "name": "invalidWrapperState",
-      "msg": "Invalid wrapper state"
-    },
-    {
-      "code": 6024,
-      "name": "nftMintMismatch",
-      "msg": "NFT mint mismatch"
-    },
-    {
-      "code": 6025,
-      "name": "invalidNftAmount",
-      "msg": "Invalid NFT amount - must be exactly 1"
-    },
-    {
-      "code": 6026,
-      "name": "invalidCollectionMint",
-      "msg": "Invalid collection mint"
-    },
-    {
-      "code": 6027,
-      "name": "collectionNotVerified",
-      "msg": "Collection not verified"
-    },
-    {
-      "code": 6028,
-      "name": "invalidMetadataAccount",
-      "msg": "Invalid metadata account"
-    },
-    {
-      "code": 6029,
-      "name": "metadataCreationFailed",
-      "msg": "Metadata creation failed"
-    },
-    {
-      "code": 6030,
-      "name": "usernameLockedForModifications",
-      "msg": "Username is locked for modifications"
-    },
-    {
-      "code": 6031,
-      "name": "nftTransferNotAllowed",
-      "msg": "NFT transfer not allowed"
-    },
-    {
-      "code": 6032,
-      "name": "invalidOriginalAuthority",
-      "msg": "Invalid original authority"
-    },
-    {
-      "code": 6033,
-      "name": "centralStateNotInitialized",
-      "msg": "Central state not initialized"
-    },
-    {
-      "code": 6034,
-      "name": "invalidCentralState",
-      "msg": "Invalid central state"
-    },
-    {
-      "code": 6035,
-      "name": "usernameAlreadyHasMailbox",
-      "msg": "Username already has a linked mailbox"
-    },
-    {
-      "code": 6036,
-      "name": "usernameNoMailbox",
-      "msg": "Username does not have a linked mailbox"
-    },
-    {
-      "code": 6037,
-      "name": "invalidMailboxAccount",
-      "msg": "Mailbox account does not exist or is invalid"
-    },
-    {
-      "code": 6038,
-      "name": "cannotLinkMailboxToWrappedUsername",
-      "msg": "Cannot link mailbox to wrapped username"
-    },
-    {
-      "code": 6039,
-      "name": "cannotUnlinkMailboxFromWrappedUsername",
-      "msg": "Cannot unlink mailbox from wrapped username"
-    },
-    {
-      "code": 6040,
-      "name": "usernameMustHaveNoMailboxBeforeWrapping",
-      "msg": "Username must have no mailbox before wrapping"
-    },
-    {
-      "code": 6041,
-      "name": "mailboxOperationsLocked",
-      "msg": "Mailbox operations are locked for this wrapped username"
-    },
-    {
-      "code": 6042,
-      "name": "rateLimitExceeded",
-      "msg": "Rate limit exceeded: too many usernames created in time window"
-    },
-    {
-      "code": 6043,
-      "name": "rateLimitTooFrequent",
-      "msg": "Rate limit exceeded: creation too frequent, please wait"
-    },
-    {
-      "code": 6044,
-      "name": "invalidRateLimit",
-      "msg": "Invalid rate limit account"
-    },
-    {
-      "code": 6045,
-      "name": "accountNotInitialized",
-      "msg": "Account not initialized or has invalid discriminator"
-    },
-    {
-      "code": 6046,
-      "name": "usernameInBiddingPeriod",
-      "msg": "Username is currently in bidding period"
-    },
-    {
-      "code": 6047,
-      "name": "paymentGatingEnabled",
-      "msg": "Payment gating is enabled - must use bidding system"
-    },
-    {
-      "code": 6048,
-      "name": "bidTooLow",
-      "msg": "Bid amount is below minimum required"
-    },
-    {
-      "code": 6049,
-      "name": "bidNotHigherThanCurrent",
-      "msg": "Bid amount must be higher than current highest bid"
-    },
-    {
-      "code": 6050,
-      "name": "bidNotExpired",
-      "msg": "Bid has not expired yet - cannot claim username"
-    },
-    {
-      "code": 6051,
-      "name": "notHighestBidder",
-      "msg": "You are not the highest bidder"
-    },
-    {
-      "code": 6052,
-      "name": "highestBidder",
-      "msg": "You the current highest bidder, Cannot claim refund."
-    },
-    {
-      "code": 6053,
-      "name": "marketplaceNotInitialized",
-      "msg": "Marketplace settings not initialized"
-    },
-    {
-      "code": 6054,
-      "name": "invalidMarketplaceSettings",
-      "msg": "Invalid marketplace settings"
-    },
-    {
-      "code": 6055,
-      "name": "bidAccountNotFound",
-      "msg": "Bid account not found"
-    },
-    {
-      "code": 6056,
-      "name": "bidAccountNotActive",
-      "msg": "Bid account is not active"
-    },
-    {
-      "code": 6057,
-      "name": "cannotBidOnOwnBid",
-      "msg": "Cannot bid on your own bid"
-    },
-    {
-      "code": 6058,
-      "name": "bidAlreadyExpired",
-      "msg": "Bid has already expired"
-    },
-    {
-      "code": 6059,
-      "name": "usernameAlreadyHasBid",
-      "msg": "Username already has an active bid"
-    },
-    {
-      "code": 6060,
-      "name": "cannotCancelBid",
-      "msg": "Cannot cancel bid - you are not the bidder"
-    },
-    {
-      "code": 6061,
-      "name": "insufficientFundsForBid",
-      "msg": "Insufficient funds for bid"
-    },
-    {
-      "code": 6062,
-      "name": "invalidBidDuration",
-      "msg": "Invalid bid duration"
-    },
-    {
-      "code": 6063,
-      "name": "marketplaceAuthorityMismatch",
-      "msg": "Marketplace authority mismatch"
-    },
-    {
-      "code": 6064,
-      "name": "usernameHasActiveBid",
-      "msg": "Username has active bid - cannot create directly"
-    },
-    {
-      "code": 6065,
-      "name": "paymentRequired",
-      "msg": "Payment required - marketplace has payment gating enabled"
-    },
-    {
-      "code": 6066,
-      "name": "biddingPaused",
-      "msg": "Bidding paused - marketplace has paused bidding system"
-    },
-    {
-      "code": 6067,
-      "name": "invalidPreviousBidder",
-      "msg": "Invalid previous bidder"
-    },
-    {
-      "code": 6068,
-      "name": "arithmeticOverflow",
-      "msg": "Arithmetic overflow"
-    },
-    {
-      "code": 6069,
-      "name": "invalidBidAccountState",
-      "msg": "Invalid bid account state"
-    },
-    {
-      "code": 6070,
-      "name": "insufficientAccountBalance",
-      "msg": "Insufficient account balance"
-    },
-    {
-      "code": 6071,
-      "name": "bidAmountTooHigh",
-      "msg": "Bid amount exceeds maximum allowed"
-    },
-    {
-      "code": 6072,
-      "name": "invalidDomainAccount",
-      "msg": "Invalid domain account"
-    },
-    {
-      "code": 6073,
-      "name": "invalidUsernameCharacters",
-      "msg": "Username contains invalid characters"
-    },
-    {
-      "code": 6074,
-      "name": "usernameReserved",
-      "msg": "Username is reserved and cannot be used"
-    },
-    {
-      "code": 6075,
-      "name": "accountSpaceError",
-      "msg": "Account space calculation error"
-    },
-    {
-      "code": 6076,
-      "name": "invalidBumpSeed",
-      "msg": "Invalid account bump seed"
-    },
-    {
-      "code": 6077,
-      "name": "accountDeserializationFailed",
-      "msg": "Account deserialization failed"
-    },
-    {
-      "code": 6078,
-      "name": "invalidAccountDiscriminator",
-      "msg": "Invalid account discriminator"
-    },
-    {
-      "code": 6079,
-      "name": "invalidTimestamp",
-      "msg": "Clock drift detected - invalid timestamp"
-    },
-    {
-      "code": 6080,
-      "name": "rentCalculationFailed",
-      "msg": "Rent calculation failed"
-    },
-    {
-      "code": 6081,
-      "name": "invalidInstructionData",
-      "msg": "Invalid instruction data"
-    },
-    {
-      "code": 6082,
-      "name": "securityViolation",
-      "msg": "Security violation detected"
-    },
-    {
-      "code": 6083,
-      "name": "invalidAccountOwner",
-      "msg": "Invalid account owner"
-    },
-    {
-      "code": 6084,
-      "name": "accountClosureNotPermitted",
-      "msg": "Account closure not permitted"
-    },
-    {
-      "code": 6085,
-      "name": "invalidAccountState",
-      "msg": "Invalid account state or data"
-    },
-    {
-      "code": 6086,
-      "name": "mailboxAlreadyLinked",
-      "msg": "This mailbox is already linked to another username"
-    },
-    {
-      "code": 6087,
-      "name": "mailboxLinkMismatch",
-      "msg": "Mailbox link mismatch - username not linked to this mailbox"
-    },
-    {
-      "code": 6088,
-      "name": "refundGracePeriodNotMet",
-      "msg": "Refund grace period not met - must wait 24 hours after bid expiration"
-    },
-    {
-      "code": 6089,
-      "name": "invalidAllDomainProgram",
-      "msg": "Invalid AllDomain program - not ANS program"
-    },
-    {
-      "code": 6090,
-      "name": "invalidSkrDomainAccount",
-      "msg": "Invalid .skr domain account - not owned by ANS program"
-    },
-    {
-      "code": 6091,
-      "name": "invalidSkrDomainAccountSize",
-      "msg": "Invalid .skr domain account size - too small"
-    },
-    {
-      "code": 6092,
-      "name": "invalidSkrDomainAccountData",
-      "msg": "Invalid .skr domain account data format"
-    },
-    {
-      "code": 6093,
-      "name": "skrDomainOwnerMismatch",
-      "msg": ".skr domain account owner does not match authority"
-    },
-    {
-      "code": 6094,
-      "name": "invalidSkrTldParent",
-      "msg": "Invalid .skr TLD parent account"
-    },
-    {
-      "code": 6095,
-      "name": "notSkrDomain",
-      "msg": "Not a .skr domain - only .skr domains allowed for Seeker Phone"
-    },
-    {
-      "code": 6096,
-      "name": "failedToBorrowAccountData",
-      "msg": "Failed to borrow account data"
-    },
-    {
-      "code": 6097,
-      "name": "usernameSkrDomainMismatch",
-      "msg": "Username does not match .skr domain name"
-    },
-    {
-      "code": 6098,
-      "name": "cannotWrapSkrUsername",
-      "msg": "Cannot wrap .skr domain usernames as NFT"
-    },
-    {
-      "code": 6099,
-      "name": "cannotUnlinkSkrMailbox",
-      "msg": "Cannot unlink mailbox from .skr domain username"
-    },
-    {
-      "code": 6100,
-      "name": "skrDomainExpired",
-      "msg": ".skr domain has expired"
-    },
-    {
-      "code": 6101,
       "name": "sameFromAndTo",
       "msg": "Sender and recipient cannot be the same"
     },
     {
-      "code": 6102,
+      "code": 6001,
       "name": "invalidSender",
       "msg": "Invalid sender address"
     },
     {
-      "code": 6103,
+      "code": 6002,
       "name": "invalidRecipient",
       "msg": "Invalid recipient address"
     },
     {
-      "code": 6104,
+      "code": 6003,
       "name": "invalidMailId",
       "msg": "Invalid mail ID"
     },
     {
-      "code": 6105,
+      "code": 6004,
       "name": "invalidAuthority",
       "msg": "Invalid authority"
     },
     {
-      "code": 6106,
+      "code": 6005,
       "name": "invalidEncryptionParams",
       "msg": "Invalid encryption params"
+    },
+    {
+      "code": 6006,
+      "name": "invalidInstruction",
+      "msg": "Invalid instruction"
+    },
+    {
+      "code": 6007,
+      "name": "invalidBody",
+      "msg": "The body of your email is too long. The max is 512 chars"
+    },
+    {
+      "code": 6008,
+      "name": "invalidSubject",
+      "msg": "The subject of your email is too long. The max is 150 chars"
+    },
+    {
+      "code": 6009,
+      "name": "invalidSalt",
+      "msg": "The salt should be exactly 16 chars"
+    },
+    {
+      "code": 6010,
+      "name": "invalidIv",
+      "msg": "The IV should be exactly 32 chars"
+    },
+    {
+      "code": 6011,
+      "name": "invalidDiffie",
+      "msg": "The diffie publickey should be exactly 64 chars"
+    },
+    {
+      "code": 6012,
+      "name": "invalidDestination",
+      "msg": "From and to address should not be same"
+    },
+    {
+      "code": 6013,
+      "name": "invalidSource",
+      "msg": "Signer and from address should be same"
+    },
+    {
+      "code": 6014,
+      "name": "unauthorized",
+      "msg": "Unauthorized access"
+    },
+    {
+      "code": 6015,
+      "name": "unauthorizedSigner",
+      "msg": "Unauthorized signer"
+    },
+    {
+      "code": 6016,
+      "name": "invalidLabel",
+      "msg": "Invalid label"
+    },
+    {
+      "code": 6017,
+      "name": "invalidMailAccount",
+      "msg": "Invalid mailaccount"
+    },
+    {
+      "code": 6018,
+      "name": "usernameAlreadyExists",
+      "msg": "Username already exists"
+    },
+    {
+      "code": 6019,
+      "name": "invalidUsername",
+      "msg": "Invalid username - must be 1-32 characters, alphanumeric and underscores only"
+    },
+    {
+      "code": 6020,
+      "name": "usernameNotFound",
+      "msg": "Username not found"
+    },
+    {
+      "code": 6021,
+      "name": "usernameAlreadyWrapped",
+      "msg": "Username is already wrapped as NFT"
+    },
+    {
+      "code": 6022,
+      "name": "usernameNotWrapped",
+      "msg": "Username is not wrapped"
+    },
+    {
+      "code": 6023,
+      "name": "cannotModifyWrappedUsername",
+      "msg": "Cannot modify wrapped username - unwrap first"
+    },
+    {
+      "code": 6024,
+      "name": "invalidNewAuthority",
+      "msg": "Invalid new authority"
+    },
+    {
+      "code": 6025,
+      "name": "invalidMailbox",
+      "msg": "Invalid mailbox"
+    },
+    {
+      "code": 6026,
+      "name": "wrapperAlreadyExists",
+      "msg": "Wrapper already exists for this username"
+    },
+    {
+      "code": 6027,
+      "name": "wrapperNotFound",
+      "msg": "Wrapper not found"
+    },
+    {
+      "code": 6028,
+      "name": "wrapperNotActive",
+      "msg": "Wrapper is not active"
+    },
+    {
+      "code": 6029,
+      "name": "invalidWrapperState",
+      "msg": "Invalid wrapper state"
+    },
+    {
+      "code": 6030,
+      "name": "nftMintMismatch",
+      "msg": "NFT mint mismatch"
+    },
+    {
+      "code": 6031,
+      "name": "invalidNftAmount",
+      "msg": "Invalid NFT amount - must be exactly 1"
+    },
+    {
+      "code": 6032,
+      "name": "invalidCollectionMint",
+      "msg": "Invalid collection mint"
+    },
+    {
+      "code": 6033,
+      "name": "collectionNotVerified",
+      "msg": "Collection not verified"
+    },
+    {
+      "code": 6034,
+      "name": "invalidMetadataAccount",
+      "msg": "Invalid metadata account"
+    },
+    {
+      "code": 6035,
+      "name": "metadataCreationFailed",
+      "msg": "Metadata creation failed"
+    },
+    {
+      "code": 6036,
+      "name": "usernameLockedForModifications",
+      "msg": "Username is locked for modifications"
+    },
+    {
+      "code": 6037,
+      "name": "nftTransferNotAllowed",
+      "msg": "NFT transfer not allowed"
+    },
+    {
+      "code": 6038,
+      "name": "invalidOriginalAuthority",
+      "msg": "Invalid original authority"
+    },
+    {
+      "code": 6039,
+      "name": "centralStateNotInitialized",
+      "msg": "Central state not initialized"
+    },
+    {
+      "code": 6040,
+      "name": "invalidCentralState",
+      "msg": "Invalid central state"
+    },
+    {
+      "code": 6041,
+      "name": "usernameAlreadyHasMailbox",
+      "msg": "Username already has a linked mailbox"
+    },
+    {
+      "code": 6042,
+      "name": "usernameNoMailbox",
+      "msg": "Username does not have a linked mailbox"
+    },
+    {
+      "code": 6043,
+      "name": "invalidMailboxAccount",
+      "msg": "Mailbox account does not exist or is invalid"
+    },
+    {
+      "code": 6044,
+      "name": "cannotLinkMailboxToWrappedUsername",
+      "msg": "Cannot link mailbox to wrapped username"
+    },
+    {
+      "code": 6045,
+      "name": "cannotUnlinkMailboxFromWrappedUsername",
+      "msg": "Cannot unlink mailbox from wrapped username"
+    },
+    {
+      "code": 6046,
+      "name": "usernameMustHaveNoMailboxBeforeWrapping",
+      "msg": "Username must have no mailbox before wrapping"
+    },
+    {
+      "code": 6047,
+      "name": "mailboxOperationsLocked",
+      "msg": "Mailbox operations are locked for this wrapped username"
+    },
+    {
+      "code": 6048,
+      "name": "rateLimitExceeded",
+      "msg": "Rate limit exceeded: too many usernames created in time window"
+    },
+    {
+      "code": 6049,
+      "name": "rateLimitTooFrequent",
+      "msg": "Rate limit exceeded: creation too frequent, please wait"
+    },
+    {
+      "code": 6050,
+      "name": "invalidRateLimit",
+      "msg": "Invalid rate limit account"
+    },
+    {
+      "code": 6051,
+      "name": "accountNotInitialized",
+      "msg": "Account not initialized or has invalid discriminator"
+    },
+    {
+      "code": 6052,
+      "name": "usernameInBiddingPeriod",
+      "msg": "Username is currently in bidding period"
+    },
+    {
+      "code": 6053,
+      "name": "paymentGatingEnabled",
+      "msg": "Payment gating is enabled - must use bidding system"
+    },
+    {
+      "code": 6054,
+      "name": "bidTooLow",
+      "msg": "Bid amount is below minimum required"
+    },
+    {
+      "code": 6055,
+      "name": "bidNotHigherThanCurrent",
+      "msg": "Bid amount must be higher than current highest bid"
+    },
+    {
+      "code": 6056,
+      "name": "bidNotExpired",
+      "msg": "Bid has not expired yet - cannot claim username"
+    },
+    {
+      "code": 6057,
+      "name": "notHighestBidder",
+      "msg": "You are not the highest bidder"
+    },
+    {
+      "code": 6058,
+      "name": "highestBidder",
+      "msg": "You the current highest bidder, Cannot claim refund."
+    },
+    {
+      "code": 6059,
+      "name": "marketplaceNotInitialized",
+      "msg": "Marketplace settings not initialized"
+    },
+    {
+      "code": 6060,
+      "name": "invalidMarketplaceSettings",
+      "msg": "Invalid marketplace settings"
+    },
+    {
+      "code": 6061,
+      "name": "bidAccountNotFound",
+      "msg": "Bid account not found"
+    },
+    {
+      "code": 6062,
+      "name": "bidAccountNotActive",
+      "msg": "Bid account is not active"
+    },
+    {
+      "code": 6063,
+      "name": "cannotBidOnOwnBid",
+      "msg": "Cannot bid on your own bid"
+    },
+    {
+      "code": 6064,
+      "name": "bidAlreadyExpired",
+      "msg": "Bid has already expired"
+    },
+    {
+      "code": 6065,
+      "name": "usernameAlreadyHasBid",
+      "msg": "Username already has an active bid"
+    },
+    {
+      "code": 6066,
+      "name": "cannotCancelBid",
+      "msg": "Cannot cancel bid - you are not the bidder"
+    },
+    {
+      "code": 6067,
+      "name": "insufficientFundsForBid",
+      "msg": "Insufficient funds for bid"
+    },
+    {
+      "code": 6068,
+      "name": "invalidBidDuration",
+      "msg": "Invalid bid duration"
+    },
+    {
+      "code": 6069,
+      "name": "marketplaceAuthorityMismatch",
+      "msg": "Marketplace authority mismatch"
+    },
+    {
+      "code": 6070,
+      "name": "usernameHasActiveBid",
+      "msg": "Username has active bid - cannot create directly"
+    },
+    {
+      "code": 6071,
+      "name": "paymentRequired",
+      "msg": "Payment required - marketplace has payment gating enabled"
+    },
+    {
+      "code": 6072,
+      "name": "biddingPaused",
+      "msg": "Bidding paused - marketplace has paused bidding system"
+    },
+    {
+      "code": 6073,
+      "name": "invalidPreviousBidder",
+      "msg": "Invalid previous bidder"
+    },
+    {
+      "code": 6074,
+      "name": "arithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6075,
+      "name": "invalidBidAccountState",
+      "msg": "Invalid bid account state"
+    },
+    {
+      "code": 6076,
+      "name": "insufficientAccountBalance",
+      "msg": "Insufficient account balance"
+    },
+    {
+      "code": 6077,
+      "name": "bidAmountTooHigh",
+      "msg": "Bid amount exceeds maximum allowed"
+    },
+    {
+      "code": 6078,
+      "name": "invalidDomainAccount",
+      "msg": "Invalid domain account"
+    },
+    {
+      "code": 6079,
+      "name": "invalidUsernameCharacters",
+      "msg": "Username contains invalid characters"
+    },
+    {
+      "code": 6080,
+      "name": "usernameReserved",
+      "msg": "Username is reserved and cannot be used"
+    },
+    {
+      "code": 6081,
+      "name": "accountSpaceError",
+      "msg": "Account space calculation error"
+    },
+    {
+      "code": 6082,
+      "name": "invalidBumpSeed",
+      "msg": "Invalid account bump seed"
+    },
+    {
+      "code": 6083,
+      "name": "accountDeserializationFailed",
+      "msg": "Account deserialization failed"
+    },
+    {
+      "code": 6084,
+      "name": "invalidAccountDiscriminator",
+      "msg": "Invalid account discriminator"
+    },
+    {
+      "code": 6085,
+      "name": "invalidTimestamp",
+      "msg": "Clock drift detected - invalid timestamp"
+    },
+    {
+      "code": 6086,
+      "name": "rentCalculationFailed",
+      "msg": "Rent calculation failed"
+    },
+    {
+      "code": 6087,
+      "name": "invalidInstructionData",
+      "msg": "Invalid instruction data"
+    },
+    {
+      "code": 6088,
+      "name": "securityViolation",
+      "msg": "Security violation detected"
+    },
+    {
+      "code": 6089,
+      "name": "invalidAccountOwner",
+      "msg": "Invalid account owner"
+    },
+    {
+      "code": 6090,
+      "name": "accountClosureNotPermitted",
+      "msg": "Account closure not permitted"
+    },
+    {
+      "code": 6091,
+      "name": "invalidAccountState",
+      "msg": "Invalid account state or data"
+    },
+    {
+      "code": 6092,
+      "name": "mailboxAlreadyLinked",
+      "msg": "This mailbox is already linked to another username"
+    },
+    {
+      "code": 6093,
+      "name": "mailboxLinkMismatch",
+      "msg": "Mailbox link mismatch - username not linked to this mailbox"
+    },
+    {
+      "code": 6094,
+      "name": "refundGracePeriodNotMet",
+      "msg": "Refund grace period not met - must wait 24 hours after bid expiration"
+    },
+    {
+      "code": 6095,
+      "name": "invalidAllDomainProgram",
+      "msg": "Invalid AllDomain program - not ANS program"
+    },
+    {
+      "code": 6096,
+      "name": "invalidSkrDomainAccount",
+      "msg": "Invalid .skr domain account - not owned by ANS program"
+    },
+    {
+      "code": 6097,
+      "name": "invalidSkrDomainAccountSize",
+      "msg": "Invalid .skr domain account size - too small"
+    },
+    {
+      "code": 6098,
+      "name": "invalidSkrDomainAccountData",
+      "msg": "Invalid .skr domain account data format"
+    },
+    {
+      "code": 6099,
+      "name": "skrDomainOwnerMismatch",
+      "msg": ".skr domain account owner does not match authority"
+    },
+    {
+      "code": 6100,
+      "name": "invalidSkrTldParent",
+      "msg": "Invalid .skr TLD parent account"
+    },
+    {
+      "code": 6101,
+      "name": "notSkrDomain",
+      "msg": "Not a .skr domain - only .skr domains allowed for Seeker Phone"
+    },
+    {
+      "code": 6102,
+      "name": "failedToBorrowAccountData",
+      "msg": "Failed to borrow account data"
+    },
+    {
+      "code": 6103,
+      "name": "usernameSkrDomainMismatch",
+      "msg": "Username does not match .skr domain name"
+    },
+    {
+      "code": 6104,
+      "name": "cannotWrapSkrUsername",
+      "msg": "Cannot wrap .skr domain usernames as NFT"
+    },
+    {
+      "code": 6105,
+      "name": "cannotUnlinkSkrMailbox",
+      "msg": "Cannot unlink mailbox from .skr domain username"
+    },
+    {
+      "code": 6106,
+      "name": "skrDomainExpired",
+      "msg": ".skr domain has expired"
     },
     {
       "code": 6107,
@@ -5623,6 +6116,61 @@ export type Solmail = {
       "code": 6109,
       "name": "mailboxNotLinkedToThisUsername",
       "msg": "Mailbox not linked to this username"
+    },
+    {
+      "code": 6110,
+      "name": "invalidAirdropAmount",
+      "msg": "Invalid airdrop amount: total_amount and amount_per_user must be > 0, and amount_per_user <= total_amount"
+    },
+    {
+      "code": 6111,
+      "name": "invalidMaxRecipients",
+      "msg": "Invalid max recipients: must be > 0 and not exceed total_amount / amount_per_user"
+    },
+    {
+      "code": 6112,
+      "name": "invalidExpiration",
+      "msg": "Invalid expiration: must be in the future"
+    },
+    {
+      "code": 6113,
+      "name": "emptyIdentifier",
+      "msg": "Identifier cannot be empty"
+    },
+    {
+      "code": 6114,
+      "name": "identifierTooLong",
+      "msg": "Identifier too long: max 64 characters"
+    },
+    {
+      "code": 6115,
+      "name": "unauthorizedAirdropAccess",
+      "msg": "Unauthorized: only the airdrop authority can perform this action"
+    },
+    {
+      "code": 6116,
+      "name": "airdropNotActive",
+      "msg": "Airdrop is not active"
+    },
+    {
+      "code": 6117,
+      "name": "airdropExpired",
+      "msg": "Airdrop has expired"
+    },
+    {
+      "code": 6118,
+      "name": "maxRecipientsReached",
+      "msg": "Maximum recipients reached"
+    },
+    {
+      "code": 6119,
+      "name": "invalidAirdropName",
+      "msg": "Invalid airdrop name: must be between 1 and 64 characters"
+    },
+    {
+      "code": 6120,
+      "name": "invalidAirdropMessage",
+      "msg": "Invalid airdrop message: must not exceed 256 characters"
     }
   ],
   "types": [
@@ -6231,6 +6779,50 @@ export type Solmail = {
       }
     },
     {
+      "name": "compressedAirdropCreatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airdropAddress",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "tokenMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "totalAmount",
+            "type": "u64"
+          },
+          {
+            "name": "amountPerUser",
+            "type": "u64"
+          },
+          {
+            "name": "createdAt",
+            "type": "u32"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "name": "compressedMailAccountRegisterEvent",
       "type": {
         "kind": "struct",
@@ -6269,86 +6861,50 @@ export type Solmail = {
         "fields": [
           {
             "name": "id",
-            "docs": [
-              "Mail ID (unique identifier)"
-            ],
             "type": "string"
           },
           {
             "name": "parentId",
-            "docs": [
-              "Parent mail ID for threading/replies"
-            ],
             "type": "string"
           },
           {
             "name": "from",
-            "docs": [
-              "Sender's public key"
-            ],
             "type": "pubkey"
           },
           {
             "name": "to",
-            "docs": [
-              "Recipient's public key"
-            ],
             "type": "pubkey"
           },
           {
             "name": "mailbox",
-            "docs": [
-              "Recipient's mailbox PDA"
-            ],
             "type": "pubkey"
           },
           {
             "name": "subject",
-            "docs": [
-              "Email subject (encrypted)"
-            ],
             "type": "string"
           },
           {
             "name": "body",
-            "docs": [
-              "Email body (encrypted)"
-            ],
             "type": "string"
           },
           {
             "name": "authority",
-            "docs": [
-              "Mail owner (either sender or recipient)"
-            ],
             "type": "pubkey"
           },
           {
             "name": "encryptionParams",
-            "docs": [
-              "Encryption params JSON: {\"iv\": \"...\", \"salt\": \"...\", \"version\": \"...\"}"
-            ],
             "type": "string"
           },
           {
             "name": "createdAt",
-            "docs": [
-              "Creation timestamp"
-            ],
             "type": "i64"
           },
           {
             "name": "markAsRead",
-            "docs": [
-              "Whether mail has been read"
-            ],
             "type": "bool"
           },
           {
             "name": "label",
-            "docs": [
-              "Label for categorization"
-            ],
             "type": {
               "defined": {
                 "name": "mailLabel"
@@ -7818,6 +8374,72 @@ export type Solmail = {
           {
             "name": "affectedUsersCount",
             "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tldBatchEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "suffix",
+            "type": "string"
+          },
+          {
+            "name": "parentPubkey",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tldEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "suffix",
+            "type": "string"
+          },
+          {
+            "name": "parentPubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tldRegistry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "tlds",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "tldEntry"
+                }
+              }
+            }
+          },
+          {
+            "name": "ansProgramId",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
