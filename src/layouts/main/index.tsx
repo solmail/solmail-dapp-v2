@@ -15,6 +15,11 @@ import LogoFull from "@assets/logo-full.png";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorBoundaryPage } from "@components/ErrorBoundary";
 import * as Sentry from "@sentry/react";
+import ReactGA from "react-ga4";
+
+if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
+  ReactGA.initialize(import.meta.env.VITE_GOOGLE_ANALYTICS_ID);
+}
 
 export const AppMainLayout: React.FC = () => {
   const { ready, authenticated } = usePrivy();
@@ -33,6 +38,17 @@ export const AppMainLayout: React.FC = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!(window as any).gtag) return;
+    console.log("Page chabge");
+    if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
+      (window as any).gtag("event", "page_view", {
+        page_path: location.pathname + location.search,
+        page_title: document.title,
+      });
+    }
+  }, [location.pathname, location.search]);
   if (!status || !ready) {
     return (
       <Flex h="100vh">
