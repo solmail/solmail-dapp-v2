@@ -40,15 +40,14 @@ export const AppMainLayout: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!(window as any).gtag) return;
-    console.log("Page chabge");
+    if (!window.gtag) return;
     if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
-      (window as any).gtag("event", "page_view", {
-        page_path: location.pathname + location.search,
+      window.gtag("event", "page_view", {
+        page_path: location.href ?? "",
         page_title: document.title,
       });
     }
-  }, [location.pathname, location.search]);
+  }, [location.href, location.pathname, location.search]);
   if (!status || !ready) {
     return (
       <Flex h="100vh">
