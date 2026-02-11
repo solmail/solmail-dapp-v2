@@ -9,10 +9,9 @@ import { useUsernamePopup } from "@hooks/useUsernamePopup";
 import { Link } from "@tanstack/react-router";
 
 export const MenuHeader: React.FC<MenuConfig> = ({ name, header }) => {
-  const { wallet } = usePrivyWallet();
-  const { username, displayName, hasUserNames } = useGetLinkedUsernameById(
-    wallet?.address
-  );
+  const { address } = usePrivyWallet();
+  const { username, displayName, hasUserNames } =
+    useGetLinkedUsernameById(address);
   const { onUpdate } = useUsernamePopup();
   const logo = useColorModeValue(SomailLogoTextDark, SolmailLogoText);
   const color = useColorModeValue("green.600", "green.200");

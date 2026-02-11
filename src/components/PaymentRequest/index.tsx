@@ -23,15 +23,11 @@ const PymentButton: React.FC<PaymentConfig> = ({ ...props }) => {
   const { mail } = useMailBody(id);
   const { amount, tokenaddress } = props;
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: !1 });
-  const { wallet, address } = usePrivyWallet();
+  const { address } = usePrivyWallet();
   const { data: isDone, isLoading } = usePaymentStatus(id, props);
 
   const openPayment = () => {
-    if (
-      mail &&
-      mail.from &&
-      mail.from.toString() !== wallet?.address?.toString()
-    ) {
+    if (mail && mail.from && mail.from.toString() !== address) {
       onOpen();
     }
   };

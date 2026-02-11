@@ -1,39 +1,47 @@
 import { PublicKey } from "@solana/web3.js";
 import { AnchorProvider, Program, type Idl } from "@coral-xyz/anchor";
 
-import { usePrivy } from "@privy-io/react-auth";
-
 import { useMemo } from "react";
 
 import { useSolanaConnection } from "./useConnection";
 import { useEmbeddedWallet } from "./useEmbeddedWallet";
+import { usePrivyWallet } from "./usePrivyWallet";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export const useGetProgramInstance = <T extends Idl>(IDL: T) => {
+  const { address, isConnected, isPrivy } = usePrivyWallet();
   const wallet = useEmbeddedWallet();
-  const { authenticated } = usePrivy();
+  const walletWeb3 = useWallet();
   const connection = useSolanaConnection();
   return useMemo(() => {
-    if (!authenticated || !wallet) {
+    if (!isConnected || !address) {
       return {
         provider: null,
         program: null,
         mailAccountAddress: null,
       };
     }
-    const provider = new AnchorProvider(
-      connection,
-      {
-        publicKey: new PublicKey(wallet.address),
-        signAllTransactions: wallet.signAllTransactions,
-        signTransaction: wallet.signTransaction,
-      },
-      { commitment: "processed" }
-    );
+    let provider;
+    if (isPrivy && wallet) {
+      provider = new AnchorProvider(
+        connection,
+        {
+          publicKey: new PublicKey(wallet.address),
+          signAllTransactions: wallet.signAllTransactions,
+          signTransaction: wallet.signTransaction,
+        },
+        { commitment: "processed" },
+      );
+    } else {
+      provider = new AnchorProvider(connection, walletWeb3 as any, {
+        commitment: "processed",
+      });
+    }
 
     const programID = new PublicKey(IDL.address);
     const [mailAccountAddress] = PublicKey.findProgramAddressSync(
-      [Buffer.from("mail-accountv2"), new PublicKey(wallet.address).toBuffer()],
-      programID
+      [Buffer.from("mail-accountv2"), new PublicKey(address).toBuffer()],
+      programID,
     );
 
     const program = new Program<T>(IDL as T, provider);
@@ -43,5 +51,5 @@ export const useGetProgramInstance = <T extends Idl>(IDL: T) => {
       program,
       mailAccountAddress,
     };
-  }, [IDL, authenticated, connection, wallet]);
+  }, [IDL, address, connection, isConnected, isPrivy, wallet, walletWeb3]);
 };

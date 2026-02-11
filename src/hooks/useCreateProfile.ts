@@ -4,18 +4,20 @@ import { QueryKeys } from "src/types";
 import { useHttp } from "@hooks/useHttp";
 import { useToast } from "./useToast";
 import { getErrorMessage } from "@utils/error/getErrorMessage";
+import { usePrivyWallet } from "./usePrivyWallet";
 type Payload = {
   code: string;
 };
 export const useCreateProfile = () => {
   const { user } = usePrivy();
   const { fetch } = useHttp();
+  const { address, isPrivy } = usePrivyWallet();
   const { showToast } = useToast();
   return useMutation({
     mutationKey: [QueryKeys.CREATE_USER_PROFILE],
     mutationFn: async ({ code }: Payload) => {
       await fetch(`/users/signup`, "POST", {
-        user_id: (user?.id ?? "").split(":").pop(),
+        user_id: isPrivy ? (user?.id ?? "").split(":").pop() : address,
         referral_code: code,
       });
     },

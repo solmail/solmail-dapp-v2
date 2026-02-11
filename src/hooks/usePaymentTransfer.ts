@@ -21,7 +21,7 @@ type PayLoad = {
 };
 export const usePaymentTransfer = () => {
   const { provider } = useGetMailProgramInstance();
-  const { isConnected: connected, wallet } = usePrivyWallet();
+  const { isConnected: connected, sendTransaction } = usePrivyWallet();
 
   const connection = useSolanaConnection();
   const { showToast } = useToast();
@@ -34,7 +34,7 @@ export const usePaymentTransfer = () => {
   return useMutation({
     mutationKey: [QueryKeys.PAYMENT_TRANSFER],
     mutationFn: async ({ to, amount, token, decimals }: PayLoad) => {
-      if (!provider || !wallet || !connection || !connected) {
+      if (!provider || !connection || !connected) {
         return !0;
       }
 
@@ -51,12 +51,12 @@ export const usePaymentTransfer = () => {
         if (splToken) {
           const fromTokenAccount = await getAssociatedTokenAddress(
             splToken,
-            provider.publicKey
+            provider.publicKey,
           );
 
           const toTokenAccount = await getAssociatedTokenAddress(
             splToken,
-            recipient
+            recipient,
           );
 
           const tx = new Transaction();
@@ -67,7 +67,7 @@ export const usePaymentTransfer = () => {
               provider.publicKey,
               toTokenAccount,
               recipient,
-              splToken
+              splToken,
             );
             tx.add(createATAIx);
           }
@@ -76,7 +76,7 @@ export const usePaymentTransfer = () => {
             fromTokenAccount,
             toTokenAccount,
             provider.publicKey,
-            Number(toRawAmount(amount.toString(), decimals))
+            Number(toRawAmount(amount.toString(), decimals)),
           );
 
           tx.add(transferIx);
@@ -87,19 +87,20 @@ export const usePaymentTransfer = () => {
               fromPubkey: provider.publicKey,
               toPubkey: recipient,
               lamports: Number(toRawAmount(amount.toString(), decimals)),
-            })
+            }),
           );
         }
 
         const { blockhash } = await connection.getLatestBlockhash("confirmed");
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = provider.publicKey;
-        await wallet.sendTransaction(transaction, connection, {
+        await sendTransaction(transaction, connection, {
           skipPreflight: false,
         });
         invalidate();
         showToast("Successfully transferred", { type: "success" });
-      } catch {
+      } catch (e) {
+        console.log(e);
         invalidate();
         showToast("Failed transfer", { type: "error" });
       }

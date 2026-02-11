@@ -14,6 +14,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+
 import { usePrivy } from "@privy-io/react-auth";
 
 import { shortenPrincipalId } from "@utils/string";
@@ -143,7 +144,6 @@ export const UserProfileCard: React.FC = () => {
 };
 
 const Profile: React.FC = () => {
-  const { user } = usePrivy();
   const { address } = usePrivyWallet();
   const { displayName, isWalletAddress } = useGetLinkedUsernameById(address);
   return (
@@ -156,7 +156,6 @@ const Profile: React.FC = () => {
       p={3}
       py={4}
       direction={"column"}
-      data-id={user?.id?.toString()}
       w="300px"
     >
       <ProfileHeader />
@@ -216,7 +215,7 @@ const ProfileHeader: React.FC = () => {
 };
 
 const ProfileBalance: React.FC = () => {
-  const { wallet } = usePrivyWallet();
+  const { address } = usePrivyWallet();
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
     <Flex direction={"column"} my={3}>
@@ -233,9 +232,7 @@ const ProfileBalance: React.FC = () => {
         <Button onClick={onOpen}>Deposit</Button>
       </Flex>
       <Flex alignItems={"center"} justifyContent={"center"} fontSize={13}>
-        <ClipboardText textToCopy={wallet?.address ?? ""}>
-          {wallet?.address ?? ""}
-        </ClipboardText>
+        <ClipboardText textToCopy={address}>{address}</ClipboardText>
       </Flex>
     </Flex>
   );
@@ -279,6 +276,7 @@ const ProfileMenu: React.FC = () => {
 };
 
 export const LoginInfo: React.FC = () => {
+  const { isPrivy } = usePrivyWallet();
   const { user } = usePrivy();
 
   const { get } = useGetWalletById();
@@ -311,6 +309,7 @@ export const LoginInfo: React.FC = () => {
       isWallet,
     };
   }, [get, user?.linkedAccounts]);
+  if (!isPrivy) return null;
 
   return (
     <Flex direction={"column"} alignItems={"center"}>

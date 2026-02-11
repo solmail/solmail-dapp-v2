@@ -133,7 +133,7 @@ export const SolanaPay: React.FC<
 
             {!isDone && (
               <>
-                <Flex>Pay with embedded wallet</Flex>
+                <Flex>Pay with wallet</Flex>
                 <Flex>
                   <Button
                     isDisabled={!hasEnoughBalance}

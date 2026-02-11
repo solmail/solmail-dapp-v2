@@ -36,7 +36,7 @@ export const RequestAccountCreation: React.FC<
 > = ({ isRefetching: checkingMailAccountStatus, onSuccess, ...props }) => {
   const { mutateAsync, isPending } = useCreateMailBoxApi();
   const { formattedBalance, isRefetching, refetch } = useBalance();
-  const { wallet } = usePrivyWallet();
+  const { address } = usePrivyWallet();
   const [disabled, tooltip] = useMemo(() => {
     const balance = parseFloat(formattedBalance);
     if (balance > 0) {
@@ -85,7 +85,7 @@ export const RequestAccountCreation: React.FC<
               color={"green.500"}
               justifyContent={"center"}
             >
-              <ClipboardText>{wallet?.address ?? ""}</ClipboardText>
+              <ClipboardText>{address ?? ""}</ClipboardText>
             </Flex>
             <Flex
               fontWeight={"bold"}

@@ -95,6 +95,7 @@ export const RequestSolanaPay: React.FC<
   });
 
   const group = getRootProps();
+  const { address } = usePrivyWallet();
   const onSubmitHandler: SubmitHandler<SolanaPayForm> = ({
     amount,
     token,
@@ -102,7 +103,7 @@ export const RequestSolanaPay: React.FC<
   }) => {
     if (isFunction(onSubmit)) {
       onSubmit({
-        recipient: wallet?.address ?? "",
+        recipient: address ?? "",
         amount: Number(amount).toString(),
         tokenaddress: token ?? "",
         message: message ?? "",
@@ -110,7 +111,7 @@ export const RequestSolanaPay: React.FC<
     }
   };
   const SolanaPayLogo = useSolanaPayLogo();
-  const { wallet } = usePrivyWallet();
+
   return (
     <Modal onClose={onClose} isCentered size={"md"} {...props}>
       <ModalOverlay />
@@ -138,7 +139,7 @@ export const RequestSolanaPay: React.FC<
                     whiteSpace={"pre-wrap"}
                     fontSize={13}
                   >
-                    {wallet?.address ?? ""}
+                    {address ?? ""}
                   </Flex>
                 </FieldWrapper>
               </Flex>

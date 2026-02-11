@@ -1,11 +1,13 @@
 import { useSigner } from "@hooks/useSigner";
-import { usePrivy } from "@privy-io/react-auth";
+
 import { clearStorage } from "@utils/storage/clear";
 import { useTransition } from "react";
+import { usePrivyWallet } from "./usePrivyWallet";
 
 export const useSessionHandler = () => {
   const { clearToken } = useSigner();
-  const { logout } = usePrivy();
+
+  const { logout, isPrivy } = usePrivyWallet();
   const [isPending, startTransition] = useTransition();
   const onLogout = () => {
     if (isPending) return;
@@ -13,6 +15,9 @@ export const useSessionHandler = () => {
       try {
         await logout();
         clearToken();
+        if (!isPrivy) {
+          clearStorage();
+        }
         window.location.reload();
       } catch {
         clearStorage();

@@ -12,7 +12,7 @@ import { awaitTransactionSignatureConfirmation } from "@utils/transaction";
 import { RPC_ENDPOINT } from "@const/config";
 
 export const useWebIrys = () => {
-  const { wallet } = usePrivyWallet();
+  const { address } = usePrivyWallet();
   const { provider } = useGetMailProgramInstance();
   const { signMessage } = useSignMessage();
   const { sendTransaction } = useSendTransaction();
@@ -24,7 +24,7 @@ export const useWebIrys = () => {
   const connection = useSolanaConnection();
 
   const getWebIrys = async () => {
-    if (wallet?.address && provider) {
+    if (address && provider) {
       const walletIrys = {
         rpcUrl: rpcUrl,
         name: "solmail",
@@ -38,7 +38,7 @@ export const useWebIrys = () => {
             await awaitTransactionSignatureConfirmation(
               signature,
               connection,
-              1000 * 60 * 5
+              1000 * 60 * 5,
             );
 
             return signature;

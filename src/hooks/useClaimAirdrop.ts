@@ -12,14 +12,14 @@ import { usePrivyWallet } from "./usePrivyWallet";
 import { useToast } from "./useToast";
 import { deserializeTxFromBase64 } from "@utils/string/deserializeTransaction";
 import { useSolanaConnection } from "./useConnection";
-import { useSendTransaction } from "@privy-io/react-auth/solana";
+
 import { CLAIM_AIRDROP } from "@integrations/graphql/mutation/markClaim";
 
 type MutationPayload = {
   airdropAddress: string;
 };
 export const useClaimAirdrop = () => {
-  const { address } = usePrivyWallet();
+  const { address, sendTransaction } = usePrivyWallet();
   const { showToast } = useToast();
   const [createDecompressTx] = useMutationAppolo<
     DecompressMutation,
@@ -32,8 +32,6 @@ export const useClaimAirdrop = () => {
   >(CLAIM_AIRDROP);
 
   const connection = useSolanaConnection();
-
-  const { sendTransaction } = useSendTransaction();
 
   return useMutation({
     mutationKey: [QueryKeys.MUTATION_CLAIM_AIRDROP],
@@ -51,19 +49,20 @@ export const useClaimAirdrop = () => {
         data.createDecompressInstruction.transaction
       ) {
         const trx = deserializeTxFromBase64(
-          data.createDecompressInstruction.transaction
+          data.createDecompressInstruction.transaction,
         );
 
-        const signature = await sendTransaction({
-          transaction: trx,
+        const signature = await sendTransaction(
+          trx,
+
           connection,
-        });
+        );
 
         await claimAirdrop({
           variables: {
             airdropAddress,
             wallet: address,
-            transactionSignature: signature.signature,
+            transactionSignature: (signature as any).signature,
           },
         });
       } else {

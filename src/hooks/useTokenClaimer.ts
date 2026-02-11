@@ -1,13 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { usePrivyWallet } from "./usePrivyWallet";
 import { QueryKeys } from "src/types";
-import { useSignTransaction } from "@privy-io/react-auth/solana";
+
 import { useSolanaConnection } from "./useConnection";
 import { useToast } from "./useToast";
 import { useHttp } from "./useHttp";
 import { VersionedTransaction } from "@solana/web3.js";
 import { useProfile } from "./useProfile";
 import { getErrorMessage } from "@utils/error/getErrorMessage";
+import { useSignTransaction } from "./useSignTransaction";
 
 export const useTokenClaimer = () => {
   const { fetch } = useHttp();
@@ -42,9 +43,6 @@ export const useTokenClaimer = () => {
         const signedTransaction = await signTransaction({
           transaction: tx,
           connection: connection,
-          uiOptions: {
-            showWalletUIs: !1,
-          },
         });
 
         const serializedSignedTransaction = signedTransaction.serialize();

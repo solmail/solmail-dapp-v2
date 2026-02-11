@@ -44,9 +44,9 @@ export const Sidebar: React.FC = () => {
     const menu = MENU.find((menu) => pathname.indexOf(menu.id) > -1);
     return menu || MENU[0];
   }, [pathname]);
-  const { wallet } = usePrivyWallet();
+  const { address } = usePrivyWallet();
   const { username, isLoading, hasUserNames, isFetched } =
-    useGetLinkedUsernameById(wallet?.address);
+    useGetLinkedUsernameById(address);
   const hasChildMenu =
     selectedmenu && selectedmenu.submenu && selectedmenu.submenu.length > 0;
 
@@ -81,7 +81,7 @@ export const Sidebar: React.FC = () => {
         if (fromUrl !== toUrl) {
           onCloseMenu();
         }
-      }
+      },
     );
     return () => {
       unsubscribe();

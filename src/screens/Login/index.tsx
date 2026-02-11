@@ -3,11 +3,11 @@ import { usePrivy } from "@privy-io/react-auth";
 import { SocialShare } from "@components/SocialShare";
 import { PRIVACY_POLICY_LINK, TERMS_AND_CONDITIONS_LINK } from "@const/config";
 import { useEffect } from "react";
+import { WalletModalButton } from "@solana/wallet-adapter-react-ui";
 export const Login: React.FC = () => {
   const { login } = usePrivy();
 
   const clearWorkers = () => {
-    console.log("Clearing workers");
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         for (const registration of registrations) {
@@ -29,6 +29,7 @@ export const Login: React.FC = () => {
         alignItems={"center"}
         justifyContent={"center"}
       >
+        <WalletModalButton />
         <Flex bg="solana" bgClip={"text"} fontSize={23} mb={3}>
           Inbox. Identity. Influence
         </Flex>

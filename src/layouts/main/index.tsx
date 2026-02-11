@@ -1,5 +1,5 @@
 import { chakra, Flex, Image, Link, Tooltip } from "@chakra-ui/react";
-import { usePrivy } from "@privy-io/react-auth";
+
 import {
   Link as TanstackLink,
   Outlet,
@@ -16,13 +16,14 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorBoundaryPage } from "@components/ErrorBoundary";
 import * as Sentry from "@sentry/react";
 import ReactGA from "react-ga4";
+import { usePrivyWallet } from "@hooks/usePrivyWallet";
 
 if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
   ReactGA.initialize(import.meta.env.VITE_GOOGLE_ANALYTICS_ID);
 }
 
 export const AppMainLayout: React.FC = () => {
-  const { ready, authenticated } = usePrivy();
+  const { ready, isConnected: authenticated } = usePrivyWallet();
   const navigate = useNavigate();
   const [status, setStatus] = useState<boolean>(!1);
   const location = useLocation();

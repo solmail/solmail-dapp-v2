@@ -49,7 +49,7 @@ export const TransferFund: React.FC<
     },
   });
   const { showToast } = useToast();
-  const { wallet } = usePrivyWallet();
+  const { address } = usePrivyWallet();
 
   const validateAddress = (val: string) => {
     if (isValidAddress(val)) {
@@ -128,7 +128,7 @@ export const TransferFund: React.FC<
                 <FieldWrapper name="" label="My Wallet">
                   <Input
                     readOnly
-                    value={shortenPrincipalId(wallet?.address, 8, 8)}
+                    value={shortenPrincipalId(address, 8, 8)}
                     userSelect={"none"}
                   />
                 </FieldWrapper>

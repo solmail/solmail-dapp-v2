@@ -155,6 +155,7 @@ export const LinkedAccounts: React.FC = () => {
   );
 };
 export const AccountPage: React.FC = () => {
+  const { isPrivy } = usePrivyWallet();
   return (
     <Container maxW={"100%"}>
       <Box maxW={500} mx="auto">
@@ -168,7 +169,7 @@ export const AccountPage: React.FC = () => {
           Account settings
         </Box>
         <VStack py={5} gap={6}>
-          <ExportKeySettings />
+          {isPrivy && <ExportKeySettings />}
           <UsernameSwitch />
           {import.meta.env.VITE_SOLMAIL_ENABLE_FCM === "true" && (
             <NotificationSettings />

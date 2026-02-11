@@ -1,4 +1,3 @@
-import { usePrivy } from "@privy-io/react-auth";
 import axios, {
   type Method,
   type AxiosRequestConfig,
@@ -7,10 +6,9 @@ import axios, {
 import { useCallback } from "react";
 import * as Sentry from "@sentry/react";
 import { getConnectedUser } from "@utils/jotai/getUser";
+import { getToken } from "@utils/string/token";
 
 export const useHttp = () => {
-  const { getAccessToken } = usePrivy();
-
   const fetch = useCallback(
     async <T>(
       url: string,
@@ -19,15 +17,18 @@ export const useHttp = () => {
       params?: any,
       includeAuth: boolean = true,
       requestType?: string,
-      withCredentials: boolean = false
+      withCredentials: boolean = false,
     ): Promise<AxiosResponse<T>> => {
-      const accessToken = await getAccessToken();
+      const token = getToken();
+
       const instance = axios.create({
         baseURL: import.meta.env.VITE_REWARDS_BACKEND,
         headers: {
           ...(requestType && { "X-Request-Type": requestType }),
           ...(includeAuth &&
-            accessToken && { Authorization: `bearer ${accessToken}` }),
+            token && {
+              Authorization: `bearer ${token}`,
+            }),
         },
         withCredentials,
       });
@@ -41,7 +42,7 @@ export const useHttp = () => {
 
       instance.interceptors.request.use(
         (req) => req,
-        (error) => Promise.reject(error)
+        (error) => Promise.reject(error),
       );
 
       instance.interceptors.response.use(
@@ -69,13 +70,13 @@ export const useHttp = () => {
             extra: { payload, headers },
           });
           return Promise.reject(error.response?.data ?? {});
-        }
+        },
       );
 
       const response = await instance.request<T>(config);
       return response;
     },
-    [getAccessToken]
+    [],
   );
 
   return { fetch };

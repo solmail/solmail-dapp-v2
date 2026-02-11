@@ -34,7 +34,7 @@ export const useSolanaPay = ({
   decimals,
 }: Options) => {
   const { provider } = useGetMailProgramInstance();
-  const { isConnected: connected, wallet } = usePrivyWallet();
+  const { isConnected: connected, sendTransaction: send } = usePrivyWallet();
   const [isPending, startTransition] = useTransition();
   const queryClient = useQueryClient();
   const connection = useSolanaConnection();
@@ -45,7 +45,7 @@ export const useSolanaPay = ({
       isPending ||
       !qrUrl ||
       !provider ||
-      !wallet ||
+      !send ||
       !connection ||
       !connected
     ) {
@@ -53,7 +53,7 @@ export const useSolanaPay = ({
     }
 
     const { recipient, amount, reference, splToken } = parseURL(
-      qrUrl
+      qrUrl,
     ) as TransferRequestURL;
 
     if (!amount) return;
@@ -65,11 +65,11 @@ export const useSolanaPay = ({
         if (splToken) {
           const fromTokenAccount = await getAssociatedTokenAddress(
             splToken,
-            provider.publicKey
+            provider.publicKey,
           );
           const toTokenAccount = await getAssociatedTokenAddress(
             splToken,
-            recipient
+            recipient,
           );
 
           const tx = new Transaction();
@@ -80,7 +80,7 @@ export const useSolanaPay = ({
               provider.publicKey,
               toTokenAccount,
               recipient,
-              splToken
+              splToken,
             );
             tx.add(createATAIx);
           }
@@ -89,7 +89,7 @@ export const useSolanaPay = ({
             fromTokenAccount,
             toTokenAccount,
             provider.publicKey,
-            Number(toRawAmount(amount.toString(), decimals))
+            Number(toRawAmount(amount.toString(), decimals)),
           );
 
           if (reference) {
@@ -99,7 +99,7 @@ export const useSolanaPay = ({
                   pubkey: ref,
                   isSigner: false,
                   isWritable: false,
-                })
+                }),
               );
             } else {
               transferIx.keys.push({
@@ -121,14 +121,14 @@ export const useSolanaPay = ({
               amount,
               reference,
             },
-            { commitment: "confirmed" }
+            { commitment: "confirmed" },
           );
         }
 
         const { blockhash } = await connection.getLatestBlockhash("confirmed");
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = provider.publicKey;
-        await wallet.sendTransaction(transaction, connection, {
+        await send(transaction, connection, {
           skipPreflight: false,
         });
         queryClient.invalidateQueries({
@@ -151,8 +151,9 @@ export const useSolanaPay = ({
     onSuccess,
     provider,
     qrUrl,
+    queryClient,
+    send,
     showToast,
-    wallet,
   ]);
 
   return {

@@ -9,20 +9,20 @@ import { useMemo } from "react";
 import { formatTokenBalance } from "@utils/formating";
 export const useJupiterBalance = (tokenMint?: string) => {
   const { token } = useGetJupiterTokenById(tokenMint);
-  const { wallet } = usePrivyWallet();
+  const { address } = usePrivyWallet();
   const connection = useSolanaConnection(!0);
 
-  const enabled = !!wallet?.address;
+  const enabled = !!address;
 
   const query = useQuery({
-    queryKey: [QueryKeys.JUPITER_SOL_BALANCE, wallet?.address, tokenMint],
+    queryKey: [QueryKeys.JUPITER_SOL_BALANCE, address, tokenMint],
     queryFn: async () => {
       if (!connection) {
         return 0;
       }
-      if (!wallet?.address) throw new Error("Wallet not connected");
+      if (!address) throw new Error("Wallet not connected");
 
-      const owner = new PublicKey(wallet.address);
+      const owner = new PublicKey(address);
 
       if (!tokenMint || tokenMint === NATIVE_MINT.toString()) {
         return connection.getBalance(owner);
@@ -49,7 +49,7 @@ export const useJupiterBalance = (tokenMint?: string) => {
         compact: !0,
         suffix: token?.symbol ?? "",
       }),
-    [query.data, token?.decimals, token?.symbol]
+    [query.data, token?.decimals, token?.symbol],
   );
   return { formatted, ...query };
 };

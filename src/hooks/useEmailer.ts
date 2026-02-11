@@ -25,10 +25,12 @@ import {
   PackedAccounts,
   selectStateTreeInfo,
   SystemAccountMetaConfig,
+  featureFlags,
 } from "@lightprotocol/stateless.js";
 import { useUpdateCompressedAccount } from "./useUpdateCompressedAccount";
 import { useMarkAsPayment } from "./useMarkAsPayment";
-
+console.log("Current version:", featureFlags.version);
+console.log("Is V2:", featureFlags.isV2());
 type FormPayload = Omit<ComposerFormInputs, "to"> & {
   to: string;
   originalRecipient: string;
@@ -178,7 +180,7 @@ export const useEmailer = () => {
           new PublicKey(to).toBuffer(),
           Buffer.from(mailAccount.publicKey?.toString()),
         ],
-        program.programId
+        program.programId,
       );
 
       const mailAddress = deriveAddress(addressSeed, addressTreeInfo.tree);
@@ -191,20 +193,20 @@ export const useEmailer = () => {
             tree: addressTreeInfo.tree,
             queue: addressTreeInfo.queue,
           },
-        ]
+        ],
       );
 
       const systemAccountConfig = SystemAccountMetaConfig.new(
-        program.programId
+        program.programId,
       );
       const remainingAccounts =
         PackedAccounts.newWithSystemAccounts(systemAccountConfig);
 
       const addressMerkleTreePubkeyIndex = remainingAccounts.insertOrGet(
-        addressTreeInfo.tree
+        addressTreeInfo.tree,
       );
       const addressQueuePubkeyIndex = remainingAccounts.insertOrGet(
-        addressTreeInfo.queue
+        addressTreeInfo.queue,
       );
 
       const packedAddressTreeInfo = {
@@ -214,7 +216,7 @@ export const useEmailer = () => {
       };
 
       const outputMerkleTreeIndex = remainingAccounts.insertOrGet(
-        outputStateTreeInfo.tree
+        outputStateTreeInfo.tree,
       );
 
       const computeBudgetIx = ComputeBudgetProgram.setComputeUnitLimit({
@@ -234,7 +236,7 @@ export const useEmailer = () => {
           StorageVersion.compressedWeb,
           { 0: proofRpcResult.compressedProof },
           packedAddressTreeInfo,
-          outputMerkleTreeIndex
+          outputMerkleTreeIndex,
         )
         .accounts({
           signer: from,

@@ -16,20 +16,20 @@ type Args = {
 };
 export const useBalance = (options?: Args) => {
   const { tokenMint, requestedAmount = 0 } = options || {};
-  const { wallet } = usePrivyWallet();
+  const { address } = usePrivyWallet();
   const connection = useSolanaConnection();
   const { symbol, decimals } = useToken(tokenMint);
   const { fee } = useEstimatedFee();
 
-  const enabled = !!wallet?.address;
+  const enabled = !!address;
 
   const { data, isFetching, refetch, isRefetching, isFetched, isLoading } =
     useQuery({
-      queryKey: [QueryKeys.SOL_BALANCE, wallet?.address, tokenMint],
+      queryKey: [QueryKeys.SOL_BALANCE, address, tokenMint],
       queryFn: async () => {
-        if (!wallet?.address) throw new Error("Wallet not connected");
+        if (!address) throw new Error("Wallet not connected");
 
-        const owner = new PublicKey(wallet.address);
+        const owner = new PublicKey(address);
 
         if (!tokenMint) {
           return connection.getBalance(owner);

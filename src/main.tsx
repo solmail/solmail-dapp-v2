@@ -19,6 +19,7 @@ import "jotai-devtools/styles.css";
 import { PRIVACY_POLICY_LINK, TERMS_AND_CONDITIONS_LINK } from "@const/config";
 import { queryclient } from "@integrations/tanstack";
 import { ToastContainerWrapper } from "@components/ToastContainerWrapper";
+import { WalletContext } from "@components/WalletProvider";
 
 Sentry.init({
   dsn: `${import.meta.env.VITE_SOLMAIL_SENTRY_DSN}${import.meta.env.MODE === "development" ? "skip" : ""}`,
@@ -54,37 +55,39 @@ createRoot(document.getElementById("root")!).render(
     <Provider>
       <DevTools position="bottom-right" />
       <QueryClientProvider client={queryclient}>
-        <ApolloProvider client={client}>
-          <PrivyProvider
-            appId={import.meta.env.VITE_SOLMAIL_PRIVY_APP_ID}
-            config={{
-              externalWallets: {
-                solana: { connectors: toSolanaWalletConnectors() },
-              },
-              appearance: {
-                showWalletLoginFirst: !0,
-                walletList: ALL_SUPPORTED_WALLETS,
-              },
-              loginMethods: ["email", "wallet", "google"],
-              embeddedWallets: {
-                solana: {
-                  createOnLogin: "all-users",
+        <WalletContext>
+          <ApolloProvider client={client}>
+            <PrivyProvider
+              appId={import.meta.env.VITE_SOLMAIL_PRIVY_APP_ID}
+              config={{
+                externalWallets: {
+                  solana: { connectors: toSolanaWalletConnectors() },
                 },
-              },
+                appearance: {
+                  showWalletLoginFirst: !0,
+                  walletList: ALL_SUPPORTED_WALLETS,
+                },
+                loginMethods: ["email", "wallet", "google"],
+                embeddedWallets: {
+                  solana: {
+                    createOnLogin: "all-users",
+                  },
+                },
 
-              legal: {
-                termsAndConditionsUrl: TERMS_AND_CONDITIONS_LINK,
-                privacyPolicyUrl: PRIVACY_POLICY_LINK,
-              },
-            }}
-          >
-            <ChakraProvider theme={AppTheme}>
-              <ToastContainerWrapper />
-              <RouterProvider router={router} />
-            </ChakraProvider>
-          </PrivyProvider>
-        </ApolloProvider>
+                legal: {
+                  termsAndConditionsUrl: TERMS_AND_CONDITIONS_LINK,
+                  privacyPolicyUrl: PRIVACY_POLICY_LINK,
+                },
+              }}
+            >
+              <ChakraProvider theme={AppTheme}>
+                <ToastContainerWrapper />
+                <RouterProvider router={router} />
+              </ChakraProvider>
+            </PrivyProvider>
+          </ApolloProvider>
+        </WalletContext>
       </QueryClientProvider>
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );

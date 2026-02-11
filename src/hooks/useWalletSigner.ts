@@ -4,9 +4,10 @@ import { usePrivyWallet } from "./usePrivyWallet";
 
 import { useHttp } from "@hooks/useHttp";
 import { VersionedTransaction } from "@solana/web3.js";
-import { useSignTransaction } from "@privy-io/react-auth/solana";
+
 import { useSolanaConnection } from "./useConnection";
 import { useToast } from "@hooks/useToast";
+import { useSignTransaction } from "./useSignTransaction";
 
 type SponsoredTransactionResponse = {
   mailAccountPda: string;
@@ -40,7 +41,7 @@ export const useCreateMailBoxApi = () => {
       const { data } = await fetch<Response>(
         "/create-mail-box",
         "POST",
-        payload
+        payload,
       );
 
       if (data && data.data && data.data.transaction) {
@@ -59,12 +60,11 @@ export const useCreateMailBoxApi = () => {
         const signedTransaction = await signTransaction({
           transaction: tx,
           connection: connection,
-          uiOptions: {
-            showWalletUIs: !1,
-          },
         });
 
-        const serializedSignedTransaction = signedTransaction.serialize();
+        console.log(signedTransaction);
+
+        const serializedSignedTransaction = signedTransaction?.serialize();
 
         const transactionObject: any = {};
         serializedSignedTransaction.forEach((byte, index) => {

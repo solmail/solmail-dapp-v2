@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { Composer } from "@components/Composer";
 import { Navbar } from "@components/Navbar";
 import { Sidebar } from "@components/Sidebar";
@@ -28,7 +28,7 @@ import { useComposer } from "@hooks/useComposer";
 import { useGetCompressedAccountStatus } from "@hooks/useCompressedAccountStatus";
 
 export const UserLayout: React.FC = () => {
-  const { address } = usePrivyWallet();
+  const { address, isConnected } = usePrivyWallet();
   const STORAGE_NAME = `_u_${address}`;
 
   const { isOpen: isComposerOpen } = useComposer();
@@ -57,7 +57,7 @@ export const UserLayout: React.FC = () => {
 
   useEffect(() => {
     if (
-      authenticated &&
+      isConnected &&
       provider &&
       provider.publicKey &&
       !isAuthenticated &&
@@ -69,6 +69,7 @@ export const UserLayout: React.FC = () => {
     authenticated,
     isAuthenticated,
     isAuthenticating,
+    isConnected,
     provider,
     requestSignIn,
   ]);
@@ -122,7 +123,7 @@ export const UserLayout: React.FC = () => {
       isUserReady,
       requestProfileCreation,
       requestWalletCreation,
-    ]
+    ],
   );
 
   const autoRequestExecuted = useRef<boolean>(getStatus());
@@ -139,9 +140,10 @@ export const UserLayout: React.FC = () => {
   useEffect(() => {
     set((prev) => ({
       ...prev,
-      user: address,
+      user: address ?? "",
     }));
   }, [address, set]);
+
   useEffect(() => {
     if (autoRequestExecuted.current || isOpen || requestUsernameLink) {
       return;
@@ -222,6 +224,17 @@ export const UserLayout: React.FC = () => {
                 />
               )}
             </>
+          )}
+
+          {!isAuthenticated && isAuthenticating && (
+            <Flex
+              w="full"
+              h="100%"
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <Spinner />
+            </Flex>
           )}
         </Flex>
       </Flex>

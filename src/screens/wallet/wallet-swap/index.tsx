@@ -9,12 +9,13 @@ import { IoSwapVertical } from "react-icons/io5";
 import { JupiterSwapForm, JupiterSwapFormKeys } from "src/types/jupiter";
 import { Route as WalletSwapRoute } from "@routes/u/_layout/wallet/_layout/swap/index";
 import { deserializeTxFromBase64 } from "@utils/string/deserializeTransaction";
-import { useSignTransaction } from "@privy-io/react-auth/solana";
+
 import { useSolanaConnection } from "@hooks/useConnection";
 import { useJupiterSwapMutation } from "@hooks/useJupiterSwapMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePrivyWallet } from "@hooks/usePrivyWallet";
 import { QueryKeys } from "src/types";
+import { useSignTransaction } from "@hooks/useSignTransaction";
 
 const DEFAULTS = {
   in: "",
@@ -59,14 +60,11 @@ export const SwapPage: React.FC = () => {
     const signedTransaction = await signTransaction({
       transaction: txn,
       connection: connection,
-      uiOptions: {
-        showWalletUIs: !1,
-      },
     });
 
     const serializedSignedTransaction = signedTransaction.serialize();
     const transaction = Buffer.from(serializedSignedTransaction).toString(
-      "base64"
+      "base64",
     );
 
     const request = {
