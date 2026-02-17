@@ -52,17 +52,13 @@ export const useClaimAirdrop = () => {
           data.createDecompressInstruction.transaction,
         );
 
-        const signature = await sendTransaction(
-          trx,
-
-          connection,
-        );
+        const signature: any = await sendTransaction(trx, connection);
 
         await claimAirdrop({
           variables: {
             airdropAddress,
             wallet: address,
-            transactionSignature: (signature as any).signature,
+            transactionSignature: (signature?.signature || signature) as string,
           },
         });
       } else {

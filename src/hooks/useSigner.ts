@@ -89,7 +89,7 @@ export const useSigner = () => {
     if (!signMessage) {
       return;
     }
-    console.log(signMessage);
+
     const message = `Sign in with SolMail.\n\nNo password is required.\n\nClick "Sign" or "Approve" only means you have confirmed you own this wallet.\n\nThis request will not initiate any blockchain transaction or cost any gas fee.\n\nNonce: ${nonce}`;
     const messageBytes = new TextEncoder().encode(message);
     const signature = await signMessage({ message: messageBytes });

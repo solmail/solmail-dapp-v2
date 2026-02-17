@@ -26,9 +26,14 @@ import { ENABLE_USERNAME_CLAIM } from "@const/config";
 import { useFCMNotifications } from "@hooks/useFCMNotifications";
 import { useComposer } from "@hooks/useComposer";
 import { useGetCompressedAccountStatus } from "@hooks/useCompressedAccountStatus";
+import { MigrationWarning } from "@components/MigrationWarning";
 
+const SESSION_WARNING_NAME = "session-storage-name";
 export const UserLayout: React.FC = () => {
-  const { address, isConnected } = usePrivyWallet();
+  const { address, isConnected, isPrivy } = usePrivyWallet();
+  const [showWarning, setShowWarning] = useState(
+    !(sessionStorage.getItem(SESSION_WARNING_NAME) === "true"),
+  );
   const STORAGE_NAME = `_u_${address}`;
 
   const { isOpen: isComposerOpen } = useComposer();
@@ -171,8 +176,16 @@ export const UserLayout: React.FC = () => {
     requestUsernameLink,
   ]);
 
+  const _onCloseHandler = () => {
+    setShowWarning(!1);
+    sessionStorage.setItem(SESSION_WARNING_NAME, "true");
+  };
+
   return (
     <Flex w="100%" direction={"row"}>
+      {isPrivy && isAuthenticated && (
+        <MigrationWarning isOpen={showWarning} onClose={_onCloseHandler} />
+      )}
       <ReferalCodeClaim
         isOpen={
           isAuthenticated &&
@@ -205,6 +218,7 @@ export const UserLayout: React.FC = () => {
         >
           <Navbar />
         </Flex>
+
         <Flex data-body flex={"auto"}>
           {isAuthenticated && (
             <>

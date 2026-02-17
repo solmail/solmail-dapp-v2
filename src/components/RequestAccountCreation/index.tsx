@@ -36,7 +36,7 @@ export const RequestAccountCreation: React.FC<
 > = ({ isRefetching: checkingMailAccountStatus, onSuccess, ...props }) => {
   const { mutateAsync, isPending } = useCreateMailBoxApi();
   const { formattedBalance, isRefetching, refetch } = useBalance();
-  const { address } = usePrivyWallet();
+  const { address, isPrivy } = usePrivyWallet();
   const [disabled, tooltip] = useMemo(() => {
     const balance = parseFloat(formattedBalance);
     if (balance > 0) {
@@ -79,46 +79,60 @@ export const RequestAccountCreation: React.FC<
           </Flex>
         </ModalHeader>
         <ModalBody pt={0}>
-          <Flex direction={"column"}>
-            <Flex
-              alignItems={"center"}
-              color={"green.500"}
-              justifyContent={"center"}
-            >
-              <ClipboardText>{address ?? ""}</ClipboardText>
+          {!isPrivy && (
+            <Flex direction={"column"}>
+              <Flex
+                alignItems={"center"}
+                color={"green.500"}
+                justifyContent={"center"}
+              >
+                <ClipboardText>{address ?? ""}</ClipboardText>
+              </Flex>
+              <Flex
+                fontWeight={"bold"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                Available Balance
+              </Flex>
+              <Flex alignItems={"center"} justifyContent={"center"}>
+                {formattedBalance}
+                <IconButton
+                  ml={2}
+                  aria-label="Refresh"
+                  icon={<GrRefresh />}
+                  size={"sm"}
+                  onClick={() => refetch()}
+                  animation={
+                    isRefetching ? `${spin} 1s linear infinite` : undefined
+                  }
+                />
+              </Flex>
+              <Flex
+                pb={5}
+                pt={5}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <Tooltip label={tooltip} isDisabled={!disabled}>
+                  <Button colorScheme="green" onClick={onClickHandler}>
+                    {isPending || checkingMailAccountStatus || isSigningOut ? (
+                      <Spinner size={"sm"} />
+                    ) : (
+                      "Create Mailbox"
+                    )}
+                  </Button>
+                </Tooltip>
+              </Flex>
             </Flex>
-            <Flex
-              fontWeight={"bold"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              Available Balance
+          )}
+
+          {isPrivy && (
+            <Flex direction={"column"} fontSize={13} mb={5}>
+              Mailbox creation is disabled for Privy wallet users. Please
+              connect using another Web3 wallet to continue.
             </Flex>
-            <Flex alignItems={"center"} justifyContent={"center"}>
-              {formattedBalance}
-              <IconButton
-                ml={2}
-                aria-label="Refresh"
-                icon={<GrRefresh />}
-                size={"sm"}
-                onClick={() => refetch()}
-                animation={
-                  isRefetching ? `${spin} 1s linear infinite` : undefined
-                }
-              />
-            </Flex>
-            <Flex pb={5} pt={5} alignItems={"center"} justifyContent={"center"}>
-              <Tooltip label={tooltip} isDisabled={!disabled}>
-                <Button colorScheme="green" onClick={onClickHandler}>
-                  {isPending || checkingMailAccountStatus || isSigningOut ? (
-                    <Spinner size={"sm"} />
-                  ) : (
-                    "Create Mailbox"
-                  )}
-                </Button>
-              </Tooltip>
-            </Flex>
-          </Flex>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>

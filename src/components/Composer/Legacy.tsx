@@ -89,18 +89,18 @@ export const ComposerLegacy: React.FC = () => {
           _account && _account.publicKey ? [displayName] : [thread],
           {
             shouldValidate: !0,
-          }
+          },
         );
         methods.setValue(
           "subject",
-          trim(`Re : ${subject ?? ""}`, MAXIMUM_MAIL_SUBJECT_LENGTH)
+          trim(`Re : ${subject ?? ""}`, MAXIMUM_MAIL_SUBJECT_LENGTH),
         );
       }
 
       if (action === MailShareTypes.forward) {
         methods.setValue(
           "subject",
-          trim(`Forward : ${subject ?? ""}`, MAXIMUM_MAIL_SUBJECT_LENGTH)
+          trim(`Forward : ${subject ?? ""}`, MAXIMUM_MAIL_SUBJECT_LENGTH),
         );
         methods.setValue("body", content, {
           shouldValidate: !0,
@@ -128,7 +128,7 @@ export const ComposerLegacy: React.FC = () => {
   ]);
 
   const [id, set] = useState(0);
-  const { hasEnoughBalance } = useBalance({ requestedAmount: 0.01021728 });
+  const { hasEnoughBalance } = useBalance({ requestedAmount: 0 });
 
   const { composerCollapsed, composerMinimised, update } = useComposer();
 
@@ -167,7 +167,7 @@ export const ComposerLegacy: React.FC = () => {
           `Mail body size exceeds the maximum allowed limit of ${MAIL_BODY_MAX_SIZE_MB} MB.`,
           {
             type: "error",
-          }
+          },
         );
       }
     }
